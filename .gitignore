@@ -17,3 +17,6 @@ local.properties
 .env
 debug.keystore
 *-debug.log
+.aistudio/
+.build-outputs/
+node_modules/

@@ -31,6 +31,8 @@ jobs:
         run: |
           mkdir -p _site
           cp -r web/* _site/
+          touch _site/.nojekyll
+          [ -f web/404.html ] && cp web/404.html _site/404.html || cp web/index.html _site/404.html
           # Ensure APK and zip are accessible at root of pages
           [ -f ShiftTask-Tracker-v1.5.apk ] && cp ShiftTask-Tracker-v1.5.apk _site/ || true
           [ -f standalone-web-app.zip ] && cp standalone-web-app.zip _site/ || true
