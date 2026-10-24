@@ -2227,12 +2227,12 @@ fun SkipTaskDialog(
     var showError by remember { mutableStateOf(false) }
 
     val presetReasons = listOf(
-        "Out of stock",
-        "Equipment issue",
-        "Supplier delay",
-        "Manager excused",
-        "Customer rush",
-        "Not applicable today"
+        "Not needed",
+        "Crisps Worked Instead",
+        "Grocery Worked Instead",
+        "Frozen Worked Instead",
+        "Not Enough Time",
+        "N.A"
     )
 
     AlertDialog(
