@@ -1,0 +1,139 @@
+{
+  "entities": {
+    "Category": {
+      "title": "Category",
+      "description": "A checklist category for organizing shift tasks",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of category" },
+        "sortOrder": { "type": "integer", "description": "Sort order" },
+        "active": { "type": "boolean", "description": "Whether active" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp; clients must submit FieldValue.serverTimestamp()" }
+      },
+      "required": ["name", "sortOrder", "active", "createdAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "A shift compliance task",
+      "type": "object",
+      "properties": {
+        "categoryId": { "type": "string", "description": "Category document ID" },
+        "title": { "type": "string", "description": "Task title" },
+        "bulletPoints": { "type": "string", "description": "Newline-separated sub-task checklist" },
+        "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"], "description": "Priority tier" },
+        "daysOfWeek": { "type": "string", "description": "Comma separated days of week or ALL" },
+        "sortOrder": { "type": "integer", "description": "Sort order" },
+        "active": { "type": "boolean", "description": "Whether active" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp; clients must submit FieldValue.serverTimestamp()" }
+      },
+      "required": ["categoryId", "title", "priority", "active", "createdAt"]
+    },
+    "TaskCompletion": {
+      "title": "TaskCompletion",
+      "description": "Sign-off record for a shift task on a date",
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string", "description": "Task ID" },
+        "taskTitle": { "type": "string", "description": "Task title snapshot" },
+        "categoryName": { "type": "string", "description": "Category name snapshot" },
+        "dateString": { "type": "string", "description": "Date in YYYY-MM-DD" },
+        "completedAt": { "type": "string", "format": "date-time", "description": "Completed timestamp; clients must submit FieldValue.serverTimestamp()" },
+        "completedByUserId": { "type": "string", "description": "User ID" },
+        "completedByUserName": { "type": "string", "description": "User name" },
+        "completedByUserInitials": { "type": "string", "description": "User initials" },
+        "completedByUserRole": { "type": "string", "description": "User role" },
+        "isPartial": { "type": "boolean", "description": "Whether partial" },
+        "completedSubTasksJson": { "type": "string", "description": "Completed sub-tasks JSON list" },
+        "outstandingSubTasksJson": { "type": "string", "description": "Outstanding sub-tasks JSON list" },
+        "totalSubTasksCount": { "type": "integer", "description": "Total sub tasks" },
+        "completedSubTasksCount": { "type": "integer", "description": "Completed sub tasks" }
+      },
+      "required": ["taskId", "taskTitle", "categoryName", "dateString", "completedAt", "completedByUserId", "completedByUserName", "isPartial"]
+    },
+    "TaskNote": {
+      "title": "TaskNote",
+      "description": "A timestamped note on a task",
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string", "description": "Task ID" },
+        "dateString": { "type": "string", "description": "Date YYYY-MM-DD" },
+        "text": { "type": "string", "description": "Note text" },
+        "authorUserId": { "type": "string", "description": "Author user ID" },
+        "authorName": { "type": "string", "description": "Author name" },
+        "authorInitials": { "type": "string", "description": "Author initials" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Timestamp; clients must submit FieldValue.serverTimestamp()" }
+      },
+      "required": ["taskId", "dateString", "text", "authorUserId", "authorName", "timestamp"]
+    },
+    "TaskPhoto": {
+      "title": "TaskPhoto",
+      "description": "A photo verification attached to a task",
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string", "description": "Task ID" },
+        "dateString": { "type": "string", "description": "Date YYYY-MM-DD" },
+        "photoUri": { "type": "string", "description": "URI or URL of photo" },
+        "authorUserId": { "type": "string", "description": "Author user ID" },
+        "authorName": { "type": "string", "description": "Author name" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Timestamp; clients must submit FieldValue.serverTimestamp()" }
+      },
+      "required": ["taskId", "dateString", "photoUri", "authorUserId", "authorName", "timestamp"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A staff member or administrator profile",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name" },
+        "initials": { "type": "string", "description": "Initials" },
+        "role": { "type": "string", "enum": ["ADMIN", "STAFF"], "description": "User role" },
+        "pinHash": { "type": "string", "description": "Hashed PIN" },
+        "pinSalt": { "type": "string", "description": "Salt" },
+        "active": { "type": "boolean", "description": "Whether active" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["name", "initials", "role", "pinHash", "pinSalt", "active", "createdAt"]
+    },
+    "StoreConfig": {
+      "title": "StoreConfig",
+      "description": "Store configuration key-value pair",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "description": "Config key" },
+        "value": { "type": "string", "description": "Config value" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Updated timestamp" }
+      },
+      "required": ["key", "value", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "List of task categories"
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "List of all shift tasks"
+    },
+    "/task_completions/{completionId}": {
+      "schema": "TaskCompletion",
+      "description": "Task sign-off completion records"
+    },
+    "/task_notes/{noteId}": {
+      "schema": "TaskNote",
+      "description": "Notes on shift tasks"
+    },
+    "/task_photos/{photoId}": {
+      "schema": "TaskPhoto",
+      "description": "Photo records"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Staff and admin users"
+    },
+    "/store_config/{configKey}": {
+      "schema": "StoreConfig",
+      "description": "Store metadata and settings"
+    }
+  }
+}

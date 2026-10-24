@@ -1,0 +1,13 @@
+{
+  "name": "shifttask-backend",
+  "version": "1.0.0",
+  "description": "ShiftTask web server and Firestore seed scripts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed-firestore.js"
+  },
+  "dependencies": {
+    "firebase": "^10.13.0"
+  }
+}

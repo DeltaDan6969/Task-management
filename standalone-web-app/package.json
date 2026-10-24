@@ -1,0 +1,12 @@
+{
+  "name": "shifttask-web-tracker",
+  "version": "1.5.0",
+  "description": "ShiftTask Tracker - Standalone Web Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "firebase": "^10.13.0"
+  }
+}

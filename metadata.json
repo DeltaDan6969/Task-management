@@ -1,0 +1,6 @@
+{
+  "name": "ShiftTask Tracker",
+  "description": "Retail task tracker with secure PIN authentication, admin management, layout editor, and completion reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
