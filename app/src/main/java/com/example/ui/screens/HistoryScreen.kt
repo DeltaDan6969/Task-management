@@ -359,8 +359,22 @@ fun HistoryScreen(
                                                 )
                                             }
 
-                                            // Sub-tasks breakdown if partial or present
-                                            if (comp.isPartial) {
+                                            if (comp.isSkipped) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .padding(top = 4.dp)
+                                                        .background(Color(0xFFFFF3E0), RoundedCornerShape(2.dp))
+                                                        .border(1.dp, Color(0xFFFFB74D), RoundedCornerShape(2.dp))
+                                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                                ) {
+                                                    Text(
+                                                        text = "⚡ SKIPPED: ${comp.skipReason.ifBlank { "Excused" }}",
+                                                        fontSize = 10.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = Color(0xFFE65100)
+                                                    )
+                                                }
+                                            } else if (comp.isPartial) {
                                                 val compList = SubTaskUtils.jsonToList(comp.completedSubTasksJson)
                                                 val outList = SubTaskUtils.jsonToList(comp.outstandingSubTasksJson)
                                                 Column(modifier = Modifier.padding(top = 4.dp)) {
@@ -413,10 +427,18 @@ fun HistoryScreen(
                                                 color = RetailTextPrimary
                                             )
                                             Text(
-                                                text = if (comp.isPartial) "PARTIAL" else "VERIFIED",
+                                                text = when {
+                                                    comp.isSkipped -> "SKIPPED"
+                                                    comp.isPartial -> "PARTIAL"
+                                                    else -> "VERIFIED"
+                                                },
                                                 fontSize = 9.sp,
                                                 fontWeight = FontWeight.Bold,
-                                                color = if (comp.isPartial) RetailOrange else RetailGreenCheck
+                                                color = when {
+                                                    comp.isSkipped -> Color(0xFFE65100)
+                                                    comp.isPartial -> RetailOrange
+                                                    else -> RetailGreenCheck
+                                                }
                                             )
                                         }
                                     }
@@ -665,7 +687,22 @@ fun HistoryScreen(
                                         )
                                     }
 
-                                    if (comp.isPartial) {
+                                    if (comp.isSkipped) {
+                                        Box(
+                                            modifier = Modifier
+                                                .padding(top = 4.dp)
+                                                .background(Color(0xFFFFF3E0), RoundedCornerShape(2.dp))
+                                                .border(1.dp, Color(0xFFFFB74D), RoundedCornerShape(2.dp))
+                                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                                        ) {
+                                            Text(
+                                                text = "⚡ SKIPPED: ${comp.skipReason.ifBlank { "Excused" }}",
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color(0xFFE65100)
+                                            )
+                                        }
+                                    } else if (comp.isPartial) {
                                         val compList = SubTaskUtils.jsonToList(comp.completedSubTasksJson)
                                         val outList = SubTaskUtils.jsonToList(comp.outstandingSubTasksJson)
                                         Column(modifier = Modifier.padding(top = 4.dp)) {
@@ -717,10 +754,18 @@ fun HistoryScreen(
                                         color = RetailTextPrimary
                                     )
                                     Text(
-                                        text = if (comp.isPartial) "PARTIAL" else "LOGGED",
+                                        text = when {
+                                            comp.isSkipped -> "SKIPPED"
+                                            comp.isPartial -> "PARTIAL"
+                                            else -> "LOGGED"
+                                        },
                                         fontSize = 9.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = if (comp.isPartial) RetailOrange else RetailGreenCheck
+                                        color = when {
+                                            comp.isSkipped -> Color(0xFFE65100)
+                                            comp.isPartial -> RetailOrange
+                                            else -> RetailGreenCheck
+                                        }
                                     )
                                 }
                             }

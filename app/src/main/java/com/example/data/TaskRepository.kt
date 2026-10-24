@@ -152,6 +152,56 @@ class TaskRepository(
         }
     }
 
+    suspend fun submitTaskSkip(
+        task: TaskEntity,
+        categoryName: String,
+        dateString: String,
+        user: UserEntity,
+        reason: String
+    ) {
+        val existing = taskDao.getCompletionsForDate(dateString).first().find { it.taskId == task.id }
+        // If already completed and not partial, compliance is locked
+        if (existing != null && !existing.isPartial && !existing.isSkipped) {
+            return
+        }
+
+        val allSubTasks = com.example.util.SubTaskUtils.parseSubTasks(task.bulletPoints)
+        val completionEntity = TaskCompletionEntity(
+            id = existing?.id ?: 0L,
+            taskId = task.id,
+            taskTitle = task.title,
+            categoryName = categoryName,
+            dateString = dateString,
+            completedAt = System.currentTimeMillis(),
+            completedByUserId = user.id,
+            completedByUserName = user.name,
+            completedByUserInitials = user.initials,
+            completedByUserRole = user.role,
+            isPartial = false,
+            isSkipped = true,
+            skipReason = reason.trim(),
+            completedSubTasksJson = "[]",
+            outstandingSubTasksJson = com.example.util.SubTaskUtils.listToJson(allSubTasks),
+            totalSubTasksCount = allSubTasks.size,
+            completedSubTasksCount = 0
+        )
+
+        taskDao.insertCompletion(completionEntity)
+        syncManager?.syncCompletion(completionEntity)
+
+        // Automatically log audit note for transparency
+        val noteEntity = TaskNoteEntity(
+            taskId = task.id,
+            dateString = dateString,
+            authorUserId = user.id,
+            authorName = user.name,
+            authorInitials = user.initials,
+            text = "⚡ SKIPPED: ${reason.trim()}"
+        )
+        val noteId = taskDao.insertNote(noteEntity)
+        syncManager?.syncNote(noteEntity.copy(id = noteId))
+    }
+
     suspend fun toggleTaskCompletion(
         task: TaskEntity,
         categoryName: String,

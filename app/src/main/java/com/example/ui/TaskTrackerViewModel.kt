@@ -374,6 +374,19 @@ class TaskTrackerViewModel(private val repository: TaskRepository) : ViewModel()
         }
     }
 
+    fun skipTask(task: TaskEntity, categoryName: String, reason: String) {
+        val user = _currentUser.value ?: return
+        viewModelScope.launch {
+            repository.submitTaskSkip(
+                task = task,
+                categoryName = categoryName,
+                dateString = _selectedDate.value,
+                user = user,
+                reason = reason
+            )
+        }
+    }
+
     fun submitSelectedTasks(tasksToSignOff: List<Pair<TaskEntity, String>>) {
         val user = _currentUser.value ?: return
         if (tasksToSignOff.isEmpty()) return

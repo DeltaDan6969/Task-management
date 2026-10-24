@@ -25,6 +25,8 @@ data class TaskCompletionEntity(
     val completedByUserInitials: String,
     val completedByUserRole: String,
     val isPartial: Boolean = false,
+    val isSkipped: Boolean = false,
+    val skipReason: String = "",
     val completedSubTasksJson: String = "",
     val outstandingSubTasksJson: String = "",
     val totalSubTasksCount: Int = 0,

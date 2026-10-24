@@ -88,12 +88,14 @@ fun TodayScreen(
     onAddTask: ((categoryId: Long, title: String, bullets: String, priority: String, daysOfWeek: String) -> Unit)? = null,
     onSubmitSubTasksSignOff: ((TaskEntity, String, List<String>, List<String>, Boolean) -> Unit)? = null,
     onUpdateTask: ((TaskEntity) -> Unit)? = null,
+    onSkipTask: ((TaskEntity, String, String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
     var activeNoteDialogTask by remember { mutableStateOf<TaskEntity?>(null) }
     var activePhotoDialogTask by remember { mutableStateOf<TaskEntity?>(null) }
     var editingTask by remember { mutableStateOf<TaskEntity?>(null) }
+    var skippingTask by remember { mutableStateOf<Pair<TaskEntity, String>?>(null) }
     var showAddTaskDialog by remember { mutableStateOf(false) }
     var showAllDaysWeekly by remember { mutableStateOf(false) }
     var currentSortMode by remember { mutableStateOf(TaskSortMode.CATEGORY) }
@@ -107,7 +109,7 @@ fun TodayScreen(
     }
 
     val onToggleSelectTask: (TaskEntity) -> Unit = { task ->
-        val isAlreadyDone = completions.any { it.taskId == task.id && !it.isPartial }
+        val isAlreadyDone = completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
         if (!isAlreadyDone) {
             selectedTaskIds = if (task.id in selectedTaskIds) {
                 selectedTaskIds - task.id
@@ -129,6 +131,10 @@ fun TodayScreen(
             onToggleTask(task, catName)
         }
         selectedTaskIds = selectedTaskIds - task.id
+    }
+
+    val onOpenSkipHandler: (TaskEntity, String) -> Unit = { task, catName ->
+        skippingTask = Pair(task, catName)
     }
 
     val onEditTaskHandler: ((TaskEntity) -> Unit)? = if (currentUser.role == "ADMIN") {
@@ -838,7 +844,7 @@ fun TodayScreen(
                                 items(activeCategories) { category ->
                                     val categoryTasks = filteredTasks.filter { it.categoryId == category.id }
                                     val completedInCat = categoryTasks.count { task ->
-                                        completions.any { it.taskId == task.id && !it.isPartial }
+                                        completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
                                     }
 
                                     CategoryTaskCard(
@@ -856,7 +862,8 @@ fun TodayScreen(
                                         onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
                                         onOpenNotes = { task -> activeNoteDialogTask = task },
                                         onOpenPhotos = { task -> activePhotoDialogTask = task },
-                                        onEditTask = onEditTaskHandler
+                                        onEditTask = onEditTaskHandler,
+                                        onSkipTask = { task -> onOpenSkipHandler(task, category.name) }
                                     )
                                 }
                             }
@@ -871,7 +878,7 @@ fun TodayScreen(
                                 items(activeCategories) { category ->
                                     val categoryTasks = filteredTasks.filter { it.categoryId == category.id }
                                     val completedInCat = categoryTasks.count { task ->
-                                        completions.any { it.taskId == task.id && !it.isPartial }
+                                        completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
                                     }
 
                                     CategoryTaskCard(
@@ -889,7 +896,8 @@ fun TodayScreen(
                                         onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
                                         onOpenNotes = { task -> activeNoteDialogTask = task },
                                         onOpenPhotos = { task -> activePhotoDialogTask = task },
-                                        onEditTask = onEditTaskHandler
+                                        onEditTask = onEditTaskHandler,
+                                        onSkipTask = { task -> onOpenSkipHandler(task, category.name) }
                                     )
                                 }
                             }
@@ -927,7 +935,7 @@ fun TodayScreen(
                                 items(activeTiers) { (tierPriority, tierTitle, tierColor) ->
                                     val tierTasks = filteredTasks.filter { it.priority.equals(tierPriority, ignoreCase = true) }
                                     val completedInTier = tierTasks.count { task ->
-                                        completions.any { it.taskId == task.id && !it.isPartial }
+                                        completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
                                     }
 
                                     PriorityTierCard(
@@ -947,7 +955,8 @@ fun TodayScreen(
                                         onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
                                         onOpenNotes = { task -> activeNoteDialogTask = task },
                                         onOpenPhotos = { task -> activePhotoDialogTask = task },
-                                        onEditTask = onEditTaskHandler
+                                        onEditTask = onEditTaskHandler,
+                                        onSkipTask = onOpenSkipHandler
                                     )
                                 }
                             }
@@ -961,7 +970,7 @@ fun TodayScreen(
                                 items(activeTiers) { (tierPriority, tierTitle, tierColor) ->
                                     val tierTasks = filteredTasks.filter { it.priority.equals(tierPriority, ignoreCase = true) }
                                     val completedInTier = tierTasks.count { task ->
-                                        completions.any { it.taskId == task.id && !it.isPartial }
+                                        completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
                                     }
 
                                     PriorityTierCard(
@@ -981,7 +990,8 @@ fun TodayScreen(
                                         onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
                                         onOpenNotes = { task -> activeNoteDialogTask = task },
                                         onOpenPhotos = { task -> activePhotoDialogTask = task },
-                                        onEditTask = onEditTaskHandler
+                                        onEditTask = onEditTaskHandler,
+                                        onSkipTask = onOpenSkipHandler
                                     )
                                 }
                             }
@@ -1013,7 +1023,7 @@ fun TodayScreen(
                                         PriorityTierCard(
                                             title = "⚡ OVERDUE & CONTINUED TASKS",
                                             bannerColor = RetailRedMissed,
-                                            completedCount = overdueTasks.count { t -> completions.any { it.taskId == t.id && !it.isPartial } },
+                                            completedCount = overdueTasks.count { t -> completions.any { it.taskId == t.id && (!it.isPartial || it.isSkipped) } },
                                             totalCount = overdueTasks.size,
                                             tasks = overdueTasks,
                                             categoryMap = categoryMap,
@@ -1027,7 +1037,8 @@ fun TodayScreen(
                                             onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
                                             onOpenNotes = { task -> activeNoteDialogTask = task },
                                             onOpenPhotos = { task -> activePhotoDialogTask = task },
-                                            onEditTask = onEditTaskHandler
+                                            onEditTask = onEditTaskHandler,
+                                            onSkipTask = onOpenSkipHandler
                                         )
                                     }
                                 }
@@ -1037,7 +1048,7 @@ fun TodayScreen(
                                         PriorityTierCard(
                                             title = "SCHEDULED TODAY",
                                             bannerColor = RetailHeaderBlack,
-                                            completedCount = todayTasks.count { t -> completions.any { it.taskId == t.id && !it.isPartial } },
+                                            completedCount = todayTasks.count { t -> completions.any { it.taskId == t.id && (!it.isPartial || it.isSkipped) } },
                                             totalCount = todayTasks.size,
                                             tasks = todayTasks,
                                             categoryMap = categoryMap,
@@ -1051,7 +1062,8 @@ fun TodayScreen(
                                             onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
                                             onOpenNotes = { task -> activeNoteDialogTask = task },
                                             onOpenPhotos = { task -> activePhotoDialogTask = task },
-                                            onEditTask = onEditTaskHandler
+                                            onEditTask = onEditTaskHandler,
+                                            onSkipTask = onOpenSkipHandler
                                         )
                                     }
                                 }
@@ -1068,7 +1080,7 @@ fun TodayScreen(
                                         PriorityTierCard(
                                             title = "⚡ OVERDUE & CONTINUED TASKS",
                                             bannerColor = RetailRedMissed,
-                                            completedCount = overdueTasks.count { t -> completions.any { it.taskId == t.id && !it.isPartial } },
+                                            completedCount = overdueTasks.count { t -> completions.any { it.taskId == t.id && (!it.isPartial || it.isSkipped) } },
                                             totalCount = overdueTasks.size,
                                             tasks = overdueTasks,
                                             categoryMap = categoryMap,
@@ -1082,7 +1094,8 @@ fun TodayScreen(
                                             onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
                                             onOpenNotes = { task -> activeNoteDialogTask = task },
                                             onOpenPhotos = { task -> activePhotoDialogTask = task },
-                                            onEditTask = onEditTaskHandler
+                                            onEditTask = onEditTaskHandler,
+                                            onSkipTask = onOpenSkipHandler
                                         )
                                     }
                                 }
@@ -1092,7 +1105,7 @@ fun TodayScreen(
                                         PriorityTierCard(
                                             title = "SCHEDULED TODAY",
                                             bannerColor = RetailHeaderBlack,
-                                            completedCount = todayTasks.count { t -> completions.any { it.taskId == t.id && !it.isPartial } },
+                                            completedCount = todayTasks.count { t -> completions.any { it.taskId == t.id && (!it.isPartial || it.isSkipped) } },
                                             totalCount = todayTasks.size,
                                             tasks = todayTasks,
                                             categoryMap = categoryMap,
@@ -1106,7 +1119,8 @@ fun TodayScreen(
                                             onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
                                             onOpenNotes = { task -> activeNoteDialogTask = task },
                                             onOpenPhotos = { task -> activePhotoDialogTask = task },
-                                            onEditTask = onEditTaskHandler
+                                            onEditTask = onEditTaskHandler,
+                                            onSkipTask = onOpenSkipHandler
                                         )
                                     }
                                 }
@@ -1239,6 +1253,19 @@ fun TodayScreen(
                 }
             )
         }
+
+        // Skip Task Dialog
+        skippingTask?.let { (task, catName) ->
+            SkipTaskDialog(
+                task = task,
+                categoryName = catName,
+                onDismiss = { skippingTask = null },
+                onConfirmSkip = { reason ->
+                    onSkipTask?.invoke(task, catName, reason)
+                    skippingTask = null
+                }
+            )
+        }
     }
 }
 
@@ -1258,7 +1285,8 @@ fun CategoryTaskCard(
     onSubmitSubTasksSignOff: (TaskEntity, String, List<String>, List<String>, Boolean) -> Unit = { _, _, _, _, _ -> },
     onOpenNotes: (TaskEntity) -> Unit,
     onOpenPhotos: (TaskEntity) -> Unit,
-    onEditTask: ((TaskEntity) -> Unit)? = null
+    onEditTask: ((TaskEntity) -> Unit)? = null,
+    onSkipTask: ((TaskEntity) -> Unit)? = null
 ) {
     Column(
         modifier = Modifier
@@ -1324,7 +1352,8 @@ fun CategoryTaskCard(
                     },
                     onOpenNotes = { onOpenNotes(task) },
                     onOpenPhotos = { onOpenPhotos(task) },
-                    onEditTask = if (onEditTask != null) { { onEditTask(task) } } else null
+                    onEditTask = if (onEditTask != null) { { onEditTask(task) } } else null,
+                    onSkipTask = if (onSkipTask != null) { { onSkipTask(task) } } else null
                 )
 
                 if (index < tasks.lastIndex) {
@@ -1353,7 +1382,8 @@ fun PriorityTierCard(
     onSubmitSubTasksSignOff: (TaskEntity, String, List<String>, List<String>, Boolean) -> Unit = { _, _, _, _, _ -> },
     onOpenNotes: (TaskEntity) -> Unit,
     onOpenPhotos: (TaskEntity) -> Unit,
-    onEditTask: ((TaskEntity) -> Unit)? = null
+    onEditTask: ((TaskEntity) -> Unit)? = null,
+    onSkipTask: ((TaskEntity, String) -> Unit)? = null
 ) {
     Column(
         modifier = Modifier
@@ -1418,7 +1448,8 @@ fun PriorityTierCard(
                     },
                     onOpenNotes = { onOpenNotes(task) },
                     onOpenPhotos = { onOpenPhotos(task) },
-                    onEditTask = if (onEditTask != null) { { onEditTask(task) } } else null
+                    onEditTask = if (onEditTask != null) { { onEditTask(task) } } else null,
+                    onSkipTask = if (onSkipTask != null) { { onSkipTask(task, catName) } } else null
                 )
 
                 if (index < tasks.lastIndex) {
@@ -1445,11 +1476,14 @@ fun TaskItemCard(
     onSubmitSubTasks: (completed: List<String>, outstanding: List<String>, isPartial: Boolean) -> Unit = { _, _, _ -> },
     onOpenNotes: () -> Unit,
     onOpenPhotos: () -> Unit,
-    onEditTask: (() -> Unit)? = null
+    onEditTask: (() -> Unit)? = null,
+    onSkipTask: (() -> Unit)? = null
 ) {
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
     val allSubTasks = remember(task.bulletPoints) { SubTaskUtils.parseSubTasks(task.bulletPoints) }
     val isPartialDone = completion != null && completion.isPartial
+    val isSkipped = completion != null && completion.isSkipped
+    val isLocked = isDone || isSkipped
 
     val previouslyCompletedSubTasks = remember(completion) {
         if (completion != null) SubTaskUtils.jsonToList(completion.completedSubTasksJson).toSet() else emptySet()
@@ -1462,7 +1496,7 @@ fun TaskItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (!isDone) {
+                if (!isLocked) {
                     Modifier.clickable(onClick = onSelect)
                 } else {
                     Modifier
@@ -1473,6 +1507,7 @@ fun TaskItemCard(
         verticalAlignment = Alignment.Top
     ) {
         // Large Checkbox Square
+        // If skipped: Amber with Warning icon, LOCKED
         // If full done: Green with Checkmark, LOCKED
         // If partial done: Orange with Checkmark (or lightning)
         // If selected: Orange border with Checkmark pending submit
@@ -1484,6 +1519,7 @@ fun TaskItemCard(
                 .border(
                     width = 2.dp,
                     color = when {
+                        isSkipped -> Color(0xFFE65100)
                         isDone -> RetailGreenDone
                         isPartialDone -> RetailOrange
                         isSelected -> RetailOrange
@@ -1493,6 +1529,7 @@ fun TaskItemCard(
                 )
                 .background(
                     color = when {
+                        isSkipped -> Color(0xFFFFF3E0)
                         isDone -> RetailGreenDone
                         isPartialDone -> RetailOrange.copy(alpha = 0.2f)
                         isSelected -> RetailOrange.copy(alpha = 0.2f)
@@ -1502,7 +1539,14 @@ fun TaskItemCard(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            if (isDone) {
+            if (isSkipped) {
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Task Skipped",
+                    tint = Color(0xFFE65100),
+                    modifier = Modifier.size(16.dp)
+                )
+            } else if (isDone) {
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = "Completed and Locked",
@@ -1581,7 +1625,7 @@ fun TaskItemCard(
                             .padding(horizontal = 5.dp, vertical = 1.dp)
                     ) {
                         Text(
-                            text = if (outstandingDays > 0 && !isDone) "★ ONE-TIME • ROLLED OVER" else "★ ONE-TIME",
+                            text = if (outstandingDays > 0 && !isLocked) "★ ONE-TIME • ROLLED OVER" else "★ ONE-TIME",
                             fontSize = 9.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF6B21A8)
@@ -1612,12 +1656,12 @@ fun TaskItemCard(
                 text = task.title,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = if (isDone) RetailTextSecondary else RetailTextPrimary,
+                color = if (isLocked) RetailTextSecondary else RetailTextPrimary,
                 letterSpacing = 0.5.sp
             )
 
             // Outstanding rollover status when not yet completed today
-            if (!isDone) {
+            if (!isLocked) {
                 if (outstandingDays > 0) {
                     Row(
                         modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
@@ -1697,7 +1741,7 @@ fun TaskItemCard(
                                     RoundedCornerShape(4.dp)
                                 )
                                 .then(
-                                    if (!isDone) {
+                                    if (!isLocked) {
                                         Modifier.clickable {
                                             tickedSubTasks = if (isTicked) {
                                                 tickedSubTasks - subTask
@@ -1771,7 +1815,7 @@ fun TaskItemCard(
                     }
 
                     // Action buttons for sub-task submission when not fully locked
-                    if (!isDone) {
+                    if (!isLocked) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -1842,6 +1886,23 @@ fun TaskItemCard(
                                     Text("TICK ALL SUB-TASKS", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = RetailTextPrimary)
                                 }
                             }
+
+                            if (onSkipTask != null) {
+                                OutlinedButton(
+                                    onClick = onSkipTask,
+                                    modifier = Modifier
+                                        .height(38.dp)
+                                        .testTag("skip_subtasks_task_${task.id}"),
+                                    shape = RoundedCornerShape(4.dp),
+                                    border = BorderStroke(1.dp, Color(0xFFFFB74D)),
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFE65100)),
+                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                                ) {
+                                    Icon(Icons.Default.Warning, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color(0xFFE65100))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("SKIP", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                }
+                            }
                         }
                     }
                 }
@@ -1860,13 +1921,27 @@ fun TaskItemCard(
                 }
             }
 
-            // Completion Banner (Partial vs Full)
+            // Completion Banner (Skipped vs Partial vs Full)
             if (completion != null) {
                 Row(
                     modifier = Modifier.padding(top = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (completion.isPartial) {
+                    if (completion.isSkipped) {
+                        Box(
+                            modifier = Modifier
+                                .background(Color(0xFFFFF3E0), RoundedCornerShape(2.dp))
+                                .border(1.dp, Color(0xFFFFB74D), RoundedCornerShape(2.dp))
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "⚡ SKIPPED by [${completion.completedByUserInitials}] ${completion.completedByUserName} (ID #${completion.completedByUserId}) at ${timeFormat.format(Date(completion.completedAt))} • Reason: \"${completion.skipReason.ifBlank { "Excused" }}\"",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFE65100)
+                            )
+                        }
+                    } else if (completion.isPartial) {
                         Box(
                             modifier = Modifier
                                 .background(RetailOrange.copy(alpha = 0.15f), RoundedCornerShape(2.dp))
@@ -1898,7 +1973,7 @@ fun TaskItemCard(
             }
 
             // Dedicated SUBMIT SIGN OFF button for single-item tasks when selected
-            if (isSelected && !isDone && allSubTasks.isEmpty()) {
+            if (isSelected && !isLocked && allSubTasks.isEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -1929,6 +2004,32 @@ fun TaskItemCard(
                             color = Color.White,
                             letterSpacing = 0.5.sp
                         )
+                    }
+
+                    if (onSkipTask != null) {
+                        OutlinedButton(
+                            onClick = onSkipTask,
+                            modifier = Modifier
+                                .height(38.dp)
+                                .testTag("skip_task_direct_btn_${task.id}"),
+                            shape = RoundedCornerShape(4.dp),
+                            border = BorderStroke(1.dp, Color(0xFFFFB74D)),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFE65100)),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Warning,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp),
+                                tint = Color(0xFFE65100)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "SKIP",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
 
                     OutlinedButton(
@@ -1996,7 +2097,7 @@ fun TaskItemCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Action buttons row: [NOTE] [PHOTO]
+            // Action buttons row: [NOTE] [PHOTO] [SKIP] [EDIT]
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 // [NOTE] button
                 Surface(
@@ -2052,6 +2153,35 @@ fun TaskItemCard(
                     }
                 }
 
+                if (!isLocked && onSkipTask != null) {
+                    Surface(
+                        onClick = onSkipTask,
+                        shape = RoundedCornerShape(4.dp),
+                        border = BorderStroke(1.dp, Color(0xFFFFB74D)),
+                        color = Color(0xFFFFF8E1),
+                        modifier = Modifier.testTag("skip_task_btn_${task.id}")
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.Warning,
+                                contentDescription = "Skip Task",
+                                modifier = Modifier.size(16.dp),
+                                tint = Color(0xFFE65100)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "SKIP",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFE65100)
+                            )
+                        }
+                    }
+                }
+
                 if (onEditTask != null) {
                     Surface(
                         onClick = onEditTask,
@@ -2083,4 +2213,208 @@ fun TaskItemCard(
             }
         }
     }
+}
+
+@Composable
+fun SkipTaskDialog(
+    task: TaskEntity,
+    categoryName: String,
+    onDismiss: () -> Unit,
+    onConfirmSkip: (reason: String) -> Unit
+) {
+    var reasonText by remember { mutableStateOf("") }
+    var selectedPreset by remember { mutableStateOf<String?>(null) }
+    var showError by remember { mutableStateOf(false) }
+
+    val presetReasons = listOf(
+        "Out of stock",
+        "Equipment issue",
+        "Supplier delay",
+        "Manager excused",
+        "Customer rush",
+        "Not applicable today"
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(Color(0xFFFFF3E0), RoundedCornerShape(4.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = null,
+                        tint = Color(0xFFE65100),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Column {
+                    Text(
+                        text = "SKIP TASK",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Black,
+                        color = RetailTextPrimary,
+                        letterSpacing = 0.5.sp
+                    )
+                    Text(
+                        text = categoryName.uppercase(),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = RetailTextSecondary
+                    )
+                }
+            }
+        },
+        text = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Surface(
+                    color = RetailSurfaceSubtle,
+                    shape = RoundedCornerShape(6.dp),
+                    border = BorderStroke(1.dp, RetailBorder),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        Text(
+                            text = task.title,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = RetailTextPrimary
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                Text(
+                    text = "SELECT REASON FOR SKIPPING:",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Black,
+                    color = RetailTextPrimary,
+                    letterSpacing = 0.5.sp
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Quick preset chips
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    presetReasons.chunked(2).forEach { rowPresets ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            rowPresets.forEach { preset ->
+                                val isSelected = selectedPreset == preset
+                                Surface(
+                                    onClick = {
+                                        selectedPreset = if (isSelected) null else preset
+                                        reasonText = if (isSelected) "" else preset
+                                        showError = false
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(4.dp),
+                                    border = BorderStroke(
+                                        1.dp,
+                                        if (isSelected) Color(0xFFE65100) else RetailBorder
+                                    ),
+                                    color = if (isSelected) Color(0xFFFFF3E0) else RetailSurface
+                                ) {
+                                    Text(
+                                        text = preset,
+                                        fontSize = 11.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                        color = if (isSelected) Color(0xFFE65100) else RetailTextPrimary,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "OR ENTER SPECIFIC EXPLANATION / AUDIT REASON:",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = RetailTextSecondary
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                OutlinedTextField(
+                    value = reasonText,
+                    onValueChange = {
+                        reasonText = it
+                        showError = false
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("skip_reason_input"),
+                    placeholder = {
+                        Text(
+                            "e.g. Broken refrigeration unit awaiting parts or delivery rescheduled",
+                            fontSize = 12.sp,
+                            color = RetailTextSecondary
+                        )
+                    },
+                    minLines = 2,
+                    maxLines = 4,
+                    isError = showError
+                )
+
+                if (showError) {
+                    Text(
+                        text = "Please select or enter a reason to skip this task.",
+                        color = MaterialTheme.colorScheme.error,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val finalReason = reasonText.trim().ifBlank { selectedPreset?.trim().orEmpty() }
+                    if (finalReason.isBlank()) {
+                        showError = true
+                    } else {
+                        onConfirmSkip(finalReason)
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE65100)),
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier.testTag("confirm_skip_task_btn")
+            ) {
+                Text(
+                    text = "CONFIRM SKIP",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White
+                )
+            }
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = onDismiss,
+                shape = RoundedCornerShape(4.dp),
+                border = BorderStroke(1.dp, RetailBorder),
+                modifier = Modifier.testTag("cancel_skip_task_btn")
+            ) {
+                Text(
+                    text = "CANCEL",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = RetailTextPrimary
+                )
+            }
+        }
+    )
 }

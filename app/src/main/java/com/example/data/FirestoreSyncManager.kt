@@ -271,6 +271,8 @@ class FirestoreSyncManager(
                         val completedByUserInitials = doc.extractString("completedByUserInitials")
                         val completedByUserRole = doc.extractString("completedByUserRole", "STAFF")
                         val isPartial = doc.extractBoolean("isPartial", false)
+                        val isSkipped = doc.extractBoolean("isSkipped", false)
+                        val skipReason = doc.extractString("skipReason", "")
                         val completedSubTasksJson = doc.extractString("completedSubTasksJson")
                         val outstandingSubTasksJson = doc.extractString("outstandingSubTasksJson")
                         val totalSubTasksCount = doc.extractInt("totalSubTasksCount", 0)
@@ -291,6 +293,8 @@ class FirestoreSyncManager(
                                 completedByUserInitials = completedByUserInitials,
                                 completedByUserRole = completedByUserRole,
                                 isPartial = isPartial,
+                                isSkipped = isSkipped,
+                                skipReason = skipReason,
                                 completedSubTasksJson = completedSubTasksJson,
                                 outstandingSubTasksJson = outstandingSubTasksJson,
                                 totalSubTasksCount = totalSubTasksCount,
@@ -471,6 +475,8 @@ class FirestoreSyncManager(
                     "completedByUserInitials" to comp.completedByUserInitials,
                     "completedByUserRole" to comp.completedByUserRole,
                     "isPartial" to comp.isPartial,
+                    "isSkipped" to comp.isSkipped,
+                    "skipReason" to comp.skipReason,
                     "completedSubTasksJson" to comp.completedSubTasksJson,
                     "outstandingSubTasksJson" to comp.outstandingSubTasksJson,
                     "totalSubTasksCount" to comp.totalSubTasksCount,
@@ -724,6 +730,8 @@ class FirestoreSyncManager(
                     "completedByUserInitials" to comp.completedByUserInitials,
                     "completedByUserRole" to comp.completedByUserRole,
                     "isPartial" to comp.isPartial,
+                    "isSkipped" to comp.isSkipped,
+                    "skipReason" to comp.skipReason,
                     "completedSubTasksJson" to comp.completedSubTasksJson,
                     "outstandingSubTasksJson" to comp.outstandingSubTasksJson,
                     "totalSubTasksCount" to comp.totalSubTasksCount,
@@ -847,6 +855,8 @@ class FirestoreSyncManager(
                     "completedByUserInitials" to comp.completedByUserInitials,
                     "completedByUserRole" to comp.completedByUserRole,
                     "isPartial" to comp.isPartial,
+                    "isSkipped" to comp.isSkipped,
+                    "skipReason" to comp.skipReason,
                     "completedSubTasksJson" to comp.completedSubTasksJson,
                     "outstandingSubTasksJson" to comp.outstandingSubTasksJson,
                     "totalSubTasksCount" to comp.totalSubTasksCount,

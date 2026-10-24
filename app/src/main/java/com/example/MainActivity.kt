@@ -394,6 +394,9 @@ private fun ActiveScreenContent(
                 },
                 onUpdateTask = { updated ->
                     viewModel.updateTask(updated)
+                },
+                onSkipTask = { task, catName, reason ->
+                    viewModel.skipTask(task, catName, reason)
                 }
             )
         }
