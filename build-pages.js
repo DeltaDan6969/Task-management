@@ -116,8 +116,19 @@ try {
   console.error(`⚠️ Error packaging iOS zip:`, err.message);
 }
 
-// 8. Sync PWA & iOS Icons and Manifest
-const pwaFiles = ['manifest.json', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png'];
+const pwaFiles = [
+  'manifest.json',
+  'apple-touch-icon.png',
+  'apple-touch-icon-180x180.png',
+  'apple-touch-icon-167x167.png',
+  'apple-touch-icon-152x152.png',
+  'apple-touch-icon-120x120.png',
+  'apple-touch-icon-precomposed.png',
+  'icon-192.png',
+  'icon-512.png',
+  'favicon.png',
+  'favicon.ico'
+];
 pwaFiles.forEach(file => {
   const src = path.join(ROOT_DIR, file);
   if (fs.existsSync(src)) {
