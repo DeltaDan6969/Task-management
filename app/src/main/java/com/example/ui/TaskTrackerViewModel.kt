@@ -1,12 +1,17 @@
 package com.example.ui
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.data.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,6 +29,18 @@ enum class AdminTab {
     BRANDING,
     REPORT
 }
+
+data class MonthlyReportStats(
+    val selectedMonth: String = "", // e.g. "2026-10"
+    val monthDisplayName: String = "", // e.g. "October 2026"
+    val totalRecords: Int = 0,
+    val completedCount: Int = 0,
+    val skippedCount: Int = 0,
+    val complianceRatePercent: Int = 0,
+    val skipReasonsBreakdown: Map<String, Int> = emptyMap(),
+    val staffBreakdown: List<StaffCount> = emptyList(),
+    val completions: List<TaskCompletionEntity> = emptyList()
+)
 
 data class ReportStats(
     val totalSignOffsLast7Days: Int = 0,
@@ -153,6 +170,35 @@ class TaskTrackerViewModel(private val repository: TaskRepository) : ViewModel()
         calculateReportStats(allTaskList, completions)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReportStats())
 
+    private val monthFormatter = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+    private val monthDisplayFormatter = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+
+    private val _selectedReportMonth = MutableStateFlow(monthFormatter.format(Date()))
+    val selectedReportMonth: StateFlow<String> = _selectedReportMonth.asStateFlow()
+
+    fun setSelectedReportMonth(yearMonth: String) {
+        _selectedReportMonth.value = yearMonth
+    }
+
+    fun changeReportMonth(offsetMonths: Int) {
+        try {
+            val current = _selectedReportMonth.value
+            val parsed = monthFormatter.parse(current) ?: Date()
+            val cal = Calendar.getInstance().apply {
+                time = parsed
+                add(Calendar.MONTH, offsetMonths)
+            }
+            _selectedReportMonth.value = monthFormatter.format(cal.time)
+        } catch (_: Exception) {}
+    }
+
+    val monthlyReportStats: StateFlow<MonthlyReportStats> = combine(
+        allCompletions,
+        _selectedReportMonth
+    ) { completions, monthStr ->
+        calculateMonthlyReportStats(completions, monthStr)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MonthlyReportStats())
+
     // Rollover: calculate how many days each task has been outstanding for on selected date
     val outstandingDaysMap: StateFlow<Map<Long, Int>> = combine(
         tasks,
@@ -217,6 +263,60 @@ class TaskTrackerViewModel(private val repository: TaskRepository) : ViewModel()
             dailyBreakdown = dailyBreakdown,
             topStaff = topStaff,
             mostSkippedTasks = skippedList
+        )
+    }
+
+    private fun calculateMonthlyReportStats(
+        completions: List<TaskCompletionEntity>,
+        monthStr: String
+    ): MonthlyReportStats {
+        val monthComps = completions.filter { it.dateString.startsWith(monthStr) }
+            .sortedByDescending { it.completedAt }
+        val completedCount = monthComps.count { !it.isSkipped }
+        val skippedCount = monthComps.count { it.isSkipped }
+        val total = monthComps.size
+        val complianceRate = if (total > 0) ((completedCount * 100) / total) else 0
+
+        val skipReasons = mutableMapOf<String, Int>()
+        for (c in monthComps) {
+            if (c.isSkipped) {
+                val reason = c.skipReason.ifBlank { "Unspecified" }
+                skipReasons[reason] = (skipReasons[reason] ?: 0) + 1
+            }
+        }
+
+        val staffMap = mutableMapOf<Long, StaffCount>()
+        for (c in monthComps) {
+            val existing = staffMap[c.completedByUserId]
+            if (existing != null) {
+                staffMap[c.completedByUserId] = existing.copy(count = existing.count + 1)
+            } else {
+                staffMap[c.completedByUserId] = StaffCount(
+                    userId = c.completedByUserId,
+                    name = c.completedByUserName,
+                    initials = c.completedByUserInitials,
+                    count = 1
+                )
+            }
+        }
+
+        val displayName = try {
+            val date = monthFormatter.parse(monthStr) ?: Date()
+            monthDisplayFormatter.format(date)
+        } catch (_: Exception) {
+            monthStr
+        }
+
+        return MonthlyReportStats(
+            selectedMonth = monthStr,
+            monthDisplayName = displayName,
+            totalRecords = total,
+            completedCount = completedCount,
+            skippedCount = skippedCount,
+            complianceRatePercent = complianceRate,
+            skipReasonsBreakdown = skipReasons.toList().sortedByDescending { it.second }.toMap(),
+            staffBreakdown = staffMap.values.sortedByDescending { it.count },
+            completions = monthComps
         )
     }
 
@@ -632,6 +732,66 @@ class TaskTrackerViewModel(private val repository: TaskRepository) : ViewModel()
         viewModelScope.launch {
             com.example.util.DataBackupManager.exportAndShareBackup(context, repository)
         }
+    }
+
+    fun exportMonthlyCsvReport(context: Context, monthStr: String = _selectedReportMonth.value) {
+        viewModelScope.launch {
+            val allComps = allCompletions.value
+            val stats = calculateMonthlyReportStats(allComps, monthStr)
+            val csvContent = buildString {
+                append("Date,Time,Category,Task Title,Status,Staff Name,Staff Initials,Role,Skip Reason,Subtasks Done,Total Subtasks\n")
+                val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                for (c in stats.completions) {
+                    val timeStr = timeFormat.format(Date(c.completedAt))
+                    val status = if (c.isSkipped) "SKIPPED" else if (c.isPartial) "PARTIAL" else "COMPLETED"
+                    val reason = if (c.isSkipped) c.skipReason.ifBlank { "N/A" } else ""
+                    append(escapeCsv(c.dateString)).append(",")
+                    append(escapeCsv(timeStr)).append(",")
+                    append(escapeCsv(c.categoryName)).append(",")
+                    append(escapeCsv(c.taskTitle)).append(",")
+                    append(escapeCsv(status)).append(",")
+                    append(escapeCsv(c.completedByUserName)).append(",")
+                    append(escapeCsv(c.completedByUserInitials)).append(",")
+                    append(escapeCsv(c.completedByUserRole)).append(",")
+                    append(escapeCsv(reason)).append(",")
+                    append(c.completedSubTasksCount).append(",")
+                    append(c.totalSubTasksCount).append("\n")
+                }
+            }
+
+            val fileName = "ShiftTask_KPI_Report_${stats.selectedMonth}.csv"
+            val exportDir = File(context.cacheDir, "reports").apply { mkdirs() }
+            val reportFile = File(exportDir, fileName)
+            FileOutputStream(reportFile).use { out ->
+                out.write(csvContent.toByteArray(Charsets.UTF_8))
+            }
+
+            val authority = "${context.packageName}.fileprovider"
+            val contentUri: Uri = FileProvider.getUriForFile(context, authority, reportFile)
+
+            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/csv"
+                putExtra(Intent.EXTRA_STREAM, contentUri)
+                putExtra(Intent.EXTRA_SUBJECT, "ShiftTask Monthly KPI Report (${stats.monthDisplayName})")
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Attached is the ShiftTask Monthly KPI & Skip Reason Report for ${stats.monthDisplayName} (${stats.totalRecords} records, ${stats.completedCount} completed, ${stats.skippedCount} skipped)."
+                )
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            val chooser = Intent.createChooser(sendIntent, "Export Monthly CSV Report")
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(chooser)
+        }
+    }
+
+    private fun escapeCsv(value: String): String {
+        var v = value.replace("\r", " ").replace("\n", " ")
+        if (v.contains(",") || v.contains("\"")) {
+            v = "\"" + v.replace("\"", "\"\"") + "\""
+        }
+        return v
     }
 
     suspend fun exportBackupJson(): String {

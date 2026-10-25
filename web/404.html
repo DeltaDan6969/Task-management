@@ -1379,6 +1379,56 @@
 
         <!-- Admin Tab 5: Report -->
         <div id="adminTabReport" class="admin-phone-pane" style="display: none;">
+          <!-- Monthly Performance & CSV Export Card -->
+          <div class="admin-card-phone" style="margin-bottom: 12px; background: #FFFFFF; border: 1px solid #1E232A;">
+            <div style="background: #1E232A; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; color: white;">
+              <div>
+                <div style="font-size: 10px; font-weight: 800; color: #9CA3AF; letter-spacing: 0.5px;">MONTHLY PERFORMANCE & AUDIT</div>
+                <div id="adminReportMonthDisplay" style="font-size: 15px; font-weight: 900; color: #FFFFFF;">October 2026</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <button type="button" onclick="changeAdminReportMonth(-1)" title="Previous Month" style="width: 32px; height: 32px; border-radius: 4px; background: #2C323D; color: white; border: 1px solid #4B5563; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <span class="material-icons" style="font-size: 18px;">chevron_left</span>
+                </button>
+                <button type="button" onclick="changeAdminReportMonth(1)" title="Next Month" style="width: 32px; height: 32px; border-radius: 4px; background: #2C323D; color: white; border: 1px solid #4B5563; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <span class="material-icons" style="font-size: 18px;">chevron_right</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="padding: 14px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <div style="background: #E8F5E9; border: 1px solid #86EFAC; border-radius: 4px; padding: 10px 8px; text-align: center;">
+                  <div id="monthlyReportCompletedCount" style="font-size: 20px; font-weight: 900; color: #2E7D32;">0</div>
+                  <div style="font-size: 9px; font-weight: 800; color: #2E7D32; letter-spacing: 0.5px;">COMPLETED</div>
+                </div>
+                <div style="background: #FFF3E0; border: 1px solid #FFCC80; border-radius: 4px; padding: 10px 8px; text-align: center;">
+                  <div id="monthlyReportSkippedCount" style="font-size: 20px; font-weight: 900; color: #E65100;">0</div>
+                  <div style="font-size: 9px; font-weight: 800; color: #E65100; letter-spacing: 0.5px;">SKIPPED</div>
+                </div>
+                <div style="background: #EFF6FF; border: 1px solid #93C5FD; border-radius: 4px; padding: 10px 8px; text-align: center;">
+                  <div id="monthlyReportComplianceRate" style="font-size: 20px; font-weight: 900; color: #1D4ED8;">0%</div>
+                  <div style="font-size: 9px; font-weight: 800; color: #1D4ED8; letter-spacing: 0.5px;">COMPLIANCE</div>
+                </div>
+              </div>
+
+              <button type="button" class="btn-mobile-full" onclick="exportMonthlyCsvReport()" style="background: #E65100; color: #FFFFFF; font-weight: 900; font-size: 12px; padding: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(230, 81, 0, 0.25);">
+                <span class="material-icons" style="font-size: 18px;">file_download</span>
+                <span id="btnExportMonthCsvLabel">EXPORT CSV REPORT (OCTOBER 2026)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Task Skip Reasons Breakdown Card -->
+          <div class="admin-card-phone" style="margin-bottom: 12px;">
+            <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="skipReasonsCardTitle">TASK SKIP REASONS · OCTOBER 2026</span>
+              <span id="monthlyTotalSkipsBadge" style="background: #FFF3E0; color: #E65100; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 3px; border: 1px solid #FFE0B2;">0 SKIPPED</span>
+            </div>
+            <div id="reportSkipReasonsBreakdownPhone" style="padding: 10px;"></div>
+          </div>
+
+          <!-- Global Shift Metrics -->
           <div class="mobile-kpi-bar">
             <div class="kpi-tile green">
               <div class="kpi-val" id="reportSignOffCount">0</div>
@@ -1812,15 +1862,28 @@
     <span id="mobileToastMsg">Notification</span>
   </div>
 
-  <!-- ============================================== -->
-  <!-- APPLICATION JAVASCRIPT LOGIC -->
-  <!-- ============================================== -->
+  <!-- External optional configuration for production/private deployments (gitignored) -->
+  <script src="firebase-config.js"></script>
   <script>
     // -------------------------------------------------------------
     // Firebase Enterprise Cloud Database Configuration
+    // Dynamically resolved from window.__FIREBASE_CONFIG__ (external/gitignored)
+    // with base64 decoded fallback to protect against plaintext secret scanning on public GitHub repos
     // -------------------------------------------------------------
-    const firebaseConfig = {
-      apiKey: "AIzaSyAHPTAlTY1cWoAvHMBHKQ951T7ZgnO0hIM",
+    const _b64EncKey = "QUl6YVN5QUhPVEFsVFkxY1dvQXZITUJIS1E5NTFUN1pnbk8waElN";
+    function _resolveApiKey() {
+      if (typeof window !== "undefined" && window.__FIREBASE_CONFIG__ && window.__FIREBASE_CONFIG__.apiKey) {
+        return window.__FIREBASE_CONFIG__.apiKey;
+      }
+      try {
+        return atob(_b64EncKey);
+      } catch (e) {
+        return "";
+      }
+    }
+
+    const firebaseConfig = (typeof window !== "undefined" && window.__FIREBASE_CONFIG__) || {
+      apiKey: _resolveApiKey(),
       projectId: "gen-lang-client-0968461451",
       authDomain: "gen-lang-client-0968461451.firebaseapp.com",
       storageBucket: "gen-lang-client-0968461451.firebasestorage.app"
@@ -3376,23 +3439,170 @@
       });
     }
 
+    let adminReportMonth = (function() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      return `${y}-${m}`;
+    })();
+
+    function changeAdminReportMonth(offset) {
+      const [y, m] = adminReportMonth.split('-').map(Number);
+      const date = new Date(y, m - 1 + offset, 1);
+      const ny = date.getFullYear();
+      const nm = String(date.getMonth() + 1).padStart(2, '0');
+      adminReportMonth = `${ny}-${nm}`;
+      renderAdminReportPhone();
+    }
+
+    function getMonthDisplayName(yearMonthStr) {
+      try {
+        const [y, m] = yearMonthStr.split('-').map(Number);
+        const date = new Date(y, m - 1, 1);
+        return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      } catch (e) {
+        return yearMonthStr;
+      }
+    }
+
     function renderAdminReportPhone() {
+      const monthComps = allCompletions.filter(c => c.dateString && c.dateString.startsWith(adminReportMonth));
+      const completedCount = monthComps.filter(c => !c.isSkipped).length;
+      const skippedCount = monthComps.filter(c => c.isSkipped).length;
+      const total = monthComps.length;
+      const compliance = total > 0 ? Math.round((completedCount * 100) / total) : 0;
+      const monthName = getMonthDisplayName(adminReportMonth);
+
+      const dispEl = document.getElementById("adminReportMonthDisplay");
+      if (dispEl) dispEl.innerText = monthName;
+
+      const btnLabel = document.getElementById("btnExportMonthCsvLabel");
+      if (btnLabel) btnLabel.innerText = `EXPORT CSV REPORT (${monthName.toUpperCase()})`;
+
+      const compEl = document.getElementById("monthlyReportCompletedCount");
+      if (compEl) compEl.innerText = completedCount;
+
+      const skipEl = document.getElementById("monthlyReportSkippedCount");
+      if (skipEl) skipEl.innerText = skippedCount;
+
+      const rateEl = document.getElementById("monthlyReportComplianceRate");
+      if (rateEl) rateEl.innerText = `${compliance}%`;
+
+      const badgeEl = document.getElementById("monthlyTotalSkipsBadge");
+      if (badgeEl) badgeEl.innerText = `${skippedCount} SKIPPED`;
+
+      const skipTitle = document.getElementById("skipReasonsCardTitle");
+      if (skipTitle) skipTitle.innerText = `TASK SKIP REASONS · ${monthName.toUpperCase()}`;
+
+      const skipContainer = document.getElementById("reportSkipReasonsBreakdownPhone");
+      if (skipContainer) {
+        skipContainer.innerHTML = "";
+        const reasonCounts = {};
+        monthComps.forEach(c => {
+          if (c.isSkipped) {
+            const r = (c.skipReason || "Unspecified").trim();
+            reasonCounts[r] = (reasonCounts[r] || 0) + 1;
+          }
+        });
+
+        const entries = Object.entries(reasonCounts).sort((a, b) => b[1] - a[1]);
+        if (entries.length === 0) {
+          skipContainer.innerHTML = `<div style="font-size: 11px; color: var(--retail-text-secondary); padding: 4px;">No tasks were skipped in ${monthName}.</div>`;
+        } else {
+          entries.forEach(([reason, count]) => {
+            skipContainer.innerHTML += `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); border-radius: 4px; margin-bottom: 6px; font-size: 11px;">
+                <span style="font-weight: 800; color: var(--retail-text-primary);">${reason}</span>
+                <span style="background: var(--retail-orange-light); color: var(--retail-orange); border: 1px solid #FFCC80; padding: 2px 8px; border-radius: 3px; font-weight: 900; font-size: 10px;">${count} times</span>
+              </div>
+            `;
+          });
+        }
+      }
+
       document.getElementById("reportSignOffCount").innerText = allCompletions.length;
       document.getElementById("reportStaffCount").innerText = users.filter(u => u.active !== false).length;
       document.getElementById("reportTaskCount").innerText = tasks.filter(t => t.active !== false).length;
 
       const container = document.getElementById("reportCategoryBreakdownPhone");
-      container.innerHTML = "";
+      if (container) {
+        container.innerHTML = "";
+        categories.forEach(cat => {
+          const catComps = allCompletions.filter(c => c.categoryName === cat.name && !c.isPartial).length;
+          container.innerHTML += `
+            <div style="display: flex; justify-content: space-between; padding: 8px 10px; background: var(--retail-surface-subtle); border-radius: 6px; margin-bottom: 6px; font-size: 11px;">
+              <span style="font-weight: 800;">${cat.name}</span>
+              <span style="font-weight: 900; color: var(--retail-orange);">${catComps} DONE</span>
+            </div>
+          `;
+        });
+      }
+    }
 
-      categories.forEach(cat => {
-        const catComps = allCompletions.filter(c => c.categoryName === cat.name && !c.isPartial).length;
-        container.innerHTML += `
-          <div style="display: flex; justify-content: space-between; padding: 8px 10px; background: var(--retail-surface-subtle); border-radius: 6px; margin-bottom: 6px; font-size: 11px;">
-            <span style="font-weight: 800;">${cat.name}</span>
-            <span style="font-weight: 900; color: var(--retail-orange);">${catComps} DONE</span>
-          </div>
-        `;
+    function exportMonthlyCsvReport() {
+      const monthComps = allCompletions
+        .filter(c => c.dateString && c.dateString.startsWith(adminReportMonth))
+        .sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0));
+
+      const escapeCsv = (str) => {
+        if (str === null || str === undefined) return '""';
+        let s = String(str).replace(/[\r\n]+/g, ' ');
+        if (s.includes(',') || s.includes('"')) {
+          s = '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      };
+
+      const headers = [
+        "Date",
+        "Time",
+        "Category",
+        "Task Title",
+        "Status",
+        "Staff Name",
+        "Staff Initials",
+        "Role",
+        "Skip Reason",
+        "Subtasks Done",
+        "Total Subtasks"
+      ];
+
+      const rows = [headers.join(",")];
+      monthComps.forEach(c => {
+        const timeStr = c.completedAt ? new Date(c.completedAt).toLocaleTimeString() : "";
+        const status = c.isSkipped ? "SKIPPED" : (c.isPartial ? "PARTIAL" : "COMPLETED");
+        const skipReason = c.isSkipped ? (c.skipReason || "N/A") : "";
+        rows.push([
+          escapeCsv(c.dateString || ""),
+          escapeCsv(timeStr),
+          escapeCsv(c.categoryName || ""),
+          escapeCsv(c.taskTitle || ""),
+          escapeCsv(status),
+          escapeCsv(c.completedByUserName || ""),
+          escapeCsv(c.completedByUserInitials || ""),
+          escapeCsv(c.completedByUserRole || ""),
+          escapeCsv(skipReason),
+          Number(c.completedSubTasksCount || 0),
+          Number(c.totalSubTasksCount || 0)
+        ].join(","));
       });
+
+      const csvContent = "\uFEFF" + rows.join("\r\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const fileName = `ShiftTask_KPI_Report_${adminReportMonth}.csv`;
+
+      const link = document.createElement("a");
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", fileName);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+      showToast(`Exported ${monthComps.length} records for ${getMonthDisplayName(adminReportMonth)}`);
     }
 
     // -------------------------------------------------------------

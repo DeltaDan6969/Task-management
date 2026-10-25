@@ -36,6 +36,7 @@ import coil.compose.AsyncImage
 import com.example.util.SubTaskUtils
 import com.example.data.*
 import com.example.ui.AdminTab
+import com.example.ui.MonthlyReportStats
 import com.example.ui.ReportStats
 import com.example.ui.components.PinPadDialog
 import com.example.ui.theme.*
@@ -55,6 +56,10 @@ fun AdminScreen(
     tasks: List<TaskEntity>,
     storeConfigs: Map<String, String>,
     reportStats: ReportStats,
+    monthlyReportStats: MonthlyReportStats = MonthlyReportStats(),
+    onPreviousMonth: () -> Unit = {},
+    onNextMonth: () -> Unit = {},
+    onExportMonthlyCsvReport: () -> Unit = {},
     allCompletions: List<TaskCompletionEntity> = emptyList(),
     allPhotos: List<TaskPhotoEntity> = emptyList(),
     onAddUser: (name: String, role: String, pin: String, onDone: () -> Unit) -> Unit,
@@ -230,7 +235,13 @@ fun AdminScreen(
                 .padding(16.dp)
         ) {
             when (currentTab) {
-                AdminTab.REPORT -> ReportTabContent(reportStats)
+                AdminTab.REPORT -> ReportTabContent(
+                    stats = reportStats,
+                    monthlyStats = monthlyReportStats,
+                    onPreviousMonth = onPreviousMonth,
+                    onNextMonth = onNextMonth,
+                    onExportMonthlyCsv = onExportMonthlyCsvReport
+                )
                 AdminTab.LOGS -> CompletionsTableContent(
                     allCompletions = allCompletions,
                     users = users,
@@ -331,9 +342,15 @@ fun AdminScreen(
     }
 }
 
-// --- REPORT TAB CONTENT (Matching Image 1) ---
+// --- REPORT TAB CONTENT (KPI & Monthly Audit) ---
 @Composable
-fun ReportTabContent(stats: ReportStats) {
+fun ReportTabContent(
+    stats: ReportStats,
+    monthlyStats: MonthlyReportStats = MonthlyReportStats(),
+    onPreviousMonth: () -> Unit = {},
+    onNextMonth: () -> Unit = {},
+    onExportMonthlyCsv: () -> Unit = {}
+) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isTablet = maxWidth >= 540.dp
 
@@ -346,6 +363,8 @@ fun ReportTabContent(stats: ReportStats) {
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    MonthlyKpiCard(monthlyStats, onPreviousMonth, onNextMonth, onExportMonthlyCsv)
+                    MonthlySkipReasonsCard(monthlyStats)
                     KpiBanner(stats)
                     DailyBreakdownCard(stats)
                 }
@@ -362,10 +381,300 @@ fun ReportTabContent(stats: ReportStats) {
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                item { MonthlyKpiCard(monthlyStats, onPreviousMonth, onNextMonth, onExportMonthlyCsv) }
+                item { MonthlySkipReasonsCard(monthlyStats) }
                 item { KpiBanner(stats) }
                 item { DailyBreakdownCard(stats) }
                 item { TopStaffCard(stats) }
                 item { MostSkippedCard(stats) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MonthlyKpiCard(
+    stats: MonthlyReportStats,
+    onPreviousMonth: () -> Unit,
+    onNextMonth: () -> Unit,
+    onExportMonthlyCsv: () -> Unit
+) {
+    Card(
+        shape = RoundedCornerShape(4.dp),
+        colors = CardDefaults.cardColors(containerColor = RetailSurface),
+        border = BorderStroke(1.dp, RetailHeaderBlack),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(RetailOrangeLight, RoundedCornerShape(4.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = null,
+                            tint = RetailOrange,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = "MONTHLY PERFORMANCE REPORT",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Black,
+                            color = RetailTextSecondary,
+                            letterSpacing = 0.5.sp
+                        )
+                        Text(
+                            text = stats.monthDisplayName.ifBlank { stats.selectedMonth }.uppercase(),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Black,
+                            color = RetailHeaderBlack
+                        )
+                    }
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    IconButton(
+                        onClick = onPreviousMonth,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(RetailSurfaceSubtle, RoundedCornerShape(4.dp))
+                            .border(1.dp, RetailBorder, RoundedCornerShape(4.dp))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChevronLeft,
+                            contentDescription = "Previous Month",
+                            tint = RetailHeaderBlack,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    IconButton(
+                        onClick = onNextMonth,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(RetailSurfaceSubtle, RoundedCornerShape(4.dp))
+                            .border(1.dp, RetailBorder, RoundedCornerShape(4.dp))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChevronRight,
+                            contentDescription = "Next Month",
+                            tint = RetailHeaderBlack,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Card(
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(4.dp),
+                    colors = CardDefaults.cardColors(containerColor = RetailGreenLight),
+                    border = BorderStroke(1.dp, Color(0xFF86EFAC))
+                ) {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = "${stats.completedCount}",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Black,
+                            color = RetailGreenDone
+                        )
+                        Text(
+                            text = "COMPLETED",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = RetailGreenDone,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+                }
+
+                Card(
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(4.dp),
+                    colors = CardDefaults.cardColors(containerColor = RetailOrangeLight),
+                    border = BorderStroke(1.dp, Color(0xFFFFCC80))
+                ) {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = "${stats.skippedCount}",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Black,
+                            color = RetailOrange
+                        )
+                        Text(
+                            text = "SKIPPED",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = RetailOrange,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+                }
+
+                Card(
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(4.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF)),
+                    border = BorderStroke(1.dp, Color(0xFF93C5FD))
+                ) {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = "${stats.complianceRatePercent}%",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Color(0xFF1D4ED8)
+                        )
+                        Text(
+                            text = "COMPLIANCE",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1D4ED8),
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Button(
+                onClick = onExportMonthlyCsv,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+                    .testTag("export_csv_report_button"),
+                shape = RoundedCornerShape(4.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = RetailOrange)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Share,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "EXPORT CSV REPORT (${stats.monthDisplayName.ifBlank { stats.selectedMonth }.uppercase()})",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White,
+                    letterSpacing = 0.5.sp
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MonthlySkipReasonsCard(stats: MonthlyReportStats) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, RetailHeaderBlack, RoundedCornerShape(4.dp))
+            .clip(RoundedCornerShape(4.dp))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(RetailHeaderBlack)
+                .padding(horizontal = 14.dp, vertical = 8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "TASK SKIP REASONS · ${stats.monthDisplayName.ifBlank { stats.selectedMonth }.uppercase()}",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White,
+                    letterSpacing = 1.sp
+                )
+                Box(
+                    modifier = Modifier
+                        .background(RetailOrange, RoundedCornerShape(3.dp))
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = "${stats.skippedCount} SKIPPED",
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(RetailSurface)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            if (stats.skipReasonsBreakdown.isEmpty()) {
+                Text(
+                    text = "No tasks were skipped in ${stats.monthDisplayName.ifBlank { stats.selectedMonth }}.",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = RetailTextSecondary,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            } else {
+                stats.skipReasonsBreakdown.forEach { (reason, count) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(RetailSurfaceSubtle, RoundedCornerShape(4.dp))
+                            .border(1.dp, RetailBorder, RoundedCornerShape(4.dp))
+                            .padding(horizontal = 10.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = reason,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = RetailTextPrimary,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .background(RetailOrangeLight, RoundedCornerShape(3.dp))
+                                .border(1.dp, Color(0xFFFFCC80), RoundedCornerShape(3.dp))
+                                .padding(horizontal = 8.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "$count times",
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Black,
+                                color = RetailOrange
+                            )
+                        }
+                    }
+                }
             }
         }
     }

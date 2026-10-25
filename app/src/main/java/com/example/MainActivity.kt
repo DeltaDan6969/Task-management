@@ -75,6 +75,7 @@ class MainActivity : ComponentActivity() {
                 val allCompletions by viewModel.allCompletions.collectAsStateWithLifecycle()
                 val allPhotos by viewModel.allPhotos.collectAsStateWithLifecycle()
                 val reportStats by viewModel.reportStats.collectAsStateWithLifecycle()
+                val monthlyReportStats by viewModel.monthlyReportStats.collectAsStateWithLifecycle()
                 val outstandingDaysMap by viewModel.outstandingDaysMap.collectAsStateWithLifecycle()
                 val isCloudConnected by viewModel.isCloudConnected.collectAsStateWithLifecycle()
                 val cloudUserEmail by viewModel.cloudUserEmail.collectAsStateWithLifecycle()
@@ -234,6 +235,7 @@ class MainActivity : ComponentActivity() {
                                         allCompletions = allCompletions,
                                         allPhotos = allPhotos,
                                         reportStats = reportStats,
+                                        monthlyReportStats = monthlyReportStats,
                                         outstandingDaysMap = outstandingDaysMap,
                                         selectedDate = selectedDate,
                                         adminTab = adminTab,
@@ -278,6 +280,7 @@ class MainActivity : ComponentActivity() {
                                         allCompletions = allCompletions,
                                         allPhotos = allPhotos,
                                         reportStats = reportStats,
+                                        monthlyReportStats = monthlyReportStats,
                                         outstandingDaysMap = outstandingDaysMap,
                                         selectedDate = selectedDate,
                                         adminTab = adminTab,
@@ -337,6 +340,7 @@ private fun ActiveScreenContent(
     allCompletions: List<com.example.data.TaskCompletionEntity>,
     allPhotos: List<com.example.data.TaskPhotoEntity>,
     reportStats: ReportStats,
+    monthlyReportStats: com.example.ui.MonthlyReportStats,
     outstandingDaysMap: Map<Long, Int>,
     selectedDate: String,
     adminTab: AdminTab,
@@ -417,6 +421,10 @@ private fun ActiveScreenContent(
                 tasks = tasks,
                 storeConfigs = storeConfigs,
                 reportStats = reportStats,
+                monthlyReportStats = monthlyReportStats,
+                onPreviousMonth = { viewModel.changeReportMonth(-1) },
+                onNextMonth = { viewModel.changeReportMonth(1) },
+                onExportMonthlyCsvReport = { viewModel.exportMonthlyCsvReport(context) },
                 allCompletions = allCompletions,
                 allPhotos = allPhotos,
                 onAddUser = { name, role, pin, onDone ->
