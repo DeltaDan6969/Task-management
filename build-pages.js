@@ -102,11 +102,38 @@ try {
   console.error(`⚠️ Error packaging zip:`, err.message);
 }
 
-// 7. Verify GitHub Pages structure summary
+// 7. Package and sync ios-app.zip
+try {
+  if (fs.existsSync(path.join(ROOT_DIR, 'ios'))) {
+    console.log('🍏 Packaging ios-app.zip...');
+    execSync('zip -q -r ios-app.zip ios', { cwd: ROOT_DIR });
+    fs.copyFileSync(path.join(ROOT_DIR, 'ios-app.zip'), path.join(ROOT_DIR, 'docs', 'ios-app.zip'));
+    fs.copyFileSync(path.join(ROOT_DIR, 'ios-app.zip'), path.join(ROOT_DIR, 'web', 'ios-app.zip'));
+    const iosStats = fs.statSync(path.join(ROOT_DIR, 'ios-app.zip'));
+    console.log(`🍏 Synced ios-app.zip (${(iosStats.size / 1024).toFixed(1)} KB) to root, docs/, and web/`);
+  }
+} catch (err) {
+  console.error(`⚠️ Error packaging iOS zip:`, err.message);
+}
+
+// 8. Sync PWA & iOS Icons and Manifest
+const pwaFiles = ['manifest.json', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png'];
+pwaFiles.forEach(file => {
+  const src = path.join(ROOT_DIR, file);
+  if (fs.existsSync(src)) {
+    ['docs', 'web', 'standalone-web-app'].forEach(target => {
+      fs.copyFileSync(src, path.join(ROOT_DIR, target, file));
+    });
+    console.log(`🖼️ Synced PWA asset: ${file}`);
+  }
+});
+
+// 9. Verify GitHub Pages structure summary
 console.log('\n✨ GitHub Pages Build Complete! Distribution Summary:');
 console.log('   - /docs/index.html (Main entry point for GitHub Pages via docs/ folder)');
 console.log('   - /docs/404.html (Client-side SPA redirect fallback)');
 console.log('   - /docs/.nojekyll (Bypasses Jekyll parser to serve all assets)');
-console.log(`   - /docs/${apkName} (Direct download link)`);
+console.log(`   - /docs/${apkName} (Direct Android download link)`);
+console.log('   - /docs/ios-app.zip (Downloadable native iOS Swift / Xcode package)');
 console.log('   - /docs/standalone-web-app.zip (Downloadable offline bundle)');
 console.log('   - .github/workflows/pages.yml (Automated GitHub Actions deploy workflow)\n');

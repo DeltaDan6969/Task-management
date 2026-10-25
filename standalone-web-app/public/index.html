@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ShiftTask - Retail Task & Compliance System</title>
 
+  <!-- iOS Safari & Progressive Web App Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ShiftTask">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#121212">
+
   <!-- Firebase SDKs (v10 compat for universal browser compatibility) -->
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
@@ -1534,6 +1542,12 @@
               <a href="standalone-web-app.zip" download="standalone-web-app.zip" class="btn-mobile-outline" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; color: #1D4ED8; background: #EFF6FF; border: 1px solid #93C5FD; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 800; margin-top: 6px;">
                 <span class="material-icons" style="font-size: 18px;">folder_zip</span> DOWNLOAD WEB APPLICATION (.ZIP)
               </a>
+              <a href="ios-app.zip" download="ios-app.zip" class="btn-mobile-outline" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; color: #7E22CE; background: #FAF5FF; border: 1px solid #D8B4FE; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 800; margin-top: 6px;">
+                <span class="material-icons" style="font-size: 18px;">apple</span> DOWNLOAD IOS NATIVE PROJECT (.ZIP)
+              </a>
+              <button type="button" class="btn-mobile-outline" onclick="openIosInstallModal()" style="display: flex; align-items: center; justify-content: center; gap: 6px; color: #C2410C; background: #FFF7ED; border: 1px solid #FDBA74; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 800; margin-top: 6px; cursor: pointer;">
+                <span class="material-icons" style="font-size: 18px;">phone_iphone</span> 1-TAP INSTALL ON IPHONE / IPAD
+              </button>
             </div>
           </div>
         </div>
@@ -2065,6 +2079,51 @@
       <div style="display: flex; gap: 10px;">
         <button type="button" class="btn-mobile-full" style="background: var(--retail-surface-subtle); color: var(--retail-text-primary); border: 1px solid var(--retail-border);" onclick="closeConfirmDialog()">CANCEL</button>
         <button type="button" class="btn-mobile-full" id="confirmActionBtn" style="background: #DC2626; color: #fff;">DELETE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. IOS APP INSTALLATION MODAL -->
+  <div class="bottom-sheet-overlay" id="iosInstallModal" style="display: none;" onclick="closeIosInstallModal()">
+    <div class="bottom-sheet-card" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons" style="color: #7E22CE; font-size: 26px;">phone_iphone</span>
+          <h3 style="font-size: 16px; font-weight: 900;">Install ShiftTask on iOS</h3>
+        </div>
+        <span class="material-icons" style="cursor: pointer;" onclick="closeIosInstallModal()">close</span>
+      </div>
+
+      <p style="font-size: 12px; color: var(--retail-text-secondary); margin-bottom: 14px; line-height: 1.4;">
+        Install ShiftTask directly onto your iPhone or iPad. All tasks, staff profiles, and PINs stay in 100% real-time sync with Android and the web.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+        <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px; background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); border-radius: 8px;">
+          <div style="width: 24px; height: 24px; border-radius: 50%; background: #7E22CE; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0;">1</div>
+          <div style="font-size: 12px; color: var(--retail-text-primary); line-height: 1.4;">
+            Open this URL in <strong>Safari</strong> on your iPhone or iPad.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px; background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); border-radius: 8px;">
+          <div style="width: 24px; height: 24px; border-radius: 50%; background: #7E22CE; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0;">2</div>
+          <div style="font-size: 12px; color: var(--retail-text-primary); line-height: 1.4;">
+            Tap the <strong>Share</strong> icon (<span style="font-family: sans-serif; font-weight: 900; color: #1976D2;">⎋</span>) at the bottom toolbar.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px; background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); border-radius: 8px;">
+          <div style="width: 24px; height: 24px; border-radius: 50%; background: #7E22CE; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0;">3</div>
+          <div style="font-size: 12px; color: var(--retail-text-primary); line-height: 1.4;">
+            Select <strong>"Add to Home Screen"</strong> (<span style="font-family: sans-serif; font-weight: 900; color: #1976D2;">⊞</span>) and tap <strong>Add</strong>.
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-mobile-full full-green" onclick="closeIosInstallModal()">GOT IT</button>
       </div>
     </div>
   </div>
@@ -4357,6 +4416,16 @@
 
     function closeConfirmDialog() {
       const modal = document.getElementById("confirmActionModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function openIosInstallModal() {
+      const modal = document.getElementById("iosInstallModal");
+      if (modal) modal.style.display = "flex";
+    }
+
+    function closeIosInstallModal() {
+      const modal = document.getElementById("iosInstallModal");
       if (modal) modal.style.display = "none";
     }
 
