@@ -1484,12 +1484,47 @@
 
         <!-- Admin Tab 3: Logs & Photos -->
         <div id="adminTabLogs" class="admin-phone-pane" style="display: none;">
-          <div class="admin-card-phone">
-            <div class="admin-card-header">
+          <!-- Audit Photos Date Selector Card -->
+          <div class="admin-card-phone" style="margin-bottom: 10px;">
+            <div class="admin-card-header" style="margin-bottom: 8px;">
               <span>SHIFT AUDIT PHOTOS</span>
+              <span id="adminAuditStatsBadge" style="font-size: 10px; font-weight: 800; color: var(--retail-orange); background: var(--retail-surface-subtle); padding: 2px 8px; border-radius: 10px; border: 1px solid var(--retail-border);">0 Photos</span>
             </div>
-            <div id="adminPhotoGalleryPhone" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
+            
+            <!-- Date Navigation Control -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--retail-surface-subtle); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--retail-border);">
+              <button type="button" class="btn-today-chip" onclick="changeAdminAuditDateOffset(-1)" title="Previous Day" style="padding: 4px 8px; display: inline-flex; align-items: center; justify-content: center;">
+                <span class="material-icons" style="font-size: 16px;">chevron_left</span>
+              </button>
+              
+              <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <div style="position: relative; display: inline-flex; align-items: center; cursor: pointer;">
+                  <span class="material-icons" style="font-size: 16px; color: var(--retail-orange); margin-right: 4px;">calendar_today</span>
+                  <span id="adminAuditDateDisplay" style="font-size: 12px; font-weight: 800; color: var(--retail-text-primary);">Today</span>
+                  <input type="date" id="adminAuditDateInput" onchange="setAdminAuditDate(this.value)" style="position: absolute; opacity: 0; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer;">
+                </div>
+              </div>
+
+              <button type="button" class="btn-today-chip" onclick="changeAdminAuditDateOffset(1)" title="Next Day" style="padding: 4px 8px; display: inline-flex; align-items: center; justify-content: center;">
+                <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+              </button>
+
+              <button type="button" class="btn-today-chip" onclick="resetAdminAuditDateToToday()" title="Jump to Today" style="font-size: 10px; padding: 4px 8px; font-weight: 800;">
+                TODAY
+              </button>
+            </div>
+
+            <!-- Quick Jump dropdown of active dates with photos -->
+            <div id="adminAuditDatesQuickRow" style="display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 10px;">
+              <span style="color: var(--retail-text-secondary); font-weight: 700; white-space: nowrap;">QUICK JUMP:</span>
+              <select id="adminAuditDatesDropdown" onchange="setAdminAuditDate(this.value)" class="phone-form-input" style="font-size: 10px; padding: 4px 8px; height: 28px; margin: 0; flex: 1;">
+                <option value="">Dates with audit photos...</option>
+              </select>
+            </div>
           </div>
+
+          <!-- Grouped Tasks with Photos Container -->
+          <div id="adminPhotoGalleryPhone" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
 
         <!-- Admin Tab 4: Branding & Backup -->
@@ -1885,6 +1920,117 @@
       </div>
       <img id="fullPhotoImg" src="" style="width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="Audit full view">
       <div id="fullPhotoMeta" style="color: #9CA3AF; font-size: 11px; font-weight: 700; margin-top: 10px; text-align: center;"></div>
+    </div>
+  </div>
+
+  <!-- TASK PHOTO AUDIT INSPECTION MODAL (MULTI-PHOTO & COMPLETION DETAILS) -->
+  <div class="bottom-sheet-overlay" id="taskPhotoInspectionModal" style="display: none; z-index: 10001; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 10px;" onclick="closeTaskPhotoInspectionModal()">
+    <div class="inspection-modal-card" style="width: 100%; max-width: 520px; max-height: 92vh; background: var(--retail-surface); border: 1px solid var(--retail-border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
+      <!-- Header -->
+      <div style="padding: 12px 14px; background: var(--retail-header-bg); border-bottom: 1px solid var(--retail-border); display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span id="inspectTaskCategoryBadge" style="font-size: 9px; padding: 2px 7px; font-weight: 900; border-radius: 4px; background: var(--retail-header-black); color: #fff;">CATEGORY</span>
+            <span id="inspectTaskStatusBadge" style="font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 4px; background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0;">COMPLETED</span>
+          </div>
+          <div id="inspectTaskTitle" style="font-size: 13px; font-weight: 900; color: var(--retail-text-primary); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Task Title</div>
+        </div>
+        <button type="button" onclick="closeTaskPhotoInspectionModal()" style="background: none; border: none; color: var(--retail-text-secondary); cursor: pointer; padding: 4px; display: flex; align-items: center; margin-left: 8px;">
+          <span class="material-icons" style="font-size: 22px;">close</span>
+        </button>
+      </div>
+
+      <!-- Scrollable Content Body -->
+      <div style="flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+        <!-- Main Photo Viewer Container -->
+        <div style="position: relative; width: 100%; border-radius: 8px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; min-height: 200px; max-height: 320px;">
+          <img id="inspectMainPhotoImg" src="" style="width: 100%; max-height: 320px; object-fit: contain; display: block;" alt="Audit Photo">
+          
+          <!-- Prev / Next Navigation buttons overlay -->
+          <button type="button" id="inspectPrevPhotoBtn" onclick="navigateInspectionPhoto(-1)" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px);">
+            <span class="material-icons" style="font-size: 20px;">chevron_left</span>
+          </button>
+          <button type="button" id="inspectNextPhotoBtn" onclick="navigateInspectionPhoto(1)" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px);">
+            <span class="material-icons" style="font-size: 20px;">chevron_right</span>
+          </button>
+
+          <!-- Photo Counter badge overlay -->
+          <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.75); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 12px; backdrop-filter: blur(4px); display: flex; align-items: center; gap: 4px;">
+            <span class="material-icons" style="font-size: 12px; color: var(--retail-orange);">photo_camera</span>
+            <span id="inspectPhotoCounter">Photo 1 of 1</span>
+          </div>
+        </div>
+
+        <!-- Additional Photos Thumbnails Strip -->
+        <div id="inspectAdditionalPhotosSection" style="display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 10px; font-weight: 800; color: var(--retail-text-secondary); letter-spacing: 0.5px;">ALL PHOTOS FOR THIS TASK (<span id="inspectThumbnailsCount">1</span>)</span>
+            <span style="font-size: 9px; color: var(--retail-text-secondary);">Tap thumbnail to view</span>
+          </div>
+          <div id="inspectThumbnailsStrip" style="display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px;"></div>
+        </div>
+
+        <!-- Task & Completion Information Panel -->
+        <div style="background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 10px; font-weight: 900; color: var(--retail-text-secondary); letter-spacing: 0.5px;">TASK COMPLETION & AUDIT DATA</div>
+
+          <!-- Metadata Grid -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <!-- Completed By -->
+            <div style="background: var(--retail-surface); padding: 8px; border-radius: 6px; border: 1px solid var(--retail-border);">
+              <div style="font-size: 9px; font-weight: 700; color: var(--retail-text-secondary);">COMPLETED / LOGGED BY</div>
+              <div id="inspectCompletedBy" style="font-size: 11px; font-weight: 850; color: var(--retail-text-primary); margin-top: 2px; display: flex; align-items: center; gap: 4px;">
+                <span class="material-icons" style="font-size: 14px; color: var(--retail-orange);">person</span>
+                <span id="inspectCompletedByName">--</span>
+              </div>
+              <div id="inspectCompletedByRole" style="font-size: 9px; color: var(--retail-text-secondary); margin-left: 18px;">Staff Member</div>
+            </div>
+
+            <!-- Date & Time of Completion -->
+            <div style="background: var(--retail-surface); padding: 8px; border-radius: 6px; border: 1px solid var(--retail-border);">
+              <div style="font-size: 9px; font-weight: 700; color: var(--retail-text-secondary);">DATE & TIME COMPLETED</div>
+              <div id="inspectCompletionTime" style="font-size: 11px; font-weight: 850; color: var(--retail-text-primary); margin-top: 2px; display: flex; align-items: center; gap: 4px;">
+                <span class="material-icons" style="font-size: 14px; color: var(--retail-green, #10B981);">schedule</span>
+                <span id="inspectCompletionTimeValue">--</span>
+              </div>
+              <div id="inspectCompletionDateValue" style="font-size: 9px; color: var(--retail-text-secondary); margin-left: 18px;">--</div>
+            </div>
+          </div>
+
+          <!-- Active Photo Info -->
+          <div style="background: var(--retail-surface); padding: 6px 8px; border-radius: 6px; border: 1px solid var(--retail-border); display: flex; justify-content: space-between; align-items: center; font-size: 9px;">
+            <div>
+              <span style="color: var(--retail-text-secondary); font-weight: 700;">PHOTO TAKEN BY: </span>
+              <span id="inspectPhotoAuthor" style="font-weight: 800; color: var(--retail-text-primary);">--</span>
+            </div>
+            <div style="color: var(--retail-text-secondary);">
+              <span id="inspectPhotoTimestamp" style="font-weight: 800; color: var(--retail-green, #10B981);">--</span>
+            </div>
+          </div>
+
+          <!-- Checklist Breakdown if any -->
+          <div id="inspectSubtasksBox" style="background: var(--retail-surface); padding: 8px; border-radius: 6px; border: 1px solid var(--retail-border); display: none;">
+            <div style="font-size: 9px; font-weight: 700; color: var(--retail-text-secondary); margin-bottom: 4px;">CHECKLIST VERIFICATION</div>
+            <div id="inspectSubtasksList" style="display: flex; flex-direction: column; gap: 3px; font-size: 10px;"></div>
+          </div>
+
+          <!-- Notes / Skip reason if any -->
+          <div id="inspectNotesBox" style="background: var(--retail-surface); padding: 8px; border-radius: 6px; border: 1px solid var(--retail-border); display: none;">
+            <div style="font-size: 9px; font-weight: 700; color: var(--retail-text-secondary); margin-bottom: 2px;">AUDIT NOTES / REASON</div>
+            <div id="inspectNotesContent" style="font-size: 10px; color: var(--retail-text-primary); font-style: italic;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div style="padding: 10px 14px; background: var(--retail-header-bg); border-top: 1px solid var(--retail-border); display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" onclick="viewPhotoInNewTab()" style="padding: 6px 12px; background: var(--retail-surface); border: 1px solid var(--retail-border); border-radius: 6px; color: var(--retail-text-primary); font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
+          <span class="material-icons" style="font-size: 14px;">open_in_new</span> Full Size
+        </button>
+        <button type="button" onclick="closeTaskPhotoInspectionModal()" style="padding: 8px 18px; background: var(--retail-header-black, #111827); color: #fff; border: none; border-radius: 6px; font-size: 11px; font-weight: 800; cursor: pointer;">
+          CLOSE
+        </button>
+      </div>
     </div>
   </div>
 
@@ -3886,7 +4032,15 @@
     // -------------------------------------------------------------
     function switchAdminSubtab(tab) {
       document.querySelectorAll(".admin-tab-chip").forEach(el => el.classList.remove("active"));
-      event.currentTarget.classList.add("active");
+      if (window.event && window.event.currentTarget && window.event.currentTarget.classList) {
+        window.event.currentTarget.classList.add("active");
+      } else {
+        document.querySelectorAll(".admin-tab-chip").forEach(c => {
+          if (c.getAttribute("onclick") && c.getAttribute("onclick").includes(tab)) {
+            c.classList.add("active");
+          }
+        });
+      }
 
       document.querySelectorAll(".admin-phone-pane").forEach(el => el.style.display = "none");
       if (tab === 'LAYOUT') {
@@ -4005,29 +4159,449 @@
       });
     }
 
+    let adminAuditDate = (function() {
+      const now = new Date();
+      return now.toISOString().slice(0, 10);
+    })();
+
+    let currentInspectionPhotos = [];
+    let currentInspectionIndex = 0;
+    let currentInspectionTaskId = null;
+    let currentInspectionDate = null;
+
+    function formatTimeDetailed(ts) {
+      if (!ts) return "Recorded";
+      let dateObj;
+      if (typeof ts === 'object' && ts.toDate) {
+        dateObj = ts.toDate();
+      } else if (typeof ts === 'number') {
+        dateObj = new Date(ts);
+      } else if (typeof ts === 'string') {
+        dateObj = new Date(ts.includes('T') ? ts : ts + 'T00:00:00');
+      } else {
+        return String(ts);
+      }
+      if (isNaN(dateObj.getTime())) return String(ts);
+      return dateObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    function formatDateDetailed(tsOrDateStr) {
+      if (!tsOrDateStr) return "";
+      let dateObj;
+      if (typeof tsOrDateStr === 'object' && tsOrDateStr.toDate) {
+        dateObj = tsOrDateStr.toDate();
+      } else if (typeof tsOrDateStr === 'number') {
+        dateObj = new Date(tsOrDateStr);
+      } else if (typeof tsOrDateStr === 'string') {
+        if (tsOrDateStr.includes('T') || tsOrDateStr.includes('-')) {
+          dateObj = new Date(tsOrDateStr.includes('T') ? tsOrDateStr : tsOrDateStr + 'T00:00:00');
+        } else {
+          dateObj = new Date(tsOrDateStr);
+        }
+      }
+      if (!dateObj || isNaN(dateObj.getTime())) return String(tsOrDateStr);
+      return dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function changeAdminAuditDateOffset(offsetDays) {
+      const d = new Date(adminAuditDate + 'T00:00:00');
+      d.setDate(d.getDate() + offsetDays);
+      adminAuditDate = d.toISOString().slice(0, 10);
+      renderAdminPhotoGalleryPhone();
+    }
+
+    function setAdminAuditDate(dateVal) {
+      if (!dateVal) return;
+      adminAuditDate = dateVal;
+      renderAdminPhotoGalleryPhone();
+    }
+
+    function resetAdminAuditDateToToday() {
+      adminAuditDate = new Date().toISOString().slice(0, 10);
+      renderAdminPhotoGalleryPhone();
+    }
+
     function renderAdminPhotoGalleryPhone() {
       const container = document.getElementById("adminPhotoGalleryPhone");
       if (!container) return;
       container.innerHTML = "";
 
-      if (taskPhotos.length === 0) {
-        container.innerHTML = `<div style="grid-column: span 2; text-align: center; color: var(--retail-text-secondary); padding: 20px; font-size: 11px;">No audit photos uploaded yet.</div>`;
+      // 1. Sync Date Controls
+      const dateInput = document.getElementById("adminAuditDateInput");
+      if (dateInput) dateInput.value = adminAuditDate;
+
+      const displayEl = document.getElementById("adminAuditDateDisplay");
+      if (displayEl) {
+        const isToday = adminAuditDate === todayDateStr;
+        const dObj = new Date(adminAuditDate + 'T00:00:00');
+        const formatted = dObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        displayEl.innerText = (isToday ? "Today • " : "") + formatted;
+      }
+
+      // Populate Quick Jump Dropdown with all dates having photos
+      const dropdown = document.getElementById("adminAuditDatesDropdown");
+      if (dropdown) {
+        const datesMap = {};
+        taskPhotos.forEach(p => {
+          if (p.dateString) {
+            datesMap[p.dateString] = (datesMap[p.dateString] || 0) + 1;
+          }
+        });
+        const distinctDates = Object.keys(datesMap).sort().reverse();
+        dropdown.innerHTML = `<option value="">Quick jump to date with photos (${distinctDates.length})...</option>`;
+        distinctDates.forEach(dStr => {
+          const isSelected = dStr === adminAuditDate;
+          const dObj = new Date(dStr + 'T00:00:00');
+          const lbl = dObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+          const count = datesMap[dStr];
+          dropdown.innerHTML += `<option value="${dStr}" ${isSelected ? 'selected' : ''}>${lbl} (${count} photo${count > 1 ? 's' : ''})</option>`;
+        });
+      }
+
+      // 2. Filter Photos for Selected Date
+      const photosForDate = taskPhotos.filter(p => p.dateString === adminAuditDate);
+      
+      const statsBadge = document.getElementById("adminAuditStatsBadge");
+      const tasksWithPhotosSet = new Set(photosForDate.map(p => (p.taskId || 'unknown').toString()));
+      if (statsBadge) {
+        statsBadge.innerText = `${photosForDate.length} Photo${photosForDate.length === 1 ? '' : 's'} • ${tasksWithPhotosSet.size} Task${tasksWithPhotosSet.size === 1 ? '' : 's'}`;
+      }
+
+      // 3. Empty state handling
+      if (photosForDate.length === 0) {
+        const dObj = new Date(adminAuditDate + 'T00:00:00');
+        const formatted = dObj.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+        container.innerHTML = `
+          <div style="background: var(--retail-surface); border: 1px dashed var(--retail-border); border-radius: 10px; padding: 32px 16px; text-align: center;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--retail-surface-subtle); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+              <span class="material-icons" style="font-size: 26px; color: var(--retail-text-secondary);">photo_camera</span>
+            </div>
+            <div style="font-size: 13px; font-weight: 800; color: var(--retail-text-primary); margin-bottom: 4px;">No Audit Photos for ${formatted}</div>
+            <div style="font-size: 11px; color: var(--retail-text-secondary); max-width: 280px; margin: 0 auto 14px;">
+              Photos uploaded or stamped during checklist sign-offs for this date will appear here grouped by task.
+            </div>
+            ${adminAuditDate !== todayDateStr ? `
+              <button type="button" class="btn-today-chip" onclick="resetAdminAuditDateToToday()" style="padding: 6px 14px; font-size: 11px; font-weight: 800;">
+                <span class="material-icons" style="font-size: 14px; margin-right: 4px;">today</span> JUMP TO TODAY
+              </button>
+            ` : ''}
+          </div>
+        `;
         return;
       }
 
-      taskPhotos.forEach(photo => {
-        const card = document.createElement("div");
-        card.style = "border: 1px solid var(--retail-border); border-radius: 8px; overflow: hidden; cursor: pointer; background: var(--retail-surface);";
-        card.onclick = () => openFullPhotoModal(photo.photoUri, photo.taskTitle || 'Shift Audit Photo', `${photo.authorName || 'Staff'} • ${photo.dateString}`);
-        card.innerHTML = `
-          <img src="${photo.photoUri}" style="width: 100%; height: 110px; object-fit: cover; display: block;" alt="Audit">
-          <div style="padding: 4px 6px; font-size: 9px; color: var(--retail-text-secondary); background: var(--retail-surface-subtle); display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 800;">${photo.authorName || 'Staff'}</span>
-            <span>${photo.dateString}</span>
+      // 4. Group Photos by taskId
+      const groups = {};
+      photosForDate.forEach(photo => {
+        const tId = (photo.taskId || 'unknown').toString();
+        if (!groups[tId]) groups[tId] = [];
+        groups[tId].push(photo);
+      });
+
+      // 5. Render Each Grouped Task Card
+      Object.keys(groups).forEach(taskId => {
+        const groupPhotos = groups[taskId];
+        const task = tasks.find(t => t.id.toString() === taskId);
+        const taskTitle = task ? task.title : (groupPhotos[0].taskTitle || `Task #${taskId}`);
+        const category = task ? categories.find(c => c.id === task.categoryId) : null;
+        const categoryName = category ? category.name : 'STORE CHECKLIST';
+        const categoryColor = category ? (category.color || '#002B49') : '#002B49';
+
+        // Check completion data for this task on this date
+        const comp = completionsMap[`${taskId}_${adminAuditDate}`] || allCompletions.find(c => c.taskId.toString() === taskId && c.dateString === adminAuditDate);
+        
+        let statusBadgeText = "AUDIT LOGGED";
+        let statusBadgeBg = "#EFF6FF";
+        let statusBadgeColor = "#2563EB";
+        let statusBorder = "#BFDBFE";
+        let completedByName = groupPhotos[0].authorName || "Staff Member";
+        let completionTimeText = formatTimeDetailed(groupPhotos[0].timestamp || groupPhotos[0].createdAt);
+
+        if (comp) {
+          if (comp.isSkipped) {
+            statusBadgeText = "SKIPPED";
+            statusBadgeBg = "#FEF2F2";
+            statusBadgeColor = "#DC2626";
+            statusBorder = "#FECACA";
+          } else if (comp.isPartial) {
+            statusBadgeText = "PARTIAL";
+            statusBadgeBg = "#FFFBEB";
+            statusBadgeColor = "#D97706";
+            statusBorder = "#FDE68A";
+          } else {
+            statusBadgeText = "COMPLETED";
+            statusBadgeBg = "#ECFDF5";
+            statusBadgeColor = "#059669";
+            statusBorder = "#A7F3D0";
+          }
+          completedByName = comp.completedByUserName || comp.completedByUserInitials || completedByName;
+          if (comp.completedAt || comp.timestamp) {
+            completionTimeText = formatTimeDetailed(comp.completedAt || comp.timestamp);
+          }
+        }
+
+        const taskCard = document.createElement("div");
+        taskCard.className = "admin-card-phone";
+        taskCard.style = "padding: 12px; border: 1px solid var(--retail-border); border-radius: 10px; background: var(--retail-surface);";
+
+        let thumbnailsHtml = groupPhotos.map((photo, index) => `
+          <div style="position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--retail-border); background: var(--retail-surface-subtle); cursor: pointer; transition: transform 0.15s ease;"
+               onclick="openTaskPhotoInspectionModal('${taskId}', ${index}, '${adminAuditDate}')"
+               onmouseover="this.style.transform='scale(1.02)'"
+               onmouseout="this.style.transform='scale(1)'"
+               title="Click to view full photo and task audit details">
+            <img src="${photo.photoUri}" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="Audit photo ${index + 1}">
+            <div style="padding: 4px 6px; font-size: 9px; color: var(--retail-text-secondary); background: var(--retail-surface-subtle); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--retail-border);">
+              <span style="font-weight: 800; color: var(--retail-text-primary); max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${photo.authorName || 'Staff'}</span>
+              <span>${formatTimeDetailed(photo.timestamp)}</span>
+            </div>
+            ${groupPhotos.length > 1 ? `
+              <div style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.65); color: #fff; font-size: 8px; font-weight: 900; padding: 2px 5px; border-radius: 4px; backdrop-filter: blur(2px);">
+                ${index + 1}/${groupPhotos.length}
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+
+        taskCard.innerHTML = `
+          <!-- Task Header -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <div style="flex: 1; padding-right: 8px;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap;">
+                <span style="font-size: 9px; font-weight: 900; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px; background: ${categoryColor}; color: #fff;">${categoryName}</span>
+                <span style="font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: ${statusBadgeBg}; color: ${statusBadgeColor}; border: 1px solid ${statusBorder};">${statusBadgeText}</span>
+              </div>
+              <div style="font-size: 13px; font-weight: 900; color: var(--retail-text-primary); line-height: 1.3;">${taskTitle}</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0;">
+              <span style="font-size: 10px; font-weight: 900; color: var(--retail-orange); background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); padding: 3px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                <span class="material-icons" style="font-size: 12px;">photo_library</span> ${groupPhotos.length} Photo${groupPhotos.length > 1 ? 's' : ''}
+              </span>
+            </div>
+          </div>
+
+          <!-- Completion / Author Metadata Row -->
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; background: var(--retail-surface-subtle); border-radius: 6px; border: 1px solid var(--retail-border); margin-bottom: 10px; font-size: 10px;">
+            <div style="display: flex; align-items: center; gap: 4px; color: var(--retail-text-secondary);">
+              <span class="material-icons" style="font-size: 13px; color: var(--retail-orange);">check_circle</span>
+              <span>Done by: <strong style="color: var(--retail-text-primary);">${completedByName}</strong></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px; color: var(--retail-text-secondary);">
+              <span class="material-icons" style="font-size: 13px; color: var(--retail-green, #10B981);">schedule</span>
+              <strong style="color: var(--retail-text-primary);">${completionTimeText}</strong>
+            </div>
+          </div>
+
+          <!-- Photos Grid for this Task -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;">
+            ${thumbnailsHtml}
           </div>
         `;
-        container.appendChild(card);
+
+        container.appendChild(taskCard);
       });
+    }
+
+    function openTaskPhotoInspectionModal(taskId, photoIndex, dateString) {
+      const targetDate = dateString || adminAuditDate;
+      let photos = taskPhotos.filter(p => p.taskId.toString() === taskId.toString() && p.dateString === targetDate);
+      if (photos.length === 0) {
+        photos = taskPhotos.filter(p => p.taskId.toString() === taskId.toString());
+      }
+      if (photos.length === 0) {
+        showToast("No photos found for this task");
+        return;
+      }
+
+      currentInspectionPhotos = photos;
+      currentInspectionIndex = (photoIndex >= 0 && photoIndex < photos.length) ? photoIndex : 0;
+      currentInspectionTaskId = taskId;
+      currentInspectionDate = targetDate;
+
+      const modal = document.getElementById("taskPhotoInspectionModal");
+      if (!modal) return;
+
+      const task = tasks.find(t => t.id.toString() === taskId.toString());
+      const taskTitle = task ? task.title : (photos[0].taskTitle || `Task #${taskId}`);
+      const category = task ? categories.find(c => c.id === task.categoryId) : null;
+      const categoryName = category ? category.name : 'STORE CHECKLIST';
+      const categoryColor = category ? (category.color || '#002B49') : '#002B49';
+
+      const catBadge = document.getElementById("inspectTaskCategoryBadge");
+      if (catBadge) {
+        catBadge.innerText = categoryName;
+        catBadge.style.background = categoryColor;
+        catBadge.style.color = '#fff';
+      }
+
+      const titleEl = document.getElementById("inspectTaskTitle");
+      if (titleEl) titleEl.innerText = taskTitle;
+
+      // Completion info
+      const comp = completionsMap[`${taskId}_${targetDate}`] || allCompletions.find(c => c.taskId.toString() === taskId.toString() && c.dateString === targetDate);
+
+      const statusBadge = document.getElementById("inspectTaskStatusBadge");
+      let compAuthor = photos[currentInspectionIndex].authorName || "Staff Member";
+      let compRole = "Team Member";
+      let compTime = formatTimeDetailed(photos[currentInspectionIndex].timestamp || photos[currentInspectionIndex].createdAt);
+      let compDate = formatDateDetailed(photos[currentInspectionIndex].timestamp || targetDate);
+
+      if (comp) {
+        compAuthor = comp.completedByUserName || comp.completedByUserInitials || compAuthor;
+        compRole = comp.completedByUserRole || "Team Member";
+        if (comp.completedAt || comp.timestamp) {
+          compTime = formatTimeDetailed(comp.completedAt || comp.timestamp);
+          compDate = formatDateDetailed(comp.completedAt || comp.timestamp);
+        }
+
+        if (statusBadge) {
+          if (comp.isSkipped) {
+            statusBadge.innerText = "SKIPPED";
+            statusBadge.style.background = "#FEF2F2";
+            statusBadge.style.color = "#DC2626";
+            statusBadge.style.border = "1px solid #FECACA";
+          } else if (comp.isPartial) {
+            statusBadge.innerText = "PARTIAL SIGN-OFF";
+            statusBadge.style.background = "#FFFBEB";
+            statusBadge.style.color = "#D97706";
+            statusBadge.style.border = "1px solid #FDE68A";
+          } else {
+            statusBadge.innerText = "COMPLETED ✓";
+            statusBadge.style.background = "#ECFDF5";
+            statusBadge.style.color = "#059669";
+            statusBadge.style.border = "1px solid #A7F3D0";
+          }
+        }
+      } else {
+        if (statusBadge) {
+          statusBadge.innerText = "AUDIT VERIFIED";
+          statusBadge.style.background = "#EFF6FF";
+          statusBadge.style.color = "#2563EB";
+          statusBadge.style.border = "1px solid #BFDBFE";
+        }
+      }
+
+      const compNameEl = document.getElementById("inspectCompletedByName");
+      if (compNameEl) compNameEl.innerText = compAuthor;
+
+      const compRoleEl = document.getElementById("inspectCompletedByRole");
+      if (compRoleEl) compRoleEl.innerText = compRole;
+
+      const compTimeEl = document.getElementById("inspectCompletionTimeValue");
+      if (compTimeEl) compTimeEl.innerText = compTime;
+
+      const compDateEl = document.getElementById("inspectCompletionDateValue");
+      if (compDateEl) compDateEl.innerText = compDate;
+
+      // Checklist / subtasks breakdown
+      const subtasksBox = document.getElementById("inspectSubtasksBox");
+      const subtasksList = document.getElementById("inspectSubtasksList");
+      if (subtasksBox && subtasksList) {
+        let completedSubtasks = [];
+        if (comp && comp.completedSubTasksJson) {
+          try { completedSubtasks = JSON.parse(comp.completedSubTasksJson); } catch (_) {}
+        }
+        const bullets = (task && task.bullets) ? (Array.isArray(task.bullets) ? task.bullets : task.bullets.split('\n').filter(b => b.trim())) : [];
+        if (bullets.length > 0) {
+          subtasksBox.style.display = "block";
+          subtasksList.innerHTML = bullets.map(b => {
+            const isDone = completedSubtasks.includes(b) || (comp && !comp.isPartial && !comp.isSkipped);
+            return `
+              <div style="display: flex; align-items: center; gap: 6px; color: ${isDone ? 'var(--retail-green, #10B981)' : 'var(--retail-text-secondary)'};">
+                <span class="material-icons" style="font-size: 14px;">${isDone ? 'check_box' : 'check_box_outline_blank'}</span>
+                <span style="${isDone ? 'font-weight: 700; color: var(--retail-text-primary);' : ''}">${b}</span>
+              </div>
+            `;
+          }).join('');
+        } else {
+          subtasksBox.style.display = "none";
+        }
+      }
+
+      // Notes / Skip Reason
+      const notesBox = document.getElementById("inspectNotesBox");
+      const notesContent = document.getElementById("inspectNotesContent");
+      if (notesBox && notesContent) {
+        if (comp && (comp.skipReason || comp.notes)) {
+          notesBox.style.display = "block";
+          notesContent.innerText = comp.skipReason ? `Skip Reason: "${comp.skipReason}"` : (comp.notes || "");
+        } else {
+          notesBox.style.display = "none";
+        }
+      }
+
+      renderInspectionActivePhoto();
+      modal.style.display = "flex";
+    }
+
+    function renderInspectionActivePhoto() {
+      const photos = currentInspectionPhotos;
+      if (!photos || photos.length === 0) return;
+      const active = photos[currentInspectionIndex];
+
+      const img = document.getElementById("inspectMainPhotoImg");
+      if (img) img.src = active.photoUri;
+
+      const counter = document.getElementById("inspectPhotoCounter");
+      if (counter) counter.innerText = `Photo ${currentInspectionIndex + 1} of ${photos.length}`;
+
+      const authorEl = document.getElementById("inspectPhotoAuthor");
+      if (authorEl) authorEl.innerText = active.authorName || "Staff Member";
+
+      const timeEl = document.getElementById("inspectPhotoTimestamp");
+      if (timeEl) timeEl.innerText = formatTimeDetailed(active.timestamp || active.createdAt) + " • " + (active.dateString || "");
+
+      // Additional Photos Thumbnail Strip
+      const strip = document.getElementById("inspectThumbnailsStrip");
+      const countEl = document.getElementById("inspectThumbnailsCount");
+      if (countEl) countEl.innerText = photos.length;
+
+      if (strip) {
+        strip.innerHTML = "";
+        photos.forEach((p, idx) => {
+          const isSelected = idx === currentInspectionIndex;
+          const thumb = document.createElement("div");
+          thumb.style = `position: relative; flex-shrink: 0; width: 64px; height: 64px; border-radius: 6px; overflow: hidden; cursor: pointer; border: ${isSelected ? '3px solid var(--retail-orange, #F97316)' : '1px solid var(--retail-border)'}; box-shadow: ${isSelected ? '0 0 8px rgba(249, 115, 22, 0.4)' : 'none'};`;
+          thumb.onclick = () => {
+            currentInspectionIndex = idx;
+            renderInspectionActivePhoto();
+          };
+          thumb.innerHTML = `
+            <img src="${p.photoUri}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Thumbnail ${idx + 1}">
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); color: #fff; font-size: 8px; font-weight: 800; text-align: center; padding: 1px 0;">
+              ${idx + 1}/${photos.length}
+            </div>
+          `;
+          strip.appendChild(thumb);
+        });
+      }
+
+      // Prev/Next buttons
+      const prevBtn = document.getElementById("inspectPrevPhotoBtn");
+      const nextBtn = document.getElementById("inspectNextPhotoBtn");
+      if (prevBtn) prevBtn.style.display = photos.length > 1 ? "flex" : "none";
+      if (nextBtn) nextBtn.style.display = photos.length > 1 ? "flex" : "none";
+    }
+
+    function navigateInspectionPhoto(delta) {
+      if (!currentInspectionPhotos || currentInspectionPhotos.length <= 1) return;
+      currentInspectionIndex = (currentInspectionIndex + delta + currentInspectionPhotos.length) % currentInspectionPhotos.length;
+      renderInspectionActivePhoto();
+    }
+
+    function closeTaskPhotoInspectionModal() {
+      const modal = document.getElementById("taskPhotoInspectionModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function viewPhotoInNewTab() {
+      if (currentInspectionPhotos && currentInspectionPhotos[currentInspectionIndex]) {
+        const uri = currentInspectionPhotos[currentInspectionIndex].photoUri;
+        const w = window.open("");
+        if (w) {
+          w.document.write(`<img src="${uri}" style="max-width:100%; height:auto;" alt="Full Resolution Audit">`);
+        }
+      }
     }
 
     let adminReportMonth = (function() {

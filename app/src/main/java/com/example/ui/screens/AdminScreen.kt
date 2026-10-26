@@ -44,6 +44,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Calendar
 import java.util.Locale
 
 @Composable
@@ -2832,7 +2833,12 @@ data class ViewingPhotoState(
     val taskTitle: String,
     val categoryName: String,
     val shiftDate: String,
-    val completionTimestamp: Long? = null
+    val completionTimestamp: Long? = null,
+    val completedByUserName: String? = null,
+    val completedByUserRole: String? = null,
+    val isPartial: Boolean = false,
+    val isSkipped: Boolean = false,
+    val skipReason: String? = null
 )
 
 @Composable
@@ -2889,9 +2895,17 @@ fun CompletionsTableContent(
         )
     }
 
-    // Filter and sort photos
-    val filteredPhotos = remember(allPhotos, searchQuery, selectedUserIdFilter, taskMap) {
+    val todayDateStr = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()) }
+    var selectedPhotoDateFilter by remember { mutableStateOf<String?>(todayDateStr) }
+
+    val completionLookup = remember(allCompletions) {
+        allCompletions.associateBy { "${it.taskId}_${it.dateString}" }
+    }
+
+    // Filter and sort photos with date filter and task association
+    val filteredPhotos = remember(allPhotos, searchQuery, selectedUserIdFilter, taskMap, selectedPhotoDateFilter) {
         allPhotos.filter { photo ->
+            val matchesDate = selectedPhotoDateFilter == null || photo.dateString == selectedPhotoDateFilter
             val matchesUser = selectedUserIdFilter == null || photo.authorUserId == selectedUserIdFilter
             val task = taskMap[photo.taskId]
             val taskTitle = task?.title ?: "Task #${photo.taskId}"
@@ -2902,8 +2916,12 @@ fun CompletionsTableContent(
                 photo.authorName.contains(searchQuery, ignoreCase = true) ||
                 photo.dateString.contains(searchQuery, ignoreCase = true) ||
                 photo.authorUserId.toString() == searchQuery.trim()
-            matchesUser && matchesQuery
+            matchesDate && matchesUser && matchesQuery
         }.sortedByDescending { it.timestamp }
+    }
+
+    val photosGroupedByTask = remember(filteredPhotos) {
+        filteredPhotos.groupBy { it.taskId }
     }
 
     val totalRecordsWithPhotos = remember(allCompletions, allPhotos) {
@@ -3688,199 +3706,387 @@ fun CompletionsTableContent(
             }
 
             LogsSubTab.PHOTO_GALLERY -> {
-                // Photo Proofs Dedicated Gallery View
-                if (filteredPhotos.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .background(RetailSurface, RoundedCornerShape(4.dp))
-                            .border(1.dp, RetailBorder, RoundedCornerShape(4.dp)),
-                        contentAlignment = Alignment.Center
+                // Photo Proofs Dedicated Gallery View with Date Selector & Task Grouping
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    // Date Navigation Bar
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = RetailSurface),
+                        border = BorderStroke(1.dp, RetailBorder),
+                        shape = RoundedCornerShape(8.dp)
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(24.dp)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 6.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                Icons.Default.PhotoCamera,
-                                contentDescription = null,
-                                tint = RetailTextSecondary,
-                                modifier = Modifier.size(44.dp)
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = "No audit timestamp photos found.",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = RetailTextPrimary
-                            )
-                            Text(
-                                text = "Photos captured or generated during task completion appear here with verified timestamps.",
-                                fontSize = 12.sp,
-                                color = RetailTextSecondary
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(
+                                    onClick = {
+                                        val cur = selectedPhotoDateFilter ?: todayDateStr
+                                        try {
+                                            val cal = Calendar.getInstance().apply {
+                                                time = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(cur) ?: Date()
+                                                add(Calendar.DAY_OF_YEAR, -1)
+                                            }
+                                            selectedPhotoDateFilter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.time)
+                                        } catch (_: Exception) {}
+                                    },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(Icons.Default.ChevronLeft, contentDescription = "Previous Day", tint = RetailTextPrimary)
+                                }
+
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                ) {
+                                    Icon(Icons.Default.CalendarToday, contentDescription = null, tint = RetailOrange, modifier = Modifier.size(14.dp))
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = if (selectedPhotoDateFilter == null) "ALL DATES" else if (selectedPhotoDateFilter == todayDateStr) "TODAY • $todayDateStr" else selectedPhotoDateFilter!!,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = RetailTextPrimary
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = {
+                                        val cur = selectedPhotoDateFilter ?: todayDateStr
+                                        try {
+                                            val cal = Calendar.getInstance().apply {
+                                                time = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(cur) ?: Date()
+                                                add(Calendar.DAY_OF_YEAR, 1)
+                                            }
+                                            selectedPhotoDateFilter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.time)
+                                        } catch (_: Exception) {}
+                                    },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(Icons.Default.ChevronRight, contentDescription = "Next Day", tint = RetailTextPrimary)
+                                }
+                            }
+
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                if (selectedPhotoDateFilter != todayDateStr) {
+                                    Surface(
+                                        onClick = { selectedPhotoDateFilter = todayDateStr },
+                                        color = RetailOrange,
+                                        shape = RoundedCornerShape(4.dp)
+                                    ) {
+                                        Text(
+                                            text = "TODAY",
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = Color.White,
+                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
+                                        )
+                                    }
+                                }
+
+                                Surface(
+                                    onClick = { selectedPhotoDateFilter = if (selectedPhotoDateFilter == null) todayDateStr else null },
+                                    color = if (selectedPhotoDateFilter == null) RetailHeaderBlack else RetailSurfaceSubtle,
+                                    shape = RoundedCornerShape(4.dp),
+                                    border = BorderStroke(1.dp, RetailBorder)
+                                ) {
+                                    Text(
+                                        text = if (selectedPhotoDateFilter == null) "FILTER BY DATE" else "SHOW ALL",
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (selectedPhotoDateFilter == null) Color.White else RetailTextSecondary,
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
+                                    )
+                                }
+
+                                Surface(
+                                    color = RetailSurfaceSubtle,
+                                    shape = RoundedCornerShape(10.dp),
+                                    border = BorderStroke(1.dp, RetailBorder)
+                                ) {
+                                    Text(
+                                        text = "${filteredPhotos.size} PHOTOS",
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = RetailOrange,
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                                    )
+                                }
+                            }
                         }
                     }
-                } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 260.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(filteredPhotos) { photo ->
-                            val task = taskMap[photo.taskId]
-                            val taskTitle = task?.title ?: "Task #${photo.taskId}"
-                            val catName = task?.categoryId?.let { categoryMap[it]?.name } ?: "GENERAL"
 
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .border(1.dp, RetailBorder, RoundedCornerShape(8.dp))
-                                    .clickable {
-                                        viewingPhotoState = ViewingPhotoState(
-                                            photos = listOf(photo),
-                                            currentIndex = 0,
-                                            taskTitle = taskTitle,
-                                            categoryName = catName,
-                                            shiftDate = photo.dateString
-                                        )
-                                    },
-                                colors = CardDefaults.cardColors(containerColor = RetailSurface)
+                    if (photosGroupedByTask.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .background(RetailSurface, RoundedCornerShape(8.dp))
+                                .border(1.dp, RetailBorder, RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(24.dp)
                             ) {
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    // Image with timestamp overlay banner
-                                    Box(
+                                Icon(
+                                    Icons.Default.PhotoCamera,
+                                    contentDescription = null,
+                                    tint = RetailTextSecondary,
+                                    modifier = Modifier.size(44.dp)
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Text(
+                                    text = if (selectedPhotoDateFilter != null) "No audit photos found for $selectedPhotoDateFilter." else "No audit timestamp photos found.",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = RetailTextPrimary
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Photos captured or generated during task completion appear here grouped by task.",
+                                    fontSize = 12.sp,
+                                    color = RetailTextSecondary
+                                )
+                                if (selectedPhotoDateFilter != null) {
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    OutlinedButton(
+                                        onClick = { selectedPhotoDateFilter = null },
+                                        shape = RoundedCornerShape(6.dp)
+                                    ) {
+                                        Text("SHOW ALL DATES", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            items(photosGroupedByTask.entries.toList(), key = { it.key }) { (taskId, taskPhotos) ->
+                                val task = taskMap[taskId]
+                                val taskTitle = task?.title ?: "Task #$taskId"
+                                val catName = task?.categoryId?.let { categoryMap[it]?.name } ?: "GENERAL"
+                                val photoDate = taskPhotos.firstOrNull()?.dateString ?: todayDateStr
+                                val compKey = "${taskId}_$photoDate"
+                                val comp = completionLookup[compKey]
+
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .border(1.dp, RetailBorder, RoundedCornerShape(8.dp)),
+                                    colors = CardDefaults.cardColors(containerColor = RetailSurface)
+                                ) {
+                                    Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(170.dp)
-                                            .background(Color.Black)
+                                            .padding(12.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
-                                        AsyncImage(
-                                            model = photo.photoUri,
-                                            contentDescription = "Audit stamp photo",
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentScale = ContentScale.Crop
-                                        )
-
-                                        // Top Badge: AUDIT VERIFIED
-                                        Surface(
-                                            color = RetailHeaderBlack.copy(alpha = 0.88f),
-                                            shape = RoundedCornerShape(bottomEnd = 4.dp),
-                                            modifier = Modifier.align(Alignment.TopStart)
-                                        ) {
-                                            Row(
-                                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Icon(
-                                                    Icons.Default.Verified,
-                                                    contentDescription = null,
-                                                    tint = RetailGreenCheck,
-                                                    modifier = Modifier.size(12.dp)
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dp))
-                                                Text(
-                                                    text = "AUDIT VERIFIED",
-                                                    fontSize = 9.sp,
-                                                    fontWeight = FontWeight.Black,
-                                                    color = Color.White
-                                                )
-                                            }
-                                        }
-
-                                        // Bottom Timestamp Banner
-                                        Box(
-                                            modifier = Modifier
-                                                .align(Alignment.BottomCenter)
-                                                .fillMaxWidth()
-                                                .background(RetailHeaderBlack.copy(alpha = 0.88f))
-                                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                                        ) {
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Text(
-                                                    text = "🕒 ${timestampFormat.format(Date(photo.timestamp))}",
-                                                    fontSize = 10.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = RetailGreenCheck
-                                                )
-                                                Text(
-                                                    text = photo.dateString,
-                                                    fontSize = 10.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = Color.White
-                                                )
-                                            }
-                                        }
-                                    }
-
-                                    // Card Body Details
-                                    Column(modifier = Modifier.padding(10.dp)) {
-                                        Text(
-                                            text = taskTitle,
-                                            fontSize = 12.sp,
-                                            fontWeight = FontWeight.Black,
-                                            color = RetailTextPrimary,
-                                            maxLines = 1
-                                        )
-
-                                        Spacer(modifier = Modifier.height(4.dp))
-
+                                        // Task Group Header
                                         Row(
-                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.SpaceBetween,
-                                            modifier = Modifier.fillMaxWidth()
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .background(RetailHeaderBlack, RoundedCornerShape(2.dp))
-                                                        .padding(horizontal = 4.dp, vertical = 1.dp)
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                                modifier = Modifier.weight(1f, fill = false)
+                                            ) {
+                                                Surface(
+                                                    color = RetailHeaderBlack,
+                                                    shape = RoundedCornerShape(3.dp)
                                                 ) {
                                                     Text(
-                                                        text = "ID: #${photo.authorUserId}",
+                                                        text = catName,
                                                         fontSize = 9.sp,
                                                         fontWeight = FontWeight.Black,
-                                                        color = Color.White
+                                                        color = Color.White,
+                                                        modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
                                                     )
                                                 }
-                                                Spacer(modifier = Modifier.width(4.dp))
-                                                Text(
-                                                    text = photo.authorName,
-                                                    fontSize = 11.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = RetailTextPrimary
-                                                )
+
+                                                val statusText = when {
+                                                    comp?.isSkipped == true -> "SKIPPED"
+                                                    comp?.isPartial == true -> "PARTIAL"
+                                                    comp != null -> "COMPLETED"
+                                                    else -> "AUDIT LOGGED"
+                                                }
+                                                val statusColor = when {
+                                                    comp?.isSkipped == true -> RetailRedMissed
+                                                    comp?.isPartial == true -> RetailOrange
+                                                    else -> RetailGreenCheck
+                                                }
+                                                Surface(
+                                                    color = statusColor.copy(alpha = 0.12f),
+                                                    shape = RoundedCornerShape(3.dp),
+                                                    border = BorderStroke(1.dp, statusColor.copy(alpha = 0.3f))
+                                                ) {
+                                                    Text(
+                                                        text = statusText,
+                                                        fontSize = 9.sp,
+                                                        fontWeight = FontWeight.Black,
+                                                        color = statusColor,
+                                                        modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+                                                    )
+                                                }
                                             }
 
                                             Surface(
-                                                onClick = {
-                                                    viewingPhotoState = ViewingPhotoState(
-                                                        photos = listOf(photo),
-                                                        currentIndex = 0,
-                                                        taskTitle = taskTitle,
-                                                        categoryName = catName,
-                                                        shiftDate = photo.dateString
-                                                    )
-                                                },
-                                                color = RetailOrange,
-                                                shape = RoundedCornerShape(3.dp)
+                                                color = RetailOrange.copy(alpha = 0.12f),
+                                                shape = RoundedCornerShape(10.dp),
+                                                border = BorderStroke(1.dp, RetailOrange.copy(alpha = 0.3f))
                                             ) {
-                                                Text(
-                                                    text = "VIEW FULL",
-                                                    fontSize = 9.sp,
-                                                    fontWeight = FontWeight.Black,
-                                                    color = Color.White,
-                                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
-                                                )
+                                                Row(
+                                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Icon(Icons.Default.PhotoLibrary, contentDescription = null, tint = RetailOrange, modifier = Modifier.size(11.dp))
+                                                    Spacer(modifier = Modifier.width(3.dp))
+                                                    Text(
+                                                        text = "${taskPhotos.size} PHOTO${if (taskPhotos.size > 1) "S" else ""}",
+                                                        fontSize = 9.sp,
+                                                        fontWeight = FontWeight.Black,
+                                                        color = RetailOrange
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        Text(
+                                            text = taskTitle,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = RetailTextPrimary
+                                        )
+
+                                        // Completion Information Box
+                                        Surface(
+                                            color = RetailSurfaceSubtle,
+                                            shape = RoundedCornerShape(4.dp),
+                                            border = BorderStroke(1.dp, RetailBorder),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 8.dp, vertical = 5.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                val completedBy = comp?.completedByUserName ?: taskPhotos.firstOrNull()?.authorName ?: "Staff"
+                                                val compTime = comp?.completedAt?.let { timestampFormat.format(Date(it)) }
+                                                    ?: taskPhotos.firstOrNull()?.timestamp?.let { timestampFormat.format(Date(it)) }
+                                                    ?: photoDate
+
+                                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                                    Icon(Icons.Default.Person, contentDescription = null, tint = RetailOrange, modifier = Modifier.size(12.dp))
+                                                    Spacer(modifier = Modifier.width(4.dp))
+                                                    Text(
+                                                        text = "Done by: $completedBy",
+                                                        fontSize = 10.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = RetailTextPrimary
+                                                    )
+                                                }
+
+                                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                                    Icon(Icons.Default.Schedule, contentDescription = null, tint = RetailGreenCheck, modifier = Modifier.size(12.dp))
+                                                    Spacer(modifier = Modifier.width(4.dp))
+                                                    Text(
+                                                        text = compTime,
+                                                        fontSize = 10.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = RetailTextSecondary
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        // Thumbnails Strip
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .horizontalScroll(rememberScrollState()),
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            taskPhotos.forEachIndexed { idx, photo ->
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(width = 110.dp, height = 90.dp)
+                                                        .clip(RoundedCornerShape(6.dp))
+                                                        .border(1.dp, RetailBorder, RoundedCornerShape(6.dp))
+                                                        .clickable {
+                                                            viewingPhotoState = ViewingPhotoState(
+                                                                photos = taskPhotos,
+                                                                currentIndex = idx,
+                                                                taskTitle = taskTitle,
+                                                                categoryName = catName,
+                                                                shiftDate = photoDate,
+                                                                completionTimestamp = comp?.completedAt ?: photo.timestamp,
+                                                                completedByUserName = comp?.completedByUserName ?: photo.authorName,
+                                                                completedByUserRole = comp?.completedByUserRole,
+                                                                isPartial = comp?.isPartial ?: false,
+                                                                isSkipped = comp?.isSkipped ?: false,
+                                                                skipReason = comp?.skipReason
+                                                            )
+                                                        }
+                                                ) {
+                                                    AsyncImage(
+                                                        model = photo.photoUri,
+                                                        contentDescription = "Audit photo ${idx + 1}",
+                                                        modifier = Modifier.fillMaxSize(),
+                                                        contentScale = ContentScale.Crop
+                                                    )
+
+                                                    // Timestamp overlay
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .align(Alignment.BottomCenter)
+                                                            .fillMaxWidth()
+                                                            .background(RetailHeaderBlack.copy(alpha = 0.85f))
+                                                            .padding(horizontal = 4.dp, vertical = 2.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = timeOnlyFormat.format(Date(photo.timestamp)),
+                                                            fontSize = 8.sp,
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = Color.White
+                                                        )
+                                                    }
+
+                                                    if (taskPhotos.size > 1) {
+                                                        Surface(
+                                                            color = RetailHeaderBlack.copy(alpha = 0.85f),
+                                                            shape = RoundedCornerShape(bottomStart = 4.dp),
+                                                            modifier = Modifier.align(Alignment.TopEnd)
+                                                        ) {
+                                                            Text(
+                                                                text = "${idx + 1}/${taskPhotos.size}",
+                                                                fontSize = 8.sp,
+                                                                fontWeight = FontWeight.Black,
+                                                                color = Color.White,
+                                                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
+                                                            )
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -4106,13 +4312,72 @@ fun CompletionsTableContent(
                                 Text(text = state.categoryName, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = RetailOrange)
                             }
 
+                            state.completedByUserName?.let { compUser ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(text = "COMPLETED BY:", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = RetailTextSecondary)
+                                    Text(
+                                        text = "$compUser${state.completedByUserRole?.let { " ($it)" } ?: ""}",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = RetailTextPrimary
+                                    )
+                                }
+                            }
+
+                            state.completionTimestamp?.let { compTime ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(text = "COMPLETION TIME:", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = RetailTextSecondary)
+                                    Text(
+                                        text = timestampFormat.format(Date(compTime)),
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = RetailGreenCheck
+                                    )
+                                }
+                            }
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(text = "SUBMITTED BY:", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = RetailTextSecondary)
+                                Text(text = "STATUS:", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = RetailTextSecondary)
+                                val statusText = when {
+                                    state.isSkipped -> "SKIPPED"
+                                    state.isPartial -> "PARTIAL SIGN-OFF"
+                                    state.completedByUserName != null -> "COMPLETED ✓"
+                                    else -> "AUDIT LOGGED"
+                                }
+                                val statusColor = when {
+                                    state.isSkipped -> RetailRedMissed
+                                    state.isPartial -> RetailOrange
+                                    else -> RetailGreenCheck
+                                }
+                                Text(text = statusText, fontSize = 11.sp, fontWeight = FontWeight.Black, color = statusColor)
+                            }
+
+                            state.skipReason?.let { reason ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(text = "SKIP REASON:", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = RetailTextSecondary)
+                                    Text(text = "\"$reason\"", fontSize = 11.sp, fontWeight = FontWeight.Medium, color = RetailTextPrimary)
+                                }
+                            }
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(text = "PHOTO CAPTURED BY:", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = RetailTextSecondary)
                                 Text(
-                                    text = "${activePhoto.authorName} (Employee ID #${activePhoto.authorUserId})",
+                                    text = "${activePhoto.authorName} (#${activePhoto.authorUserId})",
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Black,
                                     color = RetailTextPrimary
