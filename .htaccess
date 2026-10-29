@@ -1,0 +1,39 @@
+# IONOS Apache Webhosting Configuration
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Force HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # 2. Backend API Routing (for IONOS Apache/PHP Webhosting)
+  RewriteRule ^api/auth/(.*)$ api/verify.php?endpoint=$1 [L,QSA]
+  RewriteRule ^api/admin/(.*)$ api/verify.php?endpoint=admin-$1 [L,QSA]
+
+  # 3. Clean URL Routing for Task Manager
+  RewriteRule ^tasks/?$ tasks.html [L,QSA]
+
+  # 4. SPA Route Fallback (Single Page Application routing)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.html [L]
+</IfModule>
+
+# MIME Types for PWA
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest .json
+  AddType image/svg+xml .svg
+  AddType font/woff2 .woff2
+</IfModule>
+
+# Browser Caching Headers
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/manifest+json "access plus 0 seconds"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 year"
+</IfModule>

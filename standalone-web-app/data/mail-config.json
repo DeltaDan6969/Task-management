@@ -1,0 +1,15 @@
+{
+  "provider": "ionos",
+  "from_email": "noreply@onestop-canterbury.co.uk",
+  "from_name": "One Stop Canterbury",
+  "imap_host": "imap.ionos.co.uk",
+  "imap_port": 993,
+  "imap_secure": "ssl",
+  "smtp_host": "smtp.ionos.co.uk",
+  "smtp_port": 587,
+  "smtp_secure": "tls",
+  "smtp_auth": true,
+  "smtp_user": "noreply@onestop-canterbury.co.uk",
+  "smtp_pass": "Secret123!",
+  "timeout": 15
+}

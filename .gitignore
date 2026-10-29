@@ -25,3 +25,5 @@ web/firebase-config.js
 docs/firebase-config.js
 standalone-web-app/firebase-config.js
 standalone-web-app/public/firebase-config.js
+ionos-package/
+APK_DOWNLOAD/

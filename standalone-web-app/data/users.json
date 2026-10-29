@@ -1,0 +1,47 @@
+[
+  {
+    "id": "usr_admin",
+    "name": "Canterbury Store Admin",
+    "email": "admin@onestop.co.uk",
+    "salt": "77fa7275ef0bf0a2db6f04c4c64e6a04",
+    "passwordHash": "668e8b254d069c4dee2ca3ccd754c819a55ddf0821c9240e78a03c961a85317f",
+    "role": "Admin",
+    "permissions": [
+      "manage_tasks",
+      "audit_approvals",
+      "manage_users",
+      "assign_permissions",
+      "store_inventory"
+    ],
+    "emailVerified": true,
+    "registeredAt": "2026-10-28T02:04:42.570Z"
+  },
+  {
+    "id": "usr_1793153139904_k2yb6",
+    "name": "Emma Watson",
+    "email": "emma.test@onestop.co.uk",
+    "salt": "test_salt",
+    "passwordHash": "dummyhash",
+    "role": "Staff",
+    "permissions": [
+      "manage_tasks"
+    ],
+    "emailVerified": true,
+    "registeredAt": "2026-10-28T02:05:39.904Z",
+    "verifiedAt": "2026-10-28T02:06:12.539Z"
+  },
+  {
+    "id": "usr_1793158006397_mea3w",
+    "name": "Alex Jones",
+    "email": "alex.jones@example.com",
+    "salt": "somesalt",
+    "passwordHash": "somehash",
+    "role": "Customer",
+    "permissions": [],
+    "emailVerified": false,
+    "verificationPin": "683089",
+    "verificationToken": "e3e1c1441ffd41a5072273bd304dcdf70438014bc4a5041b",
+    "verificationExpiresAt": 1793158906397,
+    "registeredAt": "2026-10-28T03:26:46.397Z"
+  }
+]
