@@ -72,6 +72,22 @@ if (fs.existsSync(TASKS_HTML)) {
   });
 }
 
+// 3c. Mirror website.html (Store Website & Portal)
+const WEBSITE_HTML = path.join(ROOT_DIR, 'web', 'website.html');
+if (fs.existsSync(WEBSITE_HTML)) {
+  const websiteContent = fs.readFileSync(WEBSITE_HTML, 'utf8');
+  const websiteDestinations = [
+    path.join(ROOT_DIR, 'website.html'),
+    path.join(ROOT_DIR, 'docs', 'website.html'),
+    path.join(ROOT_DIR, 'standalone-web-app', 'website.html'),
+    path.join(ROOT_DIR, 'standalone-web-app', 'public', 'website.html'),
+  ];
+  websiteDestinations.forEach(dest => {
+    fs.writeFileSync(dest, websiteContent, 'utf8');
+    console.log(`✅ Synced Store Website: ${path.relative(ROOT_DIR, dest)} (${websiteContent.length} bytes)`);
+  });
+}
+
 // 3c. Mirror assets directory
 const ASSETS_SRC = path.join(ROOT_DIR, 'web', 'assets');
 if (fs.existsSync(ASSETS_SRC)) {
@@ -206,6 +222,7 @@ try {
   const ionosFiles = [
     'index.html',
     'tasks.html',
+    'website.html',
     '404.html',
     '.htaccess',
     '.nojekyll',
