@@ -1018,6 +1018,21 @@
       background: #FFFDF8;
     }
 
+    .task-card-phone.urgent-today {
+      border: 2px solid #EF4444;
+      border-left: 6px solid #DC2626;
+      background: linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, #FFFFFF 100%);
+      box-shadow: 0 4px 18px rgba(220, 38, 38, 0.18), 0 0 0 1px rgba(239, 68, 68, 0.2);
+      position: relative;
+    }
+
+    [data-theme="dark"] .task-card-phone.urgent-today {
+      border-color: #EF4444;
+      border-left: 6px solid #F87171;
+      background: linear-gradient(135deg, #2B1111 0%, #171A21 100%);
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35);
+    }
+
     .skip-preset-chip {
       background: var(--retail-surface);
       border: 1px solid var(--retail-border);
@@ -1069,6 +1084,154 @@
     .badge-tag.HIGH { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
     .badge-tag.MEDIUM { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
     .badge-tag.LOW { background: #E0E7FF; color: #3730A3; border: 1px solid #C7D2FE; }
+
+    .badge-tag.URGENT {
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1.5px solid #EF4444;
+      font-weight: 900;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      animation: urgentGlow 1.6s infinite alternate;
+    }
+
+    [data-theme="dark"] .badge-tag.URGENT {
+      background: #450A0A;
+      color: #FCA5A5;
+      border-color: #EF4444;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    @keyframes urgentGlow {
+      from { box-shadow: 0 0 3px rgba(239, 68, 68, 0.3); transform: scale(0.98); }
+      to { box-shadow: 0 0 9px rgba(239, 68, 68, 0.7); transform: scale(1.02); }
+    }
+
+    /* Urgent-for-today tick box toggle row */
+    .urgent-toggle-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.025);
+      border: 1px dashed var(--retail-border);
+      transition: all 0.2s ease;
+    }
+
+    .urgent-toggle-strip.active {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1.5px solid #EF4444;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.12);
+    }
+
+    [data-theme="dark"] .urgent-toggle-strip {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    [data-theme="dark"] .urgent-toggle-strip.active {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: #EF4444;
+      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.25);
+    }
+
+    .urgent-toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      width: 100%;
+    }
+
+    .urgent-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--retail-border-strong);
+      border-radius: 4px;
+      background: var(--retail-surface);
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+      display: grid;
+      place-content: center;
+    }
+
+    .urgent-checkbox:checked {
+      background: #DC2626;
+      border-color: #DC2626;
+      box-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+    }
+
+    .urgent-checkbox:checked::before {
+      content: "";
+      width: 5px;
+      height: 9px;
+      border: solid #FFFFFF;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      margin-top: -2px;
+    }
+
+    .urgent-toggle-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--retail-text-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .urgent-toggle-text.active {
+      color: #DC2626;
+      font-weight: 900;
+    }
+
+    [data-theme="dark"] .urgent-toggle-text.active {
+      color: #F87171;
+    }
+
+    .urgent-status-pill {
+      font-size: 9px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FCA5A5;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    [data-theme="dark"] .urgent-status-pill {
+      background: #450A0A;
+      color: #FCA5A5;
+      border-color: #7F1D1D;
+    }
+
+    .notif-item-card.urgent {
+      border-left: 5px solid #DC2626 !important;
+      background: rgba(239, 68, 68, 0.08) !important;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.12);
+    }
+
+    [data-theme="dark"] .notif-item-card.urgent {
+      border-left: 5px solid #EF4444 !important;
+      background: rgba(239, 68, 68, 0.18) !important;
+      border-color: rgba(239, 68, 68, 0.4) !important;
+    }
 
     .badge-tag.days {
       background: var(--retail-surface-subtle);
@@ -1482,12 +1645,12 @@
 
     <!-- Floating Real-Time In-App Alert Toast -->
     <div class="task-notif-toast" id="taskNotifToast" role="alert">
-      <div class="task-notif-toast-icon">
-        <span class="material-icons" style="font-size: 20px;">notification_important</span>
+      <div class="task-notif-toast-icon" id="toastIconBox">
+        <span class="material-icons" id="toastIcon" style="font-size: 20px;">notification_important</span>
       </div>
       <div style="flex: 1; min-width: 0;">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
-          <span style="font-size: 10px; font-weight: 900; color: var(--retail-orange); letter-spacing: 0.5px;">NEW TASK ADDED</span>
+          <span id="toastBannerHeader" style="font-size: 10px; font-weight: 900; color: var(--retail-orange); letter-spacing: 0.5px;">NEW TASK ADDED</span>
           <span id="toastTimeAgo" style="font-size: 9px; opacity: 0.7; font-weight: 700;">JUST NOW</span>
         </div>
         <div id="toastTaskTitle" style="font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #FFFFFF; margin-top: 2px;">
@@ -1614,6 +1777,7 @@
         <div class="filter-dropdowns-row">
           <select class="filter-select" id="priorityFilterSelect" onchange="handlePriorityFilterChange(this.value)">
             <option value="ALL">ALL PRIORITIES</option>
+            <option value="URGENT">🚨 URGENT ONLY</option>
             <option value="HIGH">HIGH PRIORITY</option>
             <option value="MEDIUM">MEDIUM PRIORITY</option>
             <option value="LOW">LOW PRIORITY</option>
@@ -1622,7 +1786,7 @@
 
           <select class="filter-select" id="sortModeSelect" onchange="handleSortModeChange(this.value)">
             <option value="CATEGORY">SORT: CATEGORY</option>
-            <option value="PRIORITY_DESC">SORT: HIGH → LOW</option>
+            <option value="PRIORITY_DESC">SORT: URGENT / HIGH → LOW</option>
             <option value="PRIORITY_ASC">SORT: LOW → HIGH</option>
             <option value="OUTSTANDING">SORT: OUTSTANDING</option>
           </select>
@@ -2029,8 +2193,9 @@
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 6px; flex-wrap: wrap;">
           <div style="display: flex; gap: 6px;" id="notifFilterChips">
             <button class="filter-chip active" id="chipNotifAll" onclick="filterNotificationFeed('ALL')" style="font-size: 11px; padding: 4px 10px;">ALL</button>
+            <button class="filter-chip" id="chipNotifUrgentOnly" onclick="filterNotificationFeed('URGENT')" style="font-size: 11px; padding: 4px 10px; color: #DC2626; border-color: rgba(220,38,38,0.4);">🚨 URGENT</button>
             <button class="filter-chip" id="chipNotifUnread" onclick="filterNotificationFeed('UNREAD')" style="font-size: 11px; padding: 4px 10px;">UNREAD</button>
-            <button class="filter-chip" id="chipNotifUrgent" onclick="filterNotificationFeed('HIGH')" style="font-size: 11px; padding: 4px 10px;">HIGH PRIORITY</button>
+            <button class="filter-chip" id="chipNotifUrgent" onclick="filterNotificationFeed('HIGH')" style="font-size: 11px; padding: 4px 10px;">HIGH</button>
           </div>
           <div style="display: flex; gap: 8px;">
             <button onclick="markAllNotificationsAsRead()" style="background: none; border: none; font-size: 11px; font-weight: 800; color: var(--retail-orange); cursor: pointer; padding: 4px 6px;">
@@ -2135,6 +2300,18 @@
           <p id="subtasksModalCat" style="font-size: 10px; font-weight: 800; color: var(--retail-orange); text-transform: uppercase; margin-top: 2px;"></p>
         </div>
         <span class="material-icons" style="cursor: pointer; color: var(--retail-text-secondary);" onclick="closeSubtasksModal()">close</span>
+      </div>
+
+      <!-- Urgent For Today Toggle inside Modal -->
+      <div class="urgent-toggle-strip" id="modalUrgentToggleStrip" style="margin-top: 10px; margin-bottom: 6px;">
+        <label class="urgent-toggle-label">
+          <input type="checkbox" class="urgent-checkbox" id="modalUrgentCheckbox" onchange="handleModalUrgentToggle(this.checked)">
+          <span class="urgent-toggle-text" id="modalUrgentText">
+            <span class="material-icons" style="font-size: 15px;">local_fire_department</span>
+            <span>Make this task URGENT for today only</span>
+          </span>
+          <span class="urgent-status-pill" id="modalUrgentPill" style="display: none;">🚨 URGENT TODAY</span>
+        </label>
       </div>
 
       <div class="checklist-items-phone" id="subtasksChecklistContainer"></div>
@@ -2824,6 +3001,7 @@
     let tasks = [];
     let users = [];
     let completionsMap = {}; // key: taskId_dateString
+    let urgentTasksMap = {}; // key: taskId_dateString -> { isUrgent: true, dateString, taskId, setByUserName, ... }
     let allCompletions = [];
     let taskNotes = [];
     let taskPhotos = [];
@@ -3090,9 +3268,38 @@
         }
       }, err => {
         console.warn("Photos listener:", err);
-        loadPhotosFromLocalStorage();
-        renderTodayTasks();
-        renderAdminPhotoGalleryPhone();
+      });
+
+      // 8. Urgent Day Overrides Collection
+      let isInitialUrgentSnapshot = true;
+      db.collection("task_urgent_overrides").onSnapshot(snapshot => {
+        if (snapshot) {
+          const prevMap = { ...urgentTasksMap };
+          urgentTasksMap = {};
+          const newUrgentAlerts = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data && data.isUrgent && data.taskId && data.dateString) {
+              const key = `${data.taskId}_${data.dateString}`;
+              urgentTasksMap[key] = { id: doc.id, ...data };
+              if (!isInitialUrgentSnapshot && data.dateString === selectedDate && (!prevMap[key] || !prevMap[key].isUrgent)) {
+                newUrgentAlerts.push(data);
+              }
+            }
+          });
+          isInitialUrgentSnapshot = false;
+          renderTodayTasks();
+
+          // Dispatch real-time alert if colleague flagged task urgent from another device
+          newUrgentAlerts.forEach(item => {
+            const task = tasks.find(t => t.id == item.taskId);
+            if (task) {
+              handleUrgentTaskFlagged(task, item.dateString, item.setByUserName || 'Staff', false);
+            }
+          });
+        }
+      }, err => {
+        console.warn("Urgent overrides listener:", err);
       });
     }
 
@@ -3493,6 +3700,11 @@
     function isTaskScheduledForDate(task, dateStr) {
       if (task.active === false) return false;
 
+      // If task has been flagged urgent for this day, always display it on this day
+      if (urgentTasksMap[`${task.id}_${dateStr}`] && urgentTasksMap[`${task.id}_${dateStr}`].isUrgent) {
+        return true;
+      }
+
       const isOneTime = task.isOneTime || task.daysOfWeek === 'ONE_TIME';
       if (isOneTime) {
         let start = task.oneTimeStartDate;
@@ -3588,8 +3800,22 @@
               const comp = completionsMap[`${t.id}_${selectedDate}`];
               return !comp || comp.isPartial;
             });
+          } else if (activeFilterPriority === 'URGENT') {
+            catTasks = catTasks.filter(t => {
+              const urg = urgentTasksMap[`${t.id}_${selectedDate}`];
+              return urg && urg.isUrgent;
+            });
+          } else if (activeFilterPriority === 'HIGH') {
+            catTasks = catTasks.filter(t => {
+              const isUrg = urgentTasksMap[`${t.id}_${selectedDate}`]?.isUrgent;
+              return isUrg || (t.priority || 'MEDIUM') === 'HIGH';
+            });
           } else {
-            catTasks = catTasks.filter(t => (t.priority || 'MEDIUM') === activeFilterPriority);
+            catTasks = catTasks.filter(t => {
+              const isUrg = urgentTasksMap[`${t.id}_${selectedDate}`]?.isUrgent;
+              if (isUrg) return false;
+              return (t.priority || 'MEDIUM') === activeFilterPriority;
+            });
           }
         }
 
@@ -3602,18 +3828,37 @@
 
         // Apply Sort Mode
         if (activeSortMode === 'PRIORITY_DESC') {
-          const weights = { HIGH: 3, MEDIUM: 2, LOW: 1 };
-          catTasks.sort((a,b) => (weights[b.priority || 'MEDIUM'] || 0) - (weights[a.priority || 'MEDIUM'] || 0));
+          const weights = { URGENT: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+          catTasks.sort((a,b) => {
+            const prioA = (urgentTasksMap[`${a.id}_${selectedDate}`]?.isUrgent) ? 'URGENT' : (a.priority || 'MEDIUM');
+            const prioB = (urgentTasksMap[`${b.id}_${selectedDate}`]?.isUrgent) ? 'URGENT' : (b.priority || 'MEDIUM');
+            return (weights[prioB] || 0) - (weights[prioA] || 0);
+          });
         } else if (activeSortMode === 'PRIORITY_ASC') {
-          const weights = { HIGH: 3, MEDIUM: 2, LOW: 1 };
-          catTasks.sort((a,b) => (weights[a.priority || 'MEDIUM'] || 0) - (weights[b.priority || 'MEDIUM'] || 0));
+          const weights = { URGENT: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+          catTasks.sort((a,b) => {
+            const prioA = (urgentTasksMap[`${a.id}_${selectedDate}`]?.isUrgent) ? 'URGENT' : (a.priority || 'MEDIUM');
+            const prioB = (urgentTasksMap[`${b.id}_${selectedDate}`]?.isUrgent) ? 'URGENT' : (b.priority || 'MEDIUM');
+            return (weights[prioA] || 0) - (weights[prioB] || 0);
+          });
         } else if (activeSortMode === 'OUTSTANDING') {
           catTasks.sort((a,b) => {
             const compA = completionsMap[`${a.id}_${selectedDate}`];
             const compB = completionsMap[`${b.id}_${selectedDate}`];
             const doneA = compA && !compA.isPartial ? 1 : 0;
             const doneB = compB && !compB.isPartial ? 1 : 0;
-            return doneA - doneB;
+            if (doneA !== doneB) return doneA - doneB;
+            const urgA = (urgentTasksMap[`${a.id}_${selectedDate}`]?.isUrgent) ? 1 : 0;
+            const urgB = (urgentTasksMap[`${b.id}_${selectedDate}`]?.isUrgent) ? 1 : 0;
+            return urgB - urgA;
+          });
+        } else {
+          // Default: CATEGORY sort with URGENT tasks highlighted at the top
+          catTasks.sort((a,b) => {
+            const urgA = (urgentTasksMap[`${a.id}_${selectedDate}`]?.isUrgent) ? 1 : 0;
+            const urgB = (urgentTasksMap[`${b.id}_${selectedDate}`]?.isUrgent) ? 1 : 0;
+            if (urgB !== urgA) return urgB - urgA;
+            return (a.sortOrder || 0) - (b.sortOrder || 0);
           });
         }
 
@@ -3642,9 +3887,13 @@
           const isLocked = isDone || isSkipped;
           const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
 
+          const urgentOverride = urgentTasksMap[`${task.id}_${selectedDate}`];
+          const isUrgentToday = Boolean(urgentOverride && urgentOverride.isUrgent);
+          const isRecurring = !task.isOneTime && task.daysOfWeek !== 'ONE_TIME';
+
           const taskCard = document.createElement("div");
           taskCard.id = `taskCard_${task.id}`;
-          taskCard.className = `task-card-phone ${isDone ? 'completed' : ''} ${isPartial ? 'partial' : ''} ${isSkipped ? 'skipped' : ''}`;
+          taskCard.className = `task-card-phone ${isUrgentToday ? 'urgent-today' : ''} ${isDone ? 'completed' : ''} ${isPartial ? 'partial' : ''} ${isSkipped ? 'skipped' : ''}`;
 
           let bulletsPreview = "";
           if (bullets.length > 0) {
@@ -3700,12 +3949,50 @@
             scheduleBadge = `<span class="badge-tag days">${task.daysOfWeek || 'DAILY'}</span>`;
           }
 
+          let priorityBadgeHtml = "";
+          if (isUrgentToday) {
+            priorityBadgeHtml = `
+              <span class="badge-tag URGENT">
+                <span class="material-icons" style="font-size: 11px;">local_fire_department</span>
+                🚨 URGENT (TODAY)
+              </span>
+              <span class="badge-tag ${task.priority || 'MEDIUM'}" style="text-decoration: line-through; opacity: 0.55;" title="Normally ${task.priority || 'MEDIUM'}">
+                REGULAR: ${task.priority || 'MEDIUM'}
+              </span>
+            `;
+          } else {
+            priorityBadgeHtml = `<span class="badge-tag ${task.priority || 'MEDIUM'}">${task.priority || 'MEDIUM'}</span>`;
+          }
+
+          let urgentToggleHtml = "";
+          if (isRecurring) {
+            urgentToggleHtml = `
+              <div class="urgent-toggle-strip ${isUrgentToday ? 'active' : ''}">
+                <label class="urgent-toggle-label" title="Tick to make this recurring task urgent for today (${selectedDate}) only">
+                  <input type="checkbox" class="urgent-checkbox" ${isUrgentToday ? 'checked' : ''} onchange="toggleTaskUrgentForToday('${task.id}', this.checked)">
+                  <span class="urgent-toggle-text ${isUrgentToday ? 'active' : ''}">
+                    <span class="material-icons" style="font-size: 15px; color: ${isUrgentToday ? '#DC2626' : 'var(--retail-text-secondary)'};">
+                      ${isUrgentToday ? 'local_fire_department' : 'notification_important'}
+                    </span>
+                    <span>${isUrgentToday ? 'Urgent task for today only' : 'Make urgent for today only'}</span>
+                  </span>
+                  ${isUrgentToday ? `
+                    <span class="urgent-status-pill">
+                      <span class="material-icons" style="font-size: 10px;">priority_high</span>
+                      URGENT TODAY
+                    </span>
+                  ` : ''}
+                </label>
+              </div>
+            `;
+          }
+
           taskCard.innerHTML = `
             <div class="task-card-top">
               <div>
                 <div class="task-title-phone">${task.title}</div>
                 <div class="task-badges-row">
-                  <span class="badge-tag ${task.priority || 'MEDIUM'}">${task.priority || 'MEDIUM'}</span>
+                  ${priorityBadgeHtml}
                   ${scheduleBadge}
                   ${isSkipped ? `<span class="badge-tag" style="background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D; font-weight: 900;">⚡ SKIPPED</span>` : ''}
                   ${isPartial ? `<span class="badge-tag partial">½ PARTIAL (${comp.completedSubTasksCount || 1}/${comp.totalSubTasksCount || bullets.length})</span>` : ''}
@@ -3716,6 +4003,7 @@
             ${bulletsPreview}
 
             <div class="task-actions-stack">
+              ${urgentToggleHtml}
               ${actionBlock}
               <div class="task-secondary-btns">
                 <button class="btn-mobile-outline" onclick="openNotesModal('${task.id}', '${escapeQuotes(task.title)}')">
@@ -3781,6 +4069,66 @@
     }
 
     // -------------------------------------------------------------
+    // Urgent Override for Today (Day-Specific Persistence)
+    // -------------------------------------------------------------
+    async function toggleTaskUrgentForToday(taskId, isChecked) {
+      const task = tasks.find(t => t.id == taskId);
+      if (!task) return;
+
+      const overrideKey = `${taskId}_${selectedDate}`;
+      const staffName = activeStaffUser ? activeStaffUser.name : 'Floor Staff';
+      const staffId = activeStaffUser ? activeStaffUser.id.toString() : 'guest';
+
+      try {
+        if (isChecked) {
+          // Flag as urgent for selectedDate only
+          const overrideData = {
+            taskId: taskId.toString(),
+            taskTitle: task.title,
+            dateString: selectedDate,
+            isUrgent: true,
+            setAt: firebase.firestore.FieldValue.serverTimestamp(),
+            setByUserId: staffId,
+            setByUserName: staffName,
+            originalPriority: task.priority || 'MEDIUM'
+          };
+
+          // Optimistically update local map
+          urgentTasksMap[overrideKey] = {
+            id: overrideKey,
+            ...overrideData,
+            setAt: Date.now()
+          };
+
+          // Save to Firestore
+          if (db) {
+            await db.collection("task_urgent_overrides").doc(overrideKey).set(overrideData);
+          }
+
+          // Trigger sound, toast, push notification, and add to Notification Area
+          handleUrgentTaskFlagged(task, selectedDate, staffName, true);
+          showToast(`🚨 Task marked URGENT for today (${selectedDate})!`);
+        } else {
+          // Remove urgent flag for selectedDate -> reverts automatically to regular priority
+          delete urgentTasksMap[overrideKey];
+
+          if (db) {
+            await db.collection("task_urgent_overrides").doc(overrideKey).delete();
+          }
+
+          showToast(`✓ Task returned to normal ${task.priority || 'MEDIUM'} priority.`);
+        }
+
+        renderTodayTasks();
+        updateShiftMetrics();
+      } catch (err) {
+        console.error("Error toggling urgent status:", err);
+        showToast("Notice: Could not sync urgent flag with cloud: " + err.message);
+        renderTodayTasks();
+      }
+    }
+
+    // -------------------------------------------------------------
     // Subtasks Checklist Sign-Off (Mobile Bottom Sheet)
     // -------------------------------------------------------------
     function openSubtasksModal(taskId, categoryName) {
@@ -3800,6 +4148,33 @@
 
       document.getElementById("subtasksModalTitle").innerText = task.title;
       document.getElementById("subtasksModalCat").innerText = categoryName;
+
+      // Synchronize Urgent Toggle inside modal
+      const isRecurring = !task.isOneTime && task.daysOfWeek !== 'ONE_TIME';
+      const urgentOverrideKey = `${task.id}_${selectedDate}`;
+      const isUrgentToday = !!(urgentTasksMap[urgentOverrideKey] && urgentTasksMap[urgentOverrideKey].isUrgent);
+      const modalStrip = document.getElementById("modalUrgentToggleStrip");
+      const modalChk = document.getElementById("modalUrgentCheckbox");
+      const modalText = document.getElementById("modalUrgentText");
+      const modalPill = document.getElementById("modalUrgentPill");
+
+      if (modalStrip && modalChk) {
+        if (isRecurring) {
+          modalStrip.style.display = "block";
+          modalChk.checked = isUrgentToday;
+          if (isUrgentToday) {
+            modalStrip.classList.add("active");
+            if (modalText) modalText.classList.add("active");
+            if (modalPill) modalPill.style.display = "inline-flex";
+          } else {
+            modalStrip.classList.remove("active");
+            if (modalText) modalText.classList.remove("active");
+            if (modalPill) modalPill.style.display = "none";
+          }
+        } else {
+          modalStrip.style.display = "none";
+        }
+      }
 
       const container = document.getElementById("subtasksChecklistContainer");
       container.innerHTML = "";
@@ -3824,6 +4199,25 @@
       });
 
       document.getElementById("subtasksModal").style.display = "flex";
+    }
+
+    async function handleModalUrgentToggle(isChecked) {
+      if (!activeModalTask) return;
+      await toggleTaskUrgentForToday(activeModalTask.id, isChecked);
+      const modalStrip = document.getElementById("modalUrgentToggleStrip");
+      const modalText = document.getElementById("modalUrgentText");
+      const modalPill = document.getElementById("modalUrgentPill");
+      if (modalStrip) {
+        if (isChecked) {
+          modalStrip.classList.add("active");
+          if (modalText) modalText.classList.add("active");
+          if (modalPill) modalPill.style.display = "inline-flex";
+        } else {
+          modalStrip.classList.remove("active");
+          if (modalText) modalText.classList.remove("active");
+          if (modalPill) modalPill.style.display = "none";
+        }
+      }
     }
 
     function toggleSubtaskItem(bullet, rowEl) {
@@ -6042,10 +6436,23 @@
       const titleEl = document.getElementById("toastTaskTitle");
       const metaEl = document.getElementById("toastTaskMeta");
       const timeEl = document.getElementById("toastTimeAgo");
+      const headerEl = document.getElementById("toastBannerHeader");
+      const iconEl = document.getElementById("toastIcon");
 
       if (!toast) return;
 
       currentToastTaskId = notif.taskId;
+      toast.style.borderColor = "var(--retail-orange)";
+      toast.style.boxShadow = "0 10px 30px rgba(0,0,0,0.45)";
+
+      if (headerEl) {
+        headerEl.innerText = "STORE TASK DISPATCH • NEW ALERT";
+        headerEl.style.color = "var(--retail-orange)";
+      }
+      if (iconEl) {
+        iconEl.innerText = "notifications_active";
+        iconEl.style.color = "var(--retail-orange)";
+      }
       if (titleEl) titleEl.innerText = notif.title;
       if (metaEl) metaEl.innerText = `${notif.categoryName} • ${notif.priority}`;
       if (timeEl) timeEl.innerText = "JUST NOW";
@@ -6058,9 +6465,129 @@
       }, 6500);
     }
 
+    // -------------------------------------------------------------
+    // Urgent Task Notification & Alert Dispatch
+    // -------------------------------------------------------------
+    function handleUrgentTaskFlagged(task, dateStr, flaggedBy, isLocalAction) {
+      if (!task) return;
+      const catObj = categories.find(c => c.id === task.categoryId) || {};
+      const catName = catObj.name || "STORE FLOOR";
+
+      const notifItem = {
+        id: "urgent_" + task.id + "_" + dateStr + "_" + Date.now(),
+        taskId: task.id,
+        title: `🚨 URGENT FOR TODAY: ${task.title}`,
+        categoryName: catName,
+        priority: 'URGENT',
+        originalPriority: task.priority || 'MEDIUM',
+        daysOfWeek: task.daysOfWeek || 'DAILY',
+        source: 'URGENT_OVERRIDE',
+        timestamp: Date.now(),
+        unread: true,
+        isUrgentToday: true,
+        flaggedBy: flaggedBy || 'Floor Staff',
+        dateString: dateStr
+      };
+
+      notifications.unshift(notifItem);
+      saveNotifications();
+
+      // Dispatch urgent audio chime (two-tone ping)
+      playNotificationChime();
+      setTimeout(() => playNotificationChime(), 190);
+
+      // Display floating urgent toast
+      showUrgentTaskToast(notifItem, flaggedBy);
+
+      // Dispatch System / Lock Screen Notification (iOS PWA / Android)
+      dispatchUrgentSystemPushNotification(notifItem, flaggedBy);
+
+      // If notification center modal is currently open, refresh feed
+      const modal = document.getElementById("notificationCenterModal");
+      if (modal && modal.style.display !== "none") {
+        renderNotificationFeed();
+      }
+    }
+
+    function showUrgentTaskToast(notif, flaggedBy) {
+      const toast = document.getElementById("taskNotifToast");
+      const titleEl = document.getElementById("toastTaskTitle");
+      const metaEl = document.getElementById("toastTaskMeta");
+      const timeEl = document.getElementById("toastTimeAgo");
+      const headerEl = document.getElementById("toastBannerHeader");
+      const iconEl = document.getElementById("toastIcon");
+
+      if (!toast) return;
+
+      currentToastTaskId = notif.taskId;
+      toast.style.borderColor = "#DC2626";
+      toast.style.boxShadow = "0 12px 36px rgba(220, 38, 38, 0.45)";
+
+      if (headerEl) {
+        headerEl.innerText = "🚨 HIGH-PRIORITY ALERT • URGENT FOR TODAY";
+        headerEl.style.color = "#DC2626";
+      }
+      if (iconEl) {
+        iconEl.innerText = "local_fire_department";
+        iconEl.style.color = "#DC2626";
+      }
+      if (titleEl) titleEl.innerText = notif.title;
+      if (metaEl) metaEl.innerText = `${notif.categoryName} • FLAGGED BY ${flaggedBy || 'STAFF'} • FOR TODAY'S SHIFT ONLY`;
+      if (timeEl) timeEl.innerText = "URGENT";
+
+      toast.classList.add("show");
+
+      if (taskToastTimeout) clearTimeout(taskToastTimeout);
+      taskToastTimeout = setTimeout(() => {
+        dismissTaskToast();
+      }, 7500);
+    }
+
+    function dispatchUrgentSystemPushNotification(notif, flaggedBy) {
+      const title = `🚨 URGENT TASK (TODAY ONLY): ${notif.title.replace('🚨 URGENT FOR TODAY: ', '')}`;
+      const options = {
+        body: `Shift alert from ${flaggedBy || 'Staff'}: Marked urgent for today's shift (${notif.dateString || 'today'}). Immediate action required.`,
+        icon: './icons/icon-192.png',
+        badge: './icons/icon-192.png',
+        tag: `urgent-task-${notif.taskId}`,
+        renotify: true,
+        requireInteraction: true,
+        data: {
+          taskId: notif.taskId,
+          url: `./tasks.html?task=${notif.taskId}`
+        }
+      };
+
+      if (swRegistration && typeof swRegistration.showNotification === 'function') {
+        swRegistration.showNotification(title, options).catch(err => {
+          fallbackWindowNotification(title, options);
+        });
+        return;
+      }
+      fallbackWindowNotification(title, options);
+    }
+
     function dismissTaskToast() {
       const toast = document.getElementById("taskNotifToast");
-      if (toast) toast.classList.remove("show");
+      if (toast) {
+        toast.classList.remove("show");
+        setTimeout(() => {
+          if (toast) {
+            toast.style.borderColor = "var(--retail-orange)";
+            toast.style.boxShadow = "0 10px 30px rgba(0,0,0,0.45)";
+          }
+          const headerEl = document.getElementById("toastBannerHeader");
+          const iconEl = document.getElementById("toastIcon");
+          if (headerEl) {
+            headerEl.innerText = "STORE TASK DISPATCH • NEW ALERT";
+            headerEl.style.color = "var(--retail-orange)";
+          }
+          if (iconEl) {
+            iconEl.innerText = "notifications_active";
+            iconEl.style.color = "var(--retail-orange)";
+          }
+        }, 300);
+      }
     }
 
     function handleToastViewClick() {
@@ -6275,6 +6802,7 @@
       activeNotifFilter = filter;
       const chips = {
         'ALL': 'chipNotifAll',
+        'URGENT': 'chipNotifUrgentOnly',
         'UNREAD': 'chipNotifUnread',
         'HIGH': 'chipNotifUrgent'
       };
@@ -6293,13 +6821,21 @@
       if (!container) return;
 
       let list = notifications;
-      if (activeNotifFilter === 'UNREAD') {
+      if (activeNotifFilter === 'URGENT') {
+        list = list.filter(n => n.priority === 'URGENT' || n.isUrgentToday);
+      } else if (activeNotifFilter === 'UNREAD') {
         list = list.filter(n => n.unread);
       } else if (activeNotifFilter === 'HIGH') {
-        list = list.filter(n => n.priority === 'HIGH' || n.priority === 'URGENT');
+        list = list.filter(n => n.priority === 'HIGH' || n.priority === 'URGENT' || n.isUrgentToday);
       }
 
       if (list.length === 0) {
+        let emptyMsg = 'New tasks assigned to your store shift will appear here in real time.';
+        if (activeNotifFilter === 'URGENT') {
+          emptyMsg = 'No urgent tasks have been flagged for today\'s shift.';
+        } else if (activeNotifFilter === 'UNREAD') {
+          emptyMsg = 'You have caught up with all shift task alerts.';
+        }
         container.innerHTML = `
           <div style="text-align: center; padding: 40px 16px; color: var(--retail-text-secondary);">
             <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--retail-surface-subtle); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px dashed var(--retail-border);">
@@ -6307,7 +6843,7 @@
             </div>
             <h4 style="font-size: 14px; font-weight: 800; color: var(--retail-text-primary); margin-bottom: 4px;">No Notifications</h4>
             <p style="font-size: 11px; max-width: 260px; margin: 0 auto 16px;">
-              ${activeNotifFilter === 'UNREAD' ? 'You have caught up with all shift task alerts.' : 'New tasks assigned to your store shift will appear here in real time.'}
+              ${emptyMsg}
             </p>
             <button onclick="sendTestIphoneNotification()" class="btn-mobile-outline" style="display: inline-flex; width: auto; padding: 8px 16px; font-size: 11px; margin: 0 auto;">
               <span class="material-icons" style="font-size: 15px;">science</span> SEND TEST ALERT
@@ -6320,16 +6856,20 @@
       container.innerHTML = list.map(item => {
         const timeAgo = formatTimeAgo(item.timestamp);
         const isUnread = item.unread;
-        const priorityColor = item.priority === 'HIGH' ? '#EF4444' : (item.priority === 'LOW' ? '#10B981' : '#F59E0B');
+        const isUrgent = item.priority === 'URGENT' || item.isUrgentToday;
+        const priorityColor = isUrgent ? '#DC2626' : (item.priority === 'HIGH' ? '#EF4444' : (item.priority === 'LOW' ? '#10B981' : '#F59E0B'));
 
         return `
-          <div class="notif-item-card ${isUnread ? 'unread' : ''}" id="notifItem_${item.id}">
+          <div class="notif-item-card ${isUnread ? 'unread' : ''} ${isUrgent ? 'urgent' : ''}" id="notifItem_${item.id}">
             <div class="notif-item-header">
               <div style="display: flex; align-items: center; gap: 6px;">
-                ${isUnread ? '<span style="width: 7px; height: 7px; border-radius: 50%; background: var(--retail-orange); display: inline-block;"></span>' : ''}
-                <span class="badge-tag" style="background: ${priorityColor}15; color: ${priorityColor}; border: 1px solid ${priorityColor}40; font-size: 9px; padding: 2px 6px;">
-                  ${item.priority}
+                ${isUnread ? `<span style="width: 7px; height: 7px; border-radius: 50%; background: ${isUrgent ? '#DC2626' : 'var(--retail-orange)'}; display: inline-block;"></span>` : ''}
+                <span class="badge-tag" style="background: ${isUrgent ? '#FEE2E2' : priorityColor + '15'}; color: ${isUrgent ? '#991B1B' : priorityColor}; border: 1px solid ${isUrgent ? '#FCA5A5' : priorityColor + '40'}; font-size: 9px; padding: 2px 6px; font-weight: 900;">
+                  ${isUrgent ? '🚨 URGENT' : item.priority}
                 </span>
+                ${item.isUrgentToday ? `
+                  <span class="badge-tag" style="background: rgba(220, 38, 38, 0.12); color: #DC2626; border: 1px solid rgba(220, 38, 38, 0.35); font-size: 8px; padding: 1px 5px; font-weight: 800;">TODAY ONLY</span>
+                ` : ''}
                 <span class="badge-tag" style="background: var(--retail-surface-subtle); color: var(--retail-text-secondary); border: 1px solid var(--retail-border); font-size: 9px; padding: 2px 6px;">
                   ${item.categoryName}
                 </span>
@@ -6340,10 +6880,11 @@
               </div>
             </div>
 
-            <div class="notif-item-title">${escapeQuotes(item.title)}</div>
+            <div class="notif-item-title" style="${isUrgent ? 'color: #DC2626; font-weight: 800;' : ''}">${escapeQuotes(item.title)}</div>
+            ${item.flaggedBy ? `<div style="font-size: 10px; color: var(--retail-text-secondary); margin-bottom: 6px;">Flagged by <strong>${escapeQuotes(item.flaggedBy)}</strong> for ${item.dateString || 'today'}</div>` : ''}
 
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px;">
-              <button onclick="viewTaskFromNotification('${item.taskId}')" style="background: var(--retail-orange); color: #000; border: none; border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+              <button onclick="viewTaskFromNotification('${item.taskId}')" style="background: ${isUrgent ? '#DC2626' : 'var(--retail-orange)'}; color: ${isUrgent ? '#FFF' : '#000'}; border: none; border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
                 <span class="material-icons" style="font-size: 14px;">checklist</span>
                 VIEW IN CHECKLIST
               </button>
