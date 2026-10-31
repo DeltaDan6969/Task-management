@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "ShiftTask"
+rootProject.name = "Onestop Daily"
 
 include(":app")

@@ -1,6 +1,6 @@
 {
-  "name": "ShiftTask Tracker",
-  "description": "Retail task tracker with secure PIN authentication, admin management, layout editor, and completion reports.",
+  "name": "Onestop Daily",
+  "description": "Retail shift task manager, compliance checklists, and operations terminal for One Stop Canterbury.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

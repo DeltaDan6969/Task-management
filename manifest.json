@@ -1,7 +1,7 @@
 {
-  "name": "ShiftTask - Retail Task & Compliance System",
-  "short_name": "ShiftTask",
-  "description": "Retail task management and compliance terminal for store shifts",
+  "name": "Onestop Daily - Shift Tasks & Operations",
+  "short_name": "Onestop Daily",
+  "description": "Retail shift task management and operations terminal for One Stop",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",

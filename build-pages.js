@@ -181,6 +181,7 @@ const pwaFiles = [
   'apple-touch-icon-precomposed.png',
   'icon-192.png',
   'icon-512.png',
+  'app-logo.png',
   'favicon.png',
   'favicon.ico'
 ];

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>ShiftTask - Retail Task & Compliance System</title>
+  <title>Onestop Daily - Shift Tasks & Operations</title>
 
   <!-- iOS Safari & Progressive Web App Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ShiftTask">
+  <meta name="apple-mobile-web-app-title" content="Onestop Daily">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
   <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167x167.png">
@@ -184,7 +184,7 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-      border-bottom: 2.5px solid var(--retail-orange);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -214,19 +214,19 @@
     .brand-icon-mini {
       width: 34px;
       height: 34px;
-      background: #FFFFFF;
-      color: var(--retail-header-black);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
     .brand-icon-mini .material-icons {
       font-size: 20px;
-      color: var(--retail-header-black);
+      color: #FFFFFF;
     }
 
     .brand-titles {
@@ -246,9 +246,9 @@
     }
 
     .brand-titles p {
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: 800;
-      color: var(--retail-orange);
+      color: #94A3B8;
       letter-spacing: 0.8px;
       text-transform: uppercase;
       white-space: nowrap;
@@ -389,18 +389,18 @@
     }
 
     .btn-header-sync {
-      background: rgba(230, 81, 0, 0.18);
-      border: 1px solid rgba(230, 81, 0, 0.45);
-      color: #FFA726;
-      height: 22px;
-      padding: 0 8px;
-      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #E2E8F0;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 12px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       font-size: 9.5px;
-      font-weight: 900;
-      letter-spacing: 0.4px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
@@ -408,9 +408,9 @@
     }
 
     .btn-header-sync:hover {
-      background: rgba(230, 81, 0, 0.32);
-      border-color: rgba(230, 81, 0, 0.65);
-      color: #FFB74D;
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.32);
+      color: #FFFFFF;
     }
 
     .btn-header-sync:active {
@@ -801,62 +801,74 @@
       padding: 12px;
     }
 
-    /* Screen 1: KIOSK SIGN-IN (Mobile Stack) */
+    /* Screen 1: KIOSK SIGN-IN (Mobile Stack - Midnight Navy & Clean Slate Redesign) */
     .kiosk-hero-card {
-      background: var(--retail-header-black);
+      background: linear-gradient(180deg, #131822 0%, #161D2A 100%);
       color: #FFFFFF;
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: 18px;
+      padding: 16px 16px 14px;
       margin-bottom: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .kiosk-hero-top {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .kiosk-clock-box {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      padding: 10px 12px;
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 11px 16px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
 
     .clock-title {
       font-size: 10px;
       font-weight: 800;
-      color: var(--retail-orange);
+      color: #94A3B8;
       display: flex;
       align-items: center;
-      gap: 4px;
-    }
-
-    .clock-val-date {
-      font-size: 11px;
-      font-weight: 700;
-      color: #FFFFFF;
-      margin-top: 2px;
-    }
-
-    .clock-val-time {
-      font-size: 18px;
-      font-weight: 900;
-      color: #FFFFFF;
-      font-family: monospace;
+      gap: 5px;
+      text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
+    .clock-val-date {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-top: 3px;
+      letter-spacing: 0.3px;
+    }
+
+    .clock-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 0 14px;
+    }
+
+    .clock-val-time {
+      font-size: 22px;
+      font-weight: 900;
+      color: #FFFFFF;
+      font-family: monospace;
+      letter-spacing: 1px;
+      text-align: right;
+      flex: 1;
+    }
+
     .kiosk-cloud-banner {
-      background: rgba(46, 125, 50, 0.15);
-      border: 1px solid rgba(46, 125, 50, 0.35);
-      border-radius: 8px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 10px;
       padding: 8px 12px;
       margin-top: 10px;
       display: flex;
@@ -864,279 +876,769 @@
       justify-content: space-between;
       font-size: 10px;
       font-weight: 800;
-      color: #4CAF50;
+      color: #10B981;
+      letter-spacing: 0.4px;
     }
 
     .section-title-strip {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       padding: 0 4px;
     }
 
     .section-title-strip h3 {
       font-size: 13px;
-      font-weight: 900;
+      font-weight: 800;
       letter-spacing: 0.5px;
-      color: var(--retail-text-primary);
+      color: #475569;
       text-transform: uppercase;
     }
 
     .section-title-strip span {
-      font-size: 11px;
-      color: var(--retail-text-secondary);
+      font-size: 12px;
+      color: #94A3B8;
+      font-style: italic;
       font-weight: 600;
+    }
+
+    [data-theme="dark"] .section-title-strip h3 {
+      color: #94A3B8;
+    }
+    [data-theme="dark"] .section-title-strip span {
+      color: #64748B;
     }
 
     /* Staff List View */
     .staff-list-phone {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
 
     .staff-card-phone {
-      background: var(--retail-surface);
-      border: 1px solid var(--retail-border);
-      border-radius: 10px;
-      padding: 12px 14px;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-      transition: all 0.15s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    [data-theme="dark"] .staff-card-phone {
+      background: #181D26;
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .staff-card-phone:active {
-      transform: scale(0.98);
-      border-color: var(--retail-orange);
-      background: #FFFBF7;
+      transform: scale(0.985);
+      border-color: #CBD5E1;
+      background: #F8FAFC;
+    }
+
+    [data-theme="dark"] .staff-card-phone:active {
+      background: #1E2430;
+      border-color: rgba(255, 255, 255, 0.16);
     }
 
     .staff-card-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .staff-avatar-circle {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--retail-header-black);
+      background: #1E222A;
       color: #FFFFFF;
       font-size: 15px;
       font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid var(--retail-orange);
       flex-shrink: 0;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     }
 
     .staff-name-role h4 {
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--retail-text-primary);
+      font-size: 15px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 4px 0;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      text-transform: uppercase;
     }
 
+    [data-theme="dark"] .staff-name-role h4 {
+      color: #F8FAFC;
+    }
+
+    /* Pastel Role Badges matching design */
     .staff-role-badge {
-      display: inline-block;
-      font-size: 9px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
       font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-top: 3px;
-      letter-spacing: 0.5px;
+      padding: 2.5px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.2;
     }
 
     .staff-role-badge.admin {
       background: #FEE2E2;
       color: #991B1B;
-      border: 1px solid #FCA5A5;
+      border: 1px solid #FECACA;
     }
 
     .staff-role-badge.staff {
-      background: #E0E7FF;
-      color: #3730A3;
-      border: 1px solid #C7D2FE;
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #DBEAFE;
+    }
+
+    .staff-choose-pin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #FAF5FF;
+      color: #7E22CE;
+      border: 1px solid #E9D5FF;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2.5px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-left: 6px;
+      line-height: 1.2;
     }
 
     .staff-card-arrow {
-      color: var(--retail-text-secondary);
+      color: #9CA3AF;
       font-size: 20px;
+      transition: transform 0.15s;
+    }
+
+    .staff-card-phone:hover .staff-card-arrow {
+      color: #64748B;
+      transform: translateX(2px);
+    }
+
+    /* Staff Roster Redesign Styles */
+    .staff-roster-admin-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    [data-theme="dark"] .staff-roster-admin-card {
+      background: var(--retail-surface) !important;
+      border-color: var(--retail-border) !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+    }
+
+    .staff-roster-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: 0.03em;
+    }
+    [data-theme="dark"] .staff-roster-title {
+      color: var(--retail-text-primary) !important;
+    }
+
+    .btn-add-staff-admin {
+      background: #0F172A;
+      color: #FFFFFF;
+      border: none;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    [data-theme="dark"] .btn-add-staff-admin {
+      background: var(--retail-orange) !important;
+      color: #FFFFFF !important;
+    }
+
+    .staff-filter-pill {
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #0F172A;
+      font-family: inherit;
+    }
+    .staff-filter-pill.active {
+      background: #0F172A !important;
+      color: #FFFFFF !important;
+      border-color: #0F172A !important;
+    }
+    .staff-filter-pill:not(.active):hover {
+      background: #F8FAFC;
+      border-color: #94A3B8;
+    }
+
+    [data-theme="dark"] .staff-filter-pill {
+      background: var(--retail-surface-subtle) !important;
+      border-color: var(--retail-border) !important;
+      color: var(--retail-text-primary) !important;
+    }
+    [data-theme="dark"] .staff-filter-pill.active {
+      background: var(--retail-orange) !important;
+      color: #FFFFFF !important;
+      border-color: var(--retail-orange) !important;
+    }
+    [data-theme="dark"] .staff-filter-pill:not(.active):hover {
+      background: #252D3C !important;
+      border-color: #4B5563 !important;
+    }
+
+    .staff-section-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: 0.04em;
+      margin: 16px 0 8px 0;
+      text-transform: uppercase;
+    }
+    [data-theme="dark"] .staff-section-title {
+      color: var(--retail-text-primary) !important;
+    }
+
+    .staff-row-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: background 0.12s ease;
+    }
+    .staff-row-card:hover {
+      background: #F8FAFC;
+    }
+
+    [data-theme="dark"] .staff-row-card {
+      background: var(--retail-surface-subtle) !important;
+      border-color: var(--retail-border) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    }
+    [data-theme="dark"] .staff-row-card:hover {
+      background: #252C3A !important;
+    }
+
+    .staff-row-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0F172A;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    [data-theme="dark"] .staff-row-name {
+      color: #F8FAFC !important;
+    }
+
+    .staff-pending-pin-tag {
+      background: #FAF5FF;
+      color: #7C3AED;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #E9D5FF;
+      display: inline-flex;
+      align-items: center;
+    }
+    [data-theme="dark"] .staff-pending-pin-tag {
+      background: rgba(124, 58, 237, 0.2) !important;
+      color: #C084FC !important;
+      border-color: rgba(192, 132, 252, 0.35) !important;
+    }
+
+    .staff-avatar-circle.admin {
+      background: #EA580C !important;
+      color: #FFFFFF !important;
+    }
+    .staff-avatar-circle.staff {
+      background: #64748B !important;
+      color: #FFFFFF !important;
+    }
+
+    .btn-set-pin-action {
+      background: #0F172A;
+      color: #EA580C;
+      border: 1px solid #EA580C;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .btn-set-pin-action:hover {
+      background: #1E293B;
+      color: #FB923C;
+    }
+    [data-theme="dark"] .btn-set-pin-action {
+      background: #0B0E14 !important;
+      color: var(--retail-orange) !important;
+      border-color: var(--retail-orange) !important;
+    }
+    [data-theme="dark"] .btn-set-pin-action:hover {
+      background: #1E2533 !important;
+      color: #FFA726 !important;
+    }
+
+    .btn-manage-staff-action {
+      background: #FFFFFF;
+      color: #0F172A;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .btn-manage-staff-action:hover {
+      background: #F8FAFC;
+      border-color: #94A3B8;
+    }
+    [data-theme="dark"] .btn-manage-staff-action {
+      background: var(--retail-surface) !important;
+      color: var(--retail-text-primary) !important;
+      border-color: var(--retail-border) !important;
+    }
+    [data-theme="dark"] .btn-manage-staff-action:hover {
+      background: #252D3C !important;
+      border-color: var(--retail-border-strong) !important;
+      color: #FFFFFF !important;
+    }
+
+    .role-toggle-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1.5px solid #CBD5E1;
+      background: #F8FAFC;
+      color: #64748B;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .role-toggle-btn.active {
+      background: #0F172A !important;
+      color: #FFFFFF !important;
+      border-color: #0F172A !important;
+    }
+    [data-theme="dark"] .role-toggle-btn {
+      background: var(--retail-surface-subtle) !important;
+      color: var(--retail-text-secondary) !important;
+      border-color: var(--retail-border) !important;
+    }
+    [data-theme="dark"] .role-toggle-btn.active {
+      background: var(--retail-orange) !important;
+      color: #FFFFFF !important;
+      border-color: var(--retail-orange) !important;
+    }
+
+    /* Modal Manage Staff Dark Mode */
+    .manage-staff-pin-card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    [data-theme="dark"] .manage-staff-pin-card {
+      background: var(--retail-surface-subtle) !important;
+      border-color: var(--retail-border) !important;
+    }
+    [data-theme="dark"] #manageStaffHeaderName {
+      color: var(--retail-text-primary) !important;
+    }
+    [data-theme="dark"] .manage-staff-pin-title {
+      color: var(--retail-text-primary) !important;
     }
 
     /* Screen 2: TODAY SCREEN */
     .mobile-date-strip {
-      background: var(--retail-surface);
-      border: 1px solid var(--retail-border);
-      border-radius: 8px;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
       padding: 8px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    [data-theme="dark"] .mobile-date-strip {
+      background: #181D26;
+      border-color: rgba(255, 255, 255, 0.08);
     }
 
     .date-step-btn {
-      background: var(--retail-surface-subtle);
-      border: 1px solid var(--retail-border);
-      color: var(--retail-text-primary);
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #0F172A;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    .date-step-btn:active {
-      background: #E5E7EB;
+    .date-step-btn:hover {
+      background: #F8FAFC;
+      border-color: #94A3B8;
+    }
+
+    [data-theme="dark"] .date-step-btn {
+      background: #1E2430;
+      border-color: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
     }
 
     .date-label-badge {
-      font-size: 12px;
+      font-size: 15px;
       font-weight: 900;
-      letter-spacing: 0.3px;
-      color: var(--retail-text-primary);
+      letter-spacing: 0.5px;
+      color: #0F172A;
       text-transform: uppercase;
+    }
+
+    [data-theme="dark"] .date-label-badge {
+      color: #FFFFFF;
     }
 
     .btn-today-chip {
-      background: var(--retail-orange);
+      background: #0F172A;
       color: #FFFFFF;
       border: none;
-      border-radius: 4px;
-      padding: 4px 8px;
-      font-size: 10px;
-      font-weight: 800;
+      border-radius: 6px;
+      padding: 6px 14px;
+      height: 36px;
+      font-size: 11px;
+      font-weight: 900;
       cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background-color 0.15s ease;
     }
 
-    /* Shift KPI Mini Bar */
-    .mobile-kpi-bar {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 12px;
+    .btn-today-chip:hover {
+      background: #1E293B;
     }
 
-    .kpi-tile {
-      background: var(--retail-surface);
-      border: 1px solid var(--retail-border);
-      border-radius: 8px;
-      padding: 8px 10px;
-      text-align: center;
+    [data-theme="dark"] .btn-today-chip {
+      background: #334155;
+      color: #FFFFFF;
     }
 
-    .kpi-tile.green { border-bottom: 3px solid var(--retail-green-done); }
-    .kpi-tile.orange { border-bottom: 3px solid var(--retail-orange); }
-    .kpi-tile.blue { border-bottom: 3px solid var(--retail-blue); }
+    /* Activity Hub (Replacing redundant 3-tile KPI cards) */
+    .activity-hub-card {
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      margin-bottom: 14px;
+    }
 
-    .kpi-val {
+    [data-theme="dark"] .activity-hub-card {
+      background: #151922;
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .hub-ring-wrapper {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .hub-ring-svg {
+      transform: rotate(-90deg);
+      width: 80px;
+      height: 80px;
+    }
+
+    .hub-ring-bg {
+      fill: none;
+      stroke: #E2E8F0;
+    }
+
+    [data-theme="dark"] .hub-ring-bg {
+      stroke: rgba(255, 255, 255, 0.1);
+    }
+
+    .hub-ring-progress {
+      fill: none;
+      stroke: #CBD5E1;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;
+    }
+
+    .hub-ring-text {
+      position: absolute;
+      font-size: 20px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: -0.5px;
+    }
+
+    [data-theme="dark"] .hub-ring-text {
+      color: #FFFFFF;
+    }
+
+    .hub-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hub-title {
       font-size: 16px;
       font-weight: 900;
-      color: var(--retail-text-primary);
+      color: #0F172A;
+      margin: 0 0 6px 0;
+      letter-spacing: -0.2px;
     }
 
-    .kpi-lbl {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--retail-text-secondary);
-      text-transform: uppercase;
-      margin-top: 1px;
+    [data-theme="dark"] .hub-title {
+      color: #FFFFFF;
     }
 
-    /* Filter Chips Horizontal Carousel */
-    .chips-carousel {
+    .hub-stat-line {
+      font-size: 17px;
+      font-weight: 900;
+      color: #0F172A;
+      line-height: 1.35;
       display: flex;
+      align-items: baseline;
       gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 6px;
+    }
+
+    [data-theme="dark"] .hub-stat-line {
+      color: #FFFFFF;
+    }
+
+    .hub-stat-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748B;
+    }
+
+    [data-theme="dark"] .hub-stat-label {
+      color: #94A3B8;
+    }
+
+    .hub-stat-line.pending {
+      margin-top: 3px;
+    }
+
+    .hub-stat-num.orange {
+      color: #EA580C;
+    }
+
+    .hub-stat-label.orange-bold {
+      color: #EA580C;
+      font-weight: 800;
+    }
+
+    /* Unified Search & Add Belt */
+    .today-search-add-belt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 12px;
+    }
+
+    .today-search-box {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .today-search-box .search-icon {
+      position: absolute;
+      left: 12px;
+      font-size: 18px;
+      color: #94A3B8;
+      pointer-events: none;
+    }
+
+    .today-search-box input {
+      width: 100%;
+      height: 40px;
+      padding: 0 34px 0 38px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      background: #FFFFFF;
+      color: #0F172A;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .today-search-box input:focus {
+      border-color: #0F172A;
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+    }
+
+    [data-theme="dark"] .today-search-box input {
+      background: #181D26;
+      border-color: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+    }
+
+    .today-search-box button {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #94A3B8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+    }
+
+    .btn-belt-add {
+      height: 40px;
+      padding: 0 16px;
+      background: #0F172A;
+      color: #EA580C;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      box-sizing: border-box;
+    }
+
+    .btn-belt-add:hover {
+      background: #1E293B;
+      color: #F97316;
+    }
+
+    /* Filter Pills Belt */
+    .filter-pills-belt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 14px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
 
-    .chips-carousel::-webkit-scrollbar {
+    .filter-pills-belt::-webkit-scrollbar {
       display: none;
     }
 
-    .filter-chip {
-      white-space: nowrap;
-      padding: 5px 12px;
-      border-radius: 16px;
-      font-size: 11px;
-      font-weight: 800;
-      border: 1px solid var(--retail-border);
-      background: var(--retail-surface);
-      color: var(--retail-text-secondary);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .filter-chip.active {
-      background: var(--retail-header-black);
-      color: #FFFFFF;
-      border-color: var(--retail-header-black);
-    }
-
-    .edit-day-btn {
-      padding: 7px 2px;
-      font-size: 10px;
-      font-weight: 800;
-      text-align: center;
-      border-radius: 4px;
-      border: 1px solid var(--retail-border);
-      background: var(--retail-surface-subtle);
-      color: var(--retail-text-primary);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .edit-day-btn.active {
-      background: var(--retail-header-black);
-      color: #FFFFFF;
-      border-color: var(--retail-header-black);
-    }
-
-    .filter-dropdowns-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .filter-select {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--retail-border);
-      background: var(--retail-surface);
-      font-size: 11px;
+    .filter-pill-btn {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #0F172A;
+      font-size: 13px;
       font-weight: 700;
-      color: var(--retail-text-primary);
-    }
-
-    .btn-add-task-mobile {
-      background: var(--retail-orange);
-      color: #FFFFFF;
-      border: none;
-      border-radius: 6px;
-      padding: 7px 12px;
-      font-size: 11px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      padding: 8px 18px;
+      border-radius: 9999px;
       cursor: pointer;
+      white-space: nowrap;
       flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      user-select: none;
     }
 
-    /* Mobile Task Card */
+    [data-theme="dark"] .filter-pill-btn {
+      background: #181D26;
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #E2E8F0;
+    }
+
+    .filter-pill-btn.active {
+      background: #0F172A;
+      color: #FFFFFF;
+      border-color: #0F172A;
+      font-weight: 800;
+    }
+
+    [data-theme="dark"] .filter-pill-btn.active {
+      background: #FFFFFF;
+      color: #0F172A;
+      border-color: #FFFFFF;
+    }
+
+    /* Category Section Header */
     .category-group-phone {
       margin-bottom: 18px;
     }
@@ -1146,50 +1648,272 @@
       align-items: center;
       justify-content: space-between;
       padding: 6px 2px;
-      margin-bottom: 8px;
-      border-bottom: 2px solid var(--retail-orange);
-      font-size: 13px;
-      font-weight: 900;
-      color: var(--retail-text-primary);
-    }
-
-    .task-card-phone {
-      background: var(--retail-surface);
-      border: 1px solid var(--retail-border);
-      border-radius: 10px;
-      padding: 12px;
       margin-bottom: 10px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      border-bottom: none;
+      font-size: 14px;
+      font-weight: 900;
+      color: #0F172A;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .task-card-phone.completed {
-      border-left: 5px solid var(--retail-green-done);
-      background: #FAFFFA;
+    [data-theme="dark"] .category-header-phone {
+      color: #F8FAFC;
     }
 
-    .task-card-phone.partial {
-      border-left: 5px solid var(--retail-amber);
-      background: #FFFDF9;
+    /* Refined Task Card */
+    .task-card-phone {
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      position: relative;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
     }
 
-    .task-card-phone.skipped {
-      border-left: 5px solid #E65100;
-      background: #FFFDF8;
+    [data-theme="dark"] .task-card-phone {
+      background: #181D26;
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     .task-card-phone.urgent-today {
-      border: 2px solid #EF4444;
-      border-left: 6px solid #DC2626;
-      background: linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, #FFFFFF 100%);
-      box-shadow: 0 4px 18px rgba(220, 38, 38, 0.18), 0 0 0 1px rgba(239, 68, 68, 0.2);
-      position: relative;
+      border: 1px solid #FECACA;
+      border-left: 5px solid #EF4444;
+      background: #FFFFFF;
     }
 
     [data-theme="dark"] .task-card-phone.urgent-today {
-      border-color: #EF4444;
-      border-left: 6px solid #F87171;
-      background: linear-gradient(135deg, #2B1111 0%, #171A21 100%);
-      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35);
+      border-color: rgba(239, 68, 68, 0.4);
+      border-left: 5px solid #EF4444;
+      background: #1C1917;
+    }
+
+    .task-card-phone.completed {
+      border-left: 5px solid #10B981;
+    }
+
+    .task-card-phone.partial {
+      border-left: 5px solid #F59E0B;
+    }
+
+    .task-card-phone.skipped {
+      border-left: 5px solid #94A3B8;
+    }
+
+    .task-title-phone {
+      font-size: 16px;
+      font-weight: 900;
+      color: #0F172A;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    [data-theme="dark"] .task-title-phone {
+      color: #F8FAFC;
+    }
+
+    /* Badges Row */
+    .task-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge-tag-urgent {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+      font-size: 10.5px;
+      font-weight: 900;
+      padding: 2.5px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .badge-tag-regular {
+      background: #F1F5F9;
+      color: #64748B;
+      border: 1px solid #E2E8F0;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2.5px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+    }
+
+    .badge-tag-dark {
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 10.5px;
+      font-weight: 900;
+      padding: 2.5px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+    }
+
+    .badge-tag-light {
+      background: #F1F5F9;
+      color: #64748B;
+      border: 1px solid #E2E8F0;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2.5px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+    }
+
+    /* Checklist preview box */
+    .checklist-summary-box {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+      margin: 10px 0 12px;
+      line-height: 1.4;
+    }
+
+    [data-theme="dark"] .checklist-summary-box {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.08);
+      color: #CBD5E1;
+    }
+
+    /* Urgent Toggle Strip (Rose Pill in IMG_3572) */
+    .urgent-toggle-pill {
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px dashed #CBD5E1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin: 10px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .urgent-toggle-pill.active {
+      background: #FEE2E2;
+      border: 1px solid #FECACA;
+    }
+
+    [data-theme="dark"] .urgent-toggle-pill.active {
+      background: rgba(239, 68, 68, 0.16);
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+
+    .urgent-toggle-pill .label-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+
+    [data-theme="dark"] .urgent-toggle-pill .label-text {
+      color: #F8FAFC;
+    }
+
+    /* Primary Actions Row */
+    .task-primary-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-main-checklist {
+      flex: 1;
+      height: 44px;
+      background: #0F172A;
+      color: #FFA000;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-main-checklist:active {
+      transform: scale(0.98);
+      background: #1E293B;
+    }
+
+    .btn-main-skip {
+      height: 44px;
+      padding: 0 16px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #475569;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    [data-theme="dark"] .btn-main-skip {
+      background: #1E2430;
+      border-color: rgba(255, 255, 255, 0.14);
+      color: #CBD5E1;
+    }
+
+    /* Secondary Actions Row (3-column grid) */
+    .task-secondary-actions-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-sub-action {
+      height: 38px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    [data-theme="dark"] .btn-sub-action {
+      background: #1E2430;
+      border-color: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+    }
+
+    .btn-sub-action:active {
+      background: #F1F5F9;
+      transform: scale(0.97);
+    }
+
+    [data-theme="dark"] .btn-sub-action:active {
+      background: #283141;
     }
 
     .skip-preset-chip {
@@ -1538,24 +2262,414 @@
 
     .admin-tab-chip {
       white-space: nowrap;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      border: 1px solid var(--retail-border);
-      background: var(--retail-surface);
-      color: var(--retail-text-secondary);
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #0F172A;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       flex-shrink: 0;
+      transition: all 0.15s ease;
+      user-select: none;
     }
 
     .admin-tab-chip.active {
-      background: var(--retail-header-black);
+      background: #0F172A;
       color: #FFFFFF;
-      border-color: var(--retail-header-black);
+      border-color: #0F172A;
+      font-weight: 800;
+    }
+
+    [data-theme="dark"] .admin-tab-chip {
+      background: #181D26;
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #E2E8F0;
+    }
+
+    [data-theme="dark"] .admin-tab-chip.active {
+      background: #FFFFFF;
+      color: #0F172A;
+      border-color: #FFFFFF;
+    }
+
+    /* Admin Action Belt */
+    .admin-action-belt {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding: 2px 0;
+    }
+
+    .admin-belt-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: 0.3px;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    [data-theme="dark"] .admin-belt-title {
+      color: #FFFFFF;
+    }
+
+    .btn-admin-add-cat {
+      height: 38px;
+      padding: 0 14px;
+      background: #0F172A;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .btn-admin-add-cat:hover {
+      background: #1E293B;
+    }
+
+    [data-theme="dark"] .btn-admin-add-cat {
+      background: #2D3748;
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    /* Grouped Accordion Category Cards */
+    .admin-cat-accordion {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: all 0.15s ease;
+    }
+
+    [data-theme="dark"] .admin-cat-accordion {
+      background: #181D26;
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-cat-accordion-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      background: #FFFFFF;
+      transition: background-color 0.15s;
+    }
+
+    [data-theme="dark"] .admin-cat-accordion-header {
+      background: #181D26;
+    }
+
+    .admin-cat-accordion-header:hover {
+      background: #F8FAFC;
+    }
+
+    [data-theme="dark"] .admin-cat-accordion-header:hover {
+      background: #1F2633;
+    }
+
+    .admin-cat-header-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    [data-theme="dark"] .admin-cat-header-title {
+      color: #F8FAFC;
+    }
+
+    .admin-cat-header-icon {
+      font-size: 22px;
+      color: #0F172A;
+      transition: transform 0.2s ease;
+    }
+
+    [data-theme="dark"] .admin-cat-header-icon {
+      color: #CBD5E1;
+    }
+
+    .admin-cat-accordion-body {
+      padding: 0 14px 14px;
+      background: #FFFFFF;
+    }
+
+    [data-theme="dark"] .admin-cat-accordion-body {
+      background: #181D26;
+    }
+
+    /* Nested Sub-Category Card (White box inside open accordion) */
+    .admin-cat-sub-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] .admin-cat-sub-card {
+      background: #131720;
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-cat-sub-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .admin-cat-sub-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .admin-cat-sub-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #0F172A;
+    }
+
+    [data-theme="dark"] .admin-cat-sub-title {
+      color: #FFFFFF;
+    }
+
+    .admin-cat-sub-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-cat-edit {
+      height: 30px;
+      padding: 0 10px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #0F172A;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    [data-theme="dark"] .btn-cat-edit {
+      background: #1E2430;
+      border-color: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+    }
+
+    .btn-cat-delete {
+      width: 32px;
+      height: 30px;
+      background: #FEE2E2;
+      border: 1px solid #FECACA;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #DC2626;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    [data-theme="dark"] .btn-cat-delete {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #F87171;
+    }
+
+    /* Task Row Card inside Admin Category */
+    .admin-task-row-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    [data-theme="dark"] .admin-task-row-card {
+      background: #1A202C;
+      border-color: rgba(255, 255, 255, 0.07);
+    }
+
+    .admin-task-row-card:hover {
+      border-color: #CBD5E1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .admin-task-row-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .drag-handle {
+      color: #94A3B8;
+      cursor: grab;
+      font-size: 20px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .admin-task-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .admin-task-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #0F172A;
+      line-height: 1.25;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    [data-theme="dark"] .admin-task-title {
+      color: #F8FAFC;
+    }
+
+    .admin-task-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .admin-badge-prio {
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.3px;
+      display: inline-block;
+    }
+
+    .admin-badge-prio.HIGH {
+      color: #DC2626;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+    }
+
+    .admin-badge-prio.MEDIUM {
+      color: #EA580C;
+      background: #FFF7ED;
+      border: 1px solid #FED7AA;
+    }
+
+    .admin-badge-prio.LOW {
+      color: #475569;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+    }
+
+    .admin-badge-days {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #F1F5F9;
+      color: #475569;
+      border: 1px solid #E2E8F0;
+    }
+
+    [data-theme="dark"] .admin-badge-days {
+      background: #252D3D;
+      color: #CBD5E1;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-task-pencil {
+      width: 34px;
+      height: 34px;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #475569;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+
+    .btn-task-pencil:hover {
+      background: #E2E8F0;
+      color: #0F172A;
+    }
+
+    [data-theme="dark"] .btn-task-pencil {
+      background: #252D3D;
+      border-color: rgba(255, 255, 255, 0.1);
+      color: #CBD5E1;
+    }
+
+    /* Inline Add Task Button */
+    .btn-inline-add-task {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: transparent;
+      border: 1.5px dashed #CBD5E1;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-inline-add-task:hover {
+      background: #F8FAFC;
+      border-color: #94A3B8;
+    }
+
+    [data-theme="dark"] .btn-inline-add-task {
+      border-color: rgba(255, 255, 255, 0.18);
+      color: #E2E8F0;
+    }
+
+    [data-theme="dark"] .btn-inline-add-task:hover {
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .admin-card-phone {
@@ -1754,6 +2868,240 @@
       gap: 8px;
       z-index: 9999;
     }
+
+    /* ============================================================ */
+    /* TABLET & PHONE UNIFIED LAYOUT SYSTEM                         */
+    /* ============================================================ */
+
+    /* Layout Mode Switcher Pill in Header */
+    .layout-toggle-pill {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+      user-select: none;
+    }
+
+    .layout-pill-btn {
+      border: none;
+      background: transparent;
+      color: #94A3B8;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .layout-pill-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .layout-pill-btn.active {
+      background: var(--retail-orange) !important;
+      color: #FFFFFF !important;
+      font-weight: 900;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 480px) {
+      .layout-btn-label {
+        display: none;
+      }
+      .layout-pill-btn {
+        padding: 4px 6px;
+      }
+    }
+
+    /* Tablet Mode Container & Body */
+    body.tablet-viewport {
+      background-color: #0B0E14;
+    }
+
+    #appShell.tablet-mode {
+      max-width: 1200px;
+      width: 95%;
+      margin: 14px auto;
+      border-radius: 20px;
+      box-shadow: 0 12px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    #appShell.tablet-mode .mobile-header {
+      border-radius: 20px 20px 0 0;
+    }
+
+    #appShell.tablet-mode main.phone-content {
+      padding: 18px 26px;
+    }
+
+    /* Tablet Bottom Navigation Dock */
+    #appShell.tablet-mode nav.bottom-nav-bar {
+      max-width: 1200px;
+      border-radius: 18px 18px 0 0;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 36px calc(env(safe-area-inset-bottom, 0px) + 8px);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    #appShell.tablet-mode .bottom-nav-tab {
+      height: 54px;
+      max-width: 220px;
+      font-size: 13px;
+      flex-direction: row;
+      gap: 8px;
+    }
+
+    #appShell.tablet-mode .bottom-nav-tab .material-icons {
+      font-size: 22px;
+    }
+
+    /* Tablet User Session Bar */
+    #appShell.tablet-mode .user-session-bar {
+      border-radius: 12px;
+      margin-bottom: 14px;
+      padding: 8px 20px;
+      font-size: 13px;
+    }
+
+    /* Kiosk Sign-in Screen on Tablet */
+    .kiosk-tablet-wrapper {
+      display: block;
+    }
+
+    .kiosk-tablet-info-box {
+      display: none;
+    }
+
+    #appShell.tablet-mode .kiosk-tablet-wrapper {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    #appShell.tablet-mode .kiosk-tablet-info-box {
+      display: block;
+      background: linear-gradient(135deg, #181E29 0%, #131720 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+
+    #appShell.tablet-mode #staffRosterPhoneList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    /* Today Screen on Tablet */
+    .today-top-grid {
+      display: block;
+    }
+
+    #appShell.tablet-mode .today-top-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 14px;
+    }
+
+    #appShell.tablet-mode .today-top-grid .mobile-date-strip {
+      margin-bottom: 0;
+      height: 100%;
+    }
+
+    #appShell.tablet-mode .activity-hub-card {
+      margin-bottom: 0;
+    }
+
+    #appShell.tablet-mode .category-group-phone {
+      background: var(--retail-surface);
+      border: 1px solid var(--retail-border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .category-tasks-grid {
+      display: block;
+    }
+
+    #appShell.tablet-mode .category-tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 12px;
+    }
+
+    /* Admin Staff Roster on Tablet */
+    .staff-tablet-grid {
+      display: block;
+    }
+
+    #appShell.tablet-mode .staff-tablet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 12px;
+    }
+
+    /* Admin Subtabs on Tablet */
+    #appShell.tablet-mode .admin-subtabs-scroll {
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    #appShell.tablet-mode .admin-tab-chip {
+      height: 42px;
+      padding: 0 20px;
+      font-size: 13.5px;
+    }
+
+    /* Admin Accordion on Tablet */
+    #appShell.tablet-mode .admin-tasks-sub-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 10px;
+    }
+
+    /* History on Tablet */
+    .history-tablet-wrapper {
+      display: block;
+    }
+
+    #appShell.tablet-mode .history-tablet-wrapper {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    #appShell.tablet-mode #historyCardsContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 12px;
+    }
+
+    /* KPI Tiles on Tablet */
+    #appShell.tablet-mode .kpi-tiles-grid {
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+
+    /* Photo Gallery on Tablet */
+    #appShell.tablet-mode #adminPhotoGalleryGridPhone {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+    }
   </style>
 </head>
 <body>
@@ -1766,8 +3114,8 @@
       <!-- Main Brand & Action Bar -->
       <div class="header-brand-row">
         <div class="brand-left" onclick="handleBrandClick()" title="Store Settings & Switcher">
-          <div class="brand-icon-mini">
-            <span class="material-icons">storefront</span>
+          <div class="brand-icon-mini" style="overflow: hidden; padding: 0;">
+            <img src="apple-touch-icon.png" alt="One Stop Canterbury Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
           </div>
           <div class="brand-titles">
             <h1 id="headerStoreName">ONESTOP CANTERBURY</h1>
@@ -1776,6 +3124,18 @@
         </div>
 
         <div class="header-actions">
+          <!-- Phone / Tablet Layout Switcher -->
+          <div class="layout-toggle-pill" id="layoutTogglePill" title="Switch between Phone & Tablet layout">
+            <button type="button" class="layout-pill-btn active" id="btnLayoutPhone" onclick="setLayoutMode('phone')" title="Phone Layout">
+              <span class="material-icons" style="font-size: 13px;">smartphone</span>
+              <span class="layout-btn-label">Phone</span>
+            </button>
+            <button type="button" class="layout-pill-btn" id="btnLayoutTablet" onclick="setLayoutMode('tablet')" title="Tablet Layout">
+              <span class="material-icons" style="font-size: 13px;">tablet_mac</span>
+              <span class="layout-btn-label">Tablet</span>
+            </button>
+          </div>
+
           <!-- Return to Store Website Link -->
           <a href="website.html" class="btn-header-store" title="Back to Customer Store Website">
             <span class="material-icons" style="font-size: 14px;">storefront</span>
@@ -1855,51 +3215,75 @@
       <!-- SCREEN 1: MOBILE KIOSK SIGN-IN -->
       <!-- ============================================== -->
       <div id="screenSignIn" class="phone-screen">
-        <!-- Top Hero Card with Shift Clock -->
-        <div class="kiosk-hero-card">
-          <div class="kiosk-hero-top">
-            <div style="width: 38px; height: 38px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <span class="material-icons" style="color: var(--retail-header-black); font-size: 24px;">storefront</span>
-            </div>
-            <div>
-              <h2 id="kioskStoreTitle" style="font-size: 16px; font-weight: 900; line-height: 1.2;">ONESTOP CANTERBURY</h2>
-              <p id="kioskStoreTagline" style="font-size: 10px; font-weight: 800; color: var(--retail-orange); text-transform: uppercase;">SIGN IN TO START YOUR SHIFT</p>
-            </div>
-          </div>
-
-          <!-- Shift Clock -->
-          <div class="kiosk-clock-box">
-            <div>
-              <div class="clock-title">
-                <span class="material-icons" style="font-size: 13px;">schedule</span> SHIFT CLOCK
+        <div class="kiosk-tablet-wrapper">
+          <!-- Left Panel on Tablet (Hero Clock & Shift Guidance) -->
+          <div class="kiosk-left-panel">
+            <!-- Top Hero Card with Shift Clock -->
+            <div class="kiosk-hero-card">
+              <div class="kiosk-hero-top">
+                <img src="apple-touch-icon.png" alt="One Stop Canterbury Logo" style="width: 44px; height: 44px; border-radius: 11px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.45); border: 1.5px solid rgba(255, 255, 255, 0.2); flex-shrink: 0;" />
+                <div>
+                  <h2 id="kioskStoreTitle" style="font-size: 16px; font-weight: 900; line-height: 1.2; margin: 0; color: #FFFFFF; letter-spacing: 0.3px;">ONESTOP CANTERBURY</h2>
+                  <p id="kioskStoreTagline" style="font-size: 10px; font-weight: 800; color: #94A3B8; text-transform: uppercase; margin: 3px 0 0; letter-spacing: 0.6px;">SIGN IN TO START YOUR SHIFT</p>
+                </div>
               </div>
-              <div class="clock-val-date" id="kioskClockDate">MONDAY, 19 OCTOBER 2026</div>
+
+              <!-- Shift Clock with Two-Column Divider -->
+              <div class="kiosk-clock-box">
+                <div>
+                  <div class="clock-title">
+                    <span class="material-icons" style="font-size: 13px; color: #94A3B8;">schedule</span> SHIFT CLOCK
+                  </div>
+                  <div class="clock-val-date" id="kioskClockDate">SAT, 31 OCT 2026</div>
+                </div>
+                <div class="clock-divider"></div>
+                <div class="clock-val-time" id="kioskClockTime">00:00:00</div>
+              </div>
+
+              <!-- Google Cloud Live Badge -->
+              <div class="kiosk-cloud-banner">
+                <div style="display: flex; align-items: center; gap: 7px;">
+                  <div class="status-dot"></div>
+                  <span>GOOGLE CLOUD FIRESTORE LINKED</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                  <span style="width: 5px; height: 5px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                  <span id="kioskCloudEmail" style="font-size: 9.5px; font-weight: 800;">LIVE SYNC ACTIVE</span>
+                </div>
+              </div>
             </div>
-            <div class="clock-val-time" id="kioskClockTime">00:00:00</div>
+
+            <!-- Tablet Shift Security Info Box -->
+            <div class="kiosk-tablet-info-box">
+              <div style="font-size: 12px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                <span class="material-icons" style="color: var(--retail-orange); font-size: 16px;">verified_user</span>
+                <span>SHIFT SECURITY & AUDIT</span>
+              </div>
+              <p style="font-size: 11px; color: #94A3B8; margin: 0; line-height: 1.45;">
+                Select your employee profile to enter your 4-digit PIN. All completed checklists, audit photos, and shift handovers are cryptographically logged with your staff initials.
+              </p>
+              <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 10px; font-weight: 800; color: #64748B;">
+                AUTO SIGN-OUT: 5 MINUTES OF INACTIVITY
+              </div>
+            </div>
           </div>
 
-          <!-- Google Cloud Live Badge -->
-          <div class="kiosk-cloud-banner">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <div class="status-dot"></div>
-              <span>GOOGLE CLOUD FIRESTORE LINKED</span>
+          <!-- Right Panel on Tablet (Staff Roster Touch Grid) -->
+          <div class="kiosk-right-panel">
+            <!-- Staff List Section -->
+            <div class="section-title-strip">
+              <h3>SELECT YOUR NAME</h3>
+              <span>Tap to enter PIN</span>
             </div>
-            <span id="kioskCloudEmail" style="opacity: 0.8; font-size: 9px;">LIVE SYNC ACTIVE</span>
+
+            <div class="staff-list-phone" id="staffRosterPhoneList">
+              <!-- Populated dynamically with touch cards -->
+            </div>
+
+            <div style="text-align: center; margin-top: 20px; font-size: 11px; color: var(--retail-text-secondary);">
+              4-Digit PIN Security • Salted Hashing • 5-min Auto-logout
+            </div>
           </div>
-        </div>
-
-        <!-- Staff List Section -->
-        <div class="section-title-strip">
-          <h3>SELECT YOUR NAME</h3>
-          <span>Tap to enter PIN</span>
-        </div>
-
-        <div class="staff-list-phone" id="staffRosterPhoneList">
-          <!-- Populated dynamically with mobile touch cards -->
-        </div>
-
-        <div style="text-align: center; margin-top: 20px; font-size: 11px; color: var(--retail-text-secondary);">
-          4-Digit PIN Security • Salted Hashing • 5-min Auto-logout
         </div>
       </div>
 
@@ -1907,69 +3291,77 @@
       <!-- SCREEN 2: MOBILE TODAY SCREEN -->
       <!-- ============================================== -->
       <div id="screenToday" class="phone-screen" style="display: none;">
-        <!-- Mobile Date Navigation Strip -->
-        <div class="mobile-date-strip">
-          <button class="date-step-btn" onclick="changeDate(-1)">
-            <span class="material-icons" style="font-size: 16px;">chevron_left</span>
+        <!-- Top Row on Tablet (Date Navigation + Activity Hub) -->
+        <div class="today-top-grid">
+          <!-- Mobile Date Navigation Strip -->
+          <div class="mobile-date-strip">
+            <button class="date-step-btn" onclick="changeDate(-1)" aria-label="Previous day">
+              <span class="material-icons" style="font-size: 16px;">chevron_left</span>
+            </button>
+            <div class="date-label-badge" id="currentDateBadge">SAT 31 OCT</div>
+            <button class="date-step-btn" onclick="changeDate(1)" aria-label="Next day">
+              <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+            </button>
+            <button class="btn-today-chip" onclick="resetDateToToday()">TODAY</button>
+          </div>
+
+          <!-- Activity Hub Card (Replacing redundant 3-tile KPI cards) -->
+          <div class="activity-hub-card">
+            <div class="hub-ring-wrapper">
+              <svg class="hub-ring-svg" viewBox="0 0 80 80">
+                <circle class="hub-ring-bg" cx="40" cy="40" r="33" stroke-width="7" />
+                <circle class="hub-ring-progress" id="hubRingCircle" cx="40" cy="40" r="33" stroke-width="7"
+                  stroke-dasharray="207.345" stroke-dashoffset="207.345" />
+              </svg>
+              <div class="hub-ring-text" id="hubPctText">0%</div>
+            </div>
+            <div class="hub-content">
+              <div class="hub-title">Activity Hub</div>
+              <div class="hub-stat-line">
+                <span class="hub-stat-num" id="hubCompletedRatio">0 / 25</span>
+                <span class="hub-stat-label">Tasks Completed</span>
+              </div>
+              <div class="hub-stat-line pending">
+                <span class="hub-stat-num orange" id="hubPendingCount">25</span>
+                <span class="hub-stat-label orange-bold">Pending</span>
+                <span class="hub-stat-label">Daily Tasks</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unified Search & Add Action Belt -->
+        <div class="today-search-add-belt">
+          <div class="today-search-box">
+            <span class="material-icons search-icon">search</span>
+            <input type="text" id="todayTaskSearchInput" placeholder="Search tasks..." oninput="handleTodaySearchInput(this.value)" autocomplete="off">
+            <button id="todaySearchClearBtn" onclick="clearTodaySearch()" style="display: none;" title="Clear search">
+              <span class="material-icons" style="font-size: 16px;">close</span>
+            </button>
+          </div>
+          <button class="btn-belt-add" onclick="openAddTaskModal()" title="Add Task">
+            <span class="material-icons" style="font-size: 16px;">add</span> Add
           </button>
-          <div class="date-label-badge" id="currentDateBadge">MON, 19 OCT 2026</div>
-          <button class="date-step-btn" onclick="changeDate(1)">
-            <span class="material-icons" style="font-size: 16px;">chevron_right</span>
-          </button>
-          <button class="btn-today-chip" onclick="resetDateToToday()">TODAY</button>
         </div>
 
-        <!-- Shift KPI Mini Strip -->
-        <div class="mobile-kpi-bar">
-          <div class="kpi-tile green">
-            <div class="kpi-val" id="kpiProgressText">0 / 0</div>
-            <div class="kpi-lbl">Tasks Done</div>
-          </div>
-          <div class="kpi-tile orange">
-            <div class="kpi-val" id="kpiComplianceRate">0%</div>
-            <div class="kpi-lbl">Compliance</div>
-          </div>
-          <div class="kpi-tile blue">
-            <div class="kpi-val" id="kpiPendingCount">0</div>
-            <div class="kpi-lbl">Pending</div>
-          </div>
+        <!-- Unified Filter Pills Belt -->
+        <div class="filter-pills-belt" id="categoryChipsCarousel">
+          <!-- Populated dynamically: Morning Tasks, Evening Tasks, Additional Tasks ⌄ -->
         </div>
 
-        <!-- Filter Chips Carousel -->
-        <div class="chips-carousel" id="categoryChipsCarousel">
-          <!-- Populated dynamically -->
-        </div>
-
-        <!-- Secondary Filters Row -->
-        <div class="filter-dropdowns-row">
-          <select class="filter-select" id="priorityFilterSelect" onchange="handlePriorityFilterChange(this.value)">
+        <!-- Hidden filter selects for script compatibility -->
+        <div style="display: none;">
+          <select id="priorityFilterSelect" onchange="handlePriorityFilterChange(this.value)">
             <option value="ALL">ALL PRIORITIES</option>
-            <option value="URGENT">🚨 URGENT ONLY</option>
-            <option value="HIGH">HIGH PRIORITY</option>
-            <option value="MEDIUM">MEDIUM PRIORITY</option>
-            <option value="LOW">LOW PRIORITY</option>
-            <option value="OUTSTANDING">OUTSTANDING ONLY</option>
+            <option value="URGENT">URGENT</option>
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+            <option value="OUTSTANDING">OUTSTANDING</option>
           </select>
-
-          <select class="filter-select" id="sortModeSelect" onchange="handleSortModeChange(this.value)">
+          <select id="sortModeSelect" onchange="handleSortModeChange(this.value)">
             <option value="CATEGORY">SORT: CATEGORY</option>
-            <option value="PRIORITY_DESC">SORT: URGENT / HIGH → LOW</option>
-            <option value="PRIORITY_ASC">SORT: LOW → HIGH</option>
-            <option value="OUTSTANDING">SORT: OUTSTANDING</option>
           </select>
-
-          <button class="btn-add-task-mobile" onclick="openAddTaskModal()">
-            <span class="material-icons" style="font-size: 15px;">add</span> ADD
-          </button>
-        </div>
-
-        <!-- Real-Time Task Search Input Field -->
-        <div class="today-search-container" style="margin-top: 10px; margin-bottom: 12px; position: relative; display: flex; align-items: center;">
-          <span class="material-icons" style="position: absolute; left: 10px; font-size: 18px; color: var(--retail-text-secondary); pointer-events: none;">search</span>
-          <input type="text" id="todayTaskSearchInput" placeholder="Search tasks by title..." oninput="handleTodaySearchInput(this.value)" style="width: 100%; padding: 8px 34px 8px 34px; border: 1px solid var(--retail-border); border-radius: 8px; font-size: 13px; font-weight: 600; background: var(--retail-surface); color: var(--retail-text-primary); outline: none; transition: border-color 0.15s ease;" onfocus="this.style.borderColor='var(--retail-orange)'" onblur="this.style.borderColor='var(--retail-border)'">
-          <button id="todaySearchClearBtn" onclick="clearTodaySearch()" style="display: none; position: absolute; right: 8px; background: none; border: none; cursor: pointer; color: var(--retail-text-secondary); padding: 4px; align-items: center; justify-content: center;" title="Clear search">
-            <span class="material-icons" style="font-size: 16px;">close</span>
-          </button>
         </div>
 
         <!-- Tasks Grouped by Category -->
@@ -1982,23 +3374,31 @@
       <!-- SCREEN 3: MOBILE HISTORY SCREEN -->
       <!-- ============================================== -->
       <div id="screenHistory" class="phone-screen" style="display: none;">
-        <!-- History Filters -->
-        <div class="mobile-date-strip" style="margin-bottom: 8px;">
-          <span style="font-size: 11px; font-weight: 800; color: var(--retail-text-secondary);">DATE:</span>
-          <input type="date" id="historyDatePicker" onchange="handleHistoryDatePick(this.value)" style="border: 1px solid var(--retail-border); border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 700;">
-          <select class="filter-select" id="historyStaffFilter" onchange="handleHistoryStaffFilterChange(this.value)" style="max-width: 140px; padding: 4px 8px; font-weight: 700;">
-            <option value="ALL">ALL STAFF</option>
-          </select>
-        </div>
+        <div class="history-tablet-wrapper">
+          <!-- Left Controls Column on Tablet -->
+          <div class="history-left-panel">
+            <!-- History Filters -->
+            <div class="mobile-date-strip" style="margin-bottom: 10px;">
+              <span style="font-size: 11px; font-weight: 800; color: var(--retail-text-secondary);">DATE:</span>
+              <input type="date" id="historyDatePicker" onchange="handleHistoryDatePick(this.value)" style="border: 1px solid var(--retail-border); border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 700;">
+              <select class="filter-select" id="historyStaffFilter" onchange="handleHistoryStaffFilterChange(this.value)" style="max-width: 140px; padding: 4px 8px; font-weight: 700;">
+                <option value="ALL">ALL STAFF</option>
+              </select>
+            </div>
 
-        <div class="section-title-strip" style="margin-top: 12px;">
-          <h3>SHIFT AUDIT LOG</h3>
-          <span id="historyLogCount">0 records</span>
-        </div>
+            <div class="section-title-strip" style="margin-top: 10px;">
+              <h3>SHIFT AUDIT LOG</h3>
+              <span id="historyLogCount">0 records</span>
+            </div>
+          </div>
 
-        <!-- History Cards List -->
-        <div id="historyCardsContainer">
-          <!-- Populated dynamically -->
+          <!-- Right Cards Column on Tablet -->
+          <div class="history-right-panel">
+            <!-- History Cards List -->
+            <div id="historyCardsContainer">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2009,52 +3409,57 @@
         <!-- Admin Subtabs Chips -->
         <div class="admin-subtabs-scroll">
           <div class="admin-tab-chip active" onclick="switchAdminSubtab('LAYOUT')">
-            <span class="material-icons" style="font-size: 15px;">view_quilt</span> LAYOUT & TASKS
+            <span class="material-icons" style="font-size: 16px;">view_quilt</span> Layout & Tasks
           </div>
           <div class="admin-tab-chip" onclick="switchAdminSubtab('USERS')">
-            <span class="material-icons" style="font-size: 15px;">badge</span> STAFF ROSTER
+            <span class="material-icons" style="font-size: 16px;">badge</span> Staff Roster
           </div>
           <div class="admin-tab-chip" onclick="switchAdminSubtab('LOGS')">
-            <span class="material-icons" style="font-size: 15px;">photo_library</span> AUDIT PHOTOS
+            <span class="material-icons" style="font-size: 16px;">photo_library</span> Audit Photos
           </div>
           <div class="admin-tab-chip" onclick="switchAdminSubtab('BRANDING')">
-            <span class="material-icons" style="font-size: 15px;">store</span> BRANDING
+            <span class="material-icons" style="font-size: 16px;">store</span> Branding
           </div>
           <div class="admin-tab-chip" onclick="switchAdminSubtab('REPORT')">
-            <span class="material-icons" style="font-size: 15px;">analytics</span> KPI REPORT
+            <span class="material-icons" style="font-size: 16px;">analytics</span> KPI Report
           </div>
         </div>
 
         <!-- Admin Tab 1: Layout & Tasks -->
         <div id="adminTabLayout" class="admin-phone-pane">
-          <!-- Categories Card -->
-          <div class="admin-card-phone">
-            <div class="admin-card-header">
-              <span>CATEGORIES</span>
-              <button class="btn-today-chip" onclick="openAddCategoryModal()">+ ADD</button>
-            </div>
-            <div id="adminCategoriesListPhone"></div>
+          <!-- Action Belt -->
+          <div class="admin-action-belt">
+            <h2 class="admin-belt-title">LAYOUT & TASKS</h2>
+            <button type="button" class="btn-admin-add-cat" onclick="openAddCategoryModal()">
+              <span class="material-icons" style="font-size: 16px; color: #EA580C;">add</span>
+              <span>ADD CATEGORY</span>
+            </button>
           </div>
 
-          <div class="admin-card-phone">
-            <div class="admin-card-header">
-              <span>CHECKLIST TASKS</span>
-              <div style="display: flex; gap: 6px;">
-                <button type="button" class="btn-today-chip" style="background: #FEE2E2; color: #DC2626; border-color: #FCA5A5; font-size: 10px;" onclick="clearAllTasksCloud()">CLEAR ALL</button>
-                <button type="button" class="btn-today-chip" onclick="openAddTaskModal()">+ ADD TASK</button>
-              </div>
-            </div>
-            <div id="adminTasksListPhone"></div>
-          </div>
+          <!-- Grouped Accordion Categories -->
+          <div id="adminAccordionContainer"></div>
+
+          <!-- Hidden legacy containers for backwards-compatibility -->
+          <div id="adminCategoriesListPhone" style="display: none;"></div>
+          <div id="adminTasksListPhone" style="display: none;"></div>
         </div>
 
         <!-- Admin Tab 2: Users & PINs -->
         <div id="adminTabUsers" class="admin-phone-pane" style="display: none;">
-          <div class="admin-card-phone">
-            <div class="admin-card-header">
-              <span>STAFF ROSTER & SECURITY</span>
-              <button class="btn-today-chip" onclick="openAddUserModal()">+ ADD STAFF</button>
+          <div class="admin-card-phone staff-roster-admin-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span class="staff-roster-title">STAFF ROSTER & SECURITY</span>
+              <button type="button" class="btn-today-chip btn-add-staff-admin" onclick="openAddUserModal()">
+                <span class="material-icons" style="font-size: 15px;">add</span> ADD STAFF
+              </button>
             </div>
+
+            <!-- Quick Filter Pills -->
+            <div id="adminStaffFilterPills" style="display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px;">
+              <!-- Rendered via JS: All (X), Admins (Y), Pending PIN (Z) -->
+            </div>
+
+            <!-- Grouped Roster Container -->
             <div id="adminUsersListPhone"></div>
           </div>
         </div>
@@ -2335,7 +3740,7 @@
             </div>
             <div class="iphone-step-pill">
               <span style="background: #3B82F6; color: #FFFFFF; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;">3</span>
-              <span>Open the <strong>ShiftTask</strong> icon on your Home Screen & tap <strong>Allow Alerts</strong></span>
+              <span>Open the <strong>Onestop Daily</strong> icon on your Home Screen & tap <strong>Allow Alerts</strong></span>
             </div>
           </div>
         </div>
@@ -2855,8 +4260,11 @@
       </div>
 
       <div style="display: flex; gap: 8px; margin-top: 16px;">
-        <button class="btn-mobile-outline" style="flex: 1;" onclick="closeEditTaskModal()">CANCEL</button>
-        <button class="btn-mobile-full full-green" style="flex: 2; margin-top: 0;" onclick="saveEditedTask()">SAVE CHANGES</button>
+        <button type="button" class="btn-mobile-outline" style="flex: 1; border-color: #FECACA; color: #DC2626; background: #FEF2F2;" onclick="handleDeleteFromEditModal()">
+          <span class="material-icons" style="font-size: 15px;">delete</span> DELETE
+        </button>
+        <button type="button" class="btn-mobile-outline" style="flex: 1;" onclick="closeEditTaskModal()">CANCEL</button>
+        <button type="button" class="btn-mobile-full full-green" style="flex: 2; margin-top: 0;" onclick="saveEditedTask()">SAVE CHANGES</button>
       </div>
     </div>
   </div>
@@ -2874,6 +4282,26 @@
       <input type="text" id="addCategoryName" class="phone-form-input" placeholder="e.g. NIGHT REPLENISHMENT">
 
       <button class="btn-mobile-full full-green" onclick="saveNewCategory()">CREATE CATEGORY</button>
+    </div>
+  </div>
+
+  <!-- 6B. EDIT CATEGORY BOTTOM SHEET -->
+  <div class="bottom-sheet-overlay" id="editCategoryModal" style="display: none;">
+    <div class="bottom-sheet-card">
+      <div class="sheet-handle"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="font-size: 15px; font-weight: 900;">Edit Shift Category</h3>
+        <span class="material-icons" style="cursor: pointer;" onclick="closeEditCategoryModal()">close</span>
+      </div>
+
+      <input type="hidden" id="editCategoryId">
+      <label style="font-size: 10px; font-weight: 800; color: var(--retail-text-secondary);">CATEGORY NAME</label>
+      <input type="text" id="editCategoryName" class="phone-form-input" placeholder="e.g. MORNING TASKS">
+
+      <div style="display: flex; gap: 8px; margin-top: 14px;">
+        <button type="button" class="btn-mobile-outline" style="flex: 1;" onclick="closeEditCategoryModal()">CANCEL</button>
+        <button type="button" class="btn-mobile-full full-green" style="flex: 2; margin-top: 0;" onclick="saveEditedCategory()">SAVE CHANGES</button>
+      </div>
     </div>
   </div>
 
@@ -2907,6 +4335,69 @@
       <button class="btn-mobile-full" style="background: #7E22CE; color: white; margin-top: 10px;" onclick="saveNewUser()">
         <span class="material-icons" style="font-size: 16px;">person_add</span> CREATE STAFF MEMBER
       </button>
+    </div>
+  </div>
+
+  <!-- 7B. MANAGE STAFF BOTTOM SHEET -->
+  <div class="bottom-sheet-overlay" id="manageStaffModal" style="display: none;" onclick="closeManageStaffModal()">
+    <div class="bottom-sheet-card" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div id="manageStaffAvatar" class="staff-avatar-circle" style="width: 38px; height: 38px; font-size: 13px; font-weight: 900;"></div>
+          <div>
+            <h3 id="manageStaffHeaderName" style="font-size: 15px; font-weight: 900; margin: 0;">Manage Staff</h3>
+            <span id="manageStaffHeaderRole" style="font-size: 11px; font-weight: 800; color: #64748B;">Staff Member</span>
+          </div>
+        </div>
+        <span class="material-icons" style="cursor: pointer; color: #64748B;" onclick="closeManageStaffModal()">close</span>
+      </div>
+
+      <input type="hidden" id="manageStaffId">
+
+      <label style="font-size: 10px; font-weight: 800; color: var(--retail-text-secondary); margin-bottom: 4px; display: block;">FULL NAME</label>
+      <input type="text" id="manageStaffNameInput" class="phone-form-input" placeholder="Staff Name" style="margin-bottom: 12px; font-weight: 700;">
+
+      <label style="font-size: 10px; font-weight: 800; color: var(--retail-text-secondary); margin-bottom: 4px; display: block;">ROLE</label>
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <button type="button" id="roleBtnStaff" class="role-toggle-btn" onclick="setManageStaffRole('STAFF')">
+          STORE STAFF
+        </button>
+        <button type="button" id="roleBtnAdmin" class="role-toggle-btn" onclick="setManageStaffRole('ADMIN')">
+          ADMINISTRATOR
+        </button>
+      </div>
+
+      <!-- PIN Security Card inside drawer -->
+      <div class="manage-staff-pin-card">
+        <div class="manage-staff-pin-title" style="font-size: 11px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
+          <span>PIN SECURITY</span>
+          <span id="manageStaffPinStatus" style="font-size: 10px; font-weight: 800;"></span>
+        </div>
+        <p id="manageStaffPinDesc" style="font-size: 11px; color: var(--retail-text-secondary); margin: 0 0 10px 0; line-height: 1.35;"></p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" id="manageStaffChangePinBtn" class="btn-today-chip" style="flex: 1; min-width: 130px; padding: 8px; font-size: 11px; font-weight: 800;" onclick="triggerManageStaffPinChange()">
+            Set / Change PIN
+          </button>
+          <button type="button" id="manageStaffRequirePinBtn" class="btn-today-chip" style="flex: 1; min-width: 130px; padding: 8px; font-size: 11px; font-weight: 800; background: #FFF7ED; color: #EA580C; border: 1px solid #FDBA74;" onclick="triggerManageStaffRequirePin()">
+            Require PIN Reset
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-mobile-full" style="background: var(--retail-header-black); color: white; font-weight: 800; margin-bottom: 12px;" onclick="saveManageStaffChanges()">
+        SAVE CHANGES
+      </button>
+
+      <!-- Safe Deletion Area: disabled if active user -->
+      <div id="manageStaffDeleteSection" style="margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--retail-border); text-align: center;">
+        <button type="button" id="manageStaffDeleteBtn" onclick="deleteFromManageModal()" style="width: 100%; padding: 10px; background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5; border-radius: 8px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
+          <span class="material-icons" style="font-size: 16px;">delete_outline</span> Remove Staff Member
+        </button>
+        <div id="manageStaffActiveNotice" style="display: none; font-size: 11px; font-weight: 700; color: #94A3B8; padding: 6px 0;">
+          Active signed-in admin account cannot be removed.
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2948,22 +4439,22 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span class="material-icons" style="color: #7E22CE; font-size: 26px;">phone_iphone</span>
-          <h3 style="font-size: 16px; font-weight: 900;">Install ShiftTask on iOS</h3>
+          <h3 style="font-size: 16px; font-weight: 900;">Install Onestop Daily on iOS</h3>
         </div>
         <span class="material-icons" style="cursor: pointer;" onclick="closeIosInstallModal()">close</span>
       </div>
 
       <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px; padding: 12px; background: var(--retail-surface-subtle); border-radius: 12px; border: 1px solid var(--retail-border);">
-        <img src="apple-touch-icon.png" style="width: 54px; height: 54px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); flex-shrink: 0;" alt="ShiftTask Icon">
+        <img src="apple-touch-icon.png" style="width: 54px; height: 54px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); flex-shrink: 0;" alt="Onestop Daily Icon">
         <div>
-          <div style="font-size: 14px; font-weight: 900; color: var(--retail-text-primary);">ShiftTask</div>
+          <div style="font-size: 14px; font-weight: 900; color: var(--retail-text-primary);">Onestop Daily</div>
           <div style="font-size: 10px; color: var(--retail-orange); font-weight: 800;">ONE STOP • SHIFT TERMINAL</div>
           <div style="font-size: 10px; color: var(--retail-text-secondary); margin-top: 1px;">Official Home Screen Web App</div>
         </div>
       </div>
 
       <p style="font-size: 12px; color: var(--retail-text-secondary); margin-bottom: 14px; line-height: 1.4;">
-        Install ShiftTask directly onto your iPhone or iPad. All tasks, staff profiles, and PINs stay in 100% real-time sync with Android and the web.
+        Install Onestop Daily directly onto your iPhone or iPad. All tasks, staff profiles, and PINs stay in 100% real-time sync with Android and the web.
       </p>
 
       <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
@@ -3125,6 +4616,65 @@
       const currentTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
       const nextTheme = currentTheme === "dark" ? "light" : "dark";
       applyTheme(nextTheme, true);
+    }
+
+    // -------------------------------------------------------------
+    // Phone & Tablet Unified Layout Controller
+    // -------------------------------------------------------------
+    let currentLayoutMode = 'phone'; // 'phone' | 'tablet'
+
+    function setLayoutMode(mode, userInitiated = true) {
+      currentLayoutMode = mode;
+      if (userInitiated) {
+        try {
+          localStorage.setItem("onestop_layout_mode", mode);
+        } catch (e) {}
+      }
+
+      const appShell = document.getElementById("appShell");
+      const phoneBtn = document.getElementById("btnLayoutPhone");
+      const tabletBtn = document.getElementById("btnLayoutTablet");
+
+      if (mode === 'tablet') {
+        if (appShell) appShell.classList.add("tablet-mode");
+        document.body.classList.add("tablet-viewport");
+        if (tabletBtn) tabletBtn.classList.add("active");
+        if (phoneBtn) phoneBtn.classList.remove("active");
+        if (userInitiated && typeof showToast === "function") {
+          showToast("Switched to Tablet Layout");
+        }
+      } else {
+        if (appShell) appShell.classList.remove("tablet-mode");
+        document.body.classList.remove("tablet-viewport");
+        if (phoneBtn) phoneBtn.classList.add("active");
+        if (tabletBtn) tabletBtn.classList.remove("active");
+        if (userInitiated && typeof showToast === "function") {
+          showToast("Switched to Phone Layout");
+        }
+      }
+    }
+
+    function initLayoutMode() {
+      let savedMode = null;
+      try {
+        savedMode = localStorage.getItem("onestop_layout_mode");
+      } catch (e) {}
+
+      if (savedMode === 'tablet' || savedMode === 'phone') {
+        setLayoutMode(savedMode, false);
+      } else {
+        const isTabletScreen = window.innerWidth >= 768;
+        setLayoutMode(isTabletScreen ? 'tablet' : 'phone', false);
+      }
+
+      window.addEventListener("resize", () => {
+        let saved = null;
+        try { saved = localStorage.getItem("onestop_layout_mode"); } catch (e) {}
+        if (!saved) {
+          const isTabletScreen = window.innerWidth >= 768;
+          setLayoutMode(isTabletScreen ? 'tablet' : 'phone', false);
+        }
+      });
     }
 
     // Apply preferred theme immediately upon script evaluation
@@ -3617,8 +5167,25 @@
       return false;
     }
 
+    function getStaffAvatarColor(user) {
+      const name = (user.name || '').toUpperCase();
+      if (name.includes('DANIEL')) return '#FF6B35';
+      if (name.includes('MAZ')) return '#10B981';
+      if (name.includes('OMID')) return '#F43F5E';
+      if (name.includes('SAM')) return '#3B82F6';
+      if (name.includes('ELYAS')) return '#FF6B35';
+      if (name.includes('JAKE')) return '#EC4899';
+      if (name.includes('KYLE')) return '#A855F7';
+      if (name.includes('FREDDY')) return '#06B6D4';
+      const palette = ['#FF6B35', '#10B981', '#F43F5E', '#3B82F6', '#EC4899', '#A855F7', '#14B8A6', '#F59E0B'];
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      return palette[Math.abs(hash) % palette.length];
+    }
+
     function renderStaffRosterPhone() {
       const container = document.getElementById("staffRosterPhoneList");
+      if (!container) return;
       container.innerHTML = "";
 
       users.filter(u => u.active !== false).forEach(user => {
@@ -3627,16 +5194,20 @@
         card.className = "staff-card-phone";
         card.onclick = () => openPinModalForUser(user);
 
+        const avatarColor = getStaffAvatarColor(user);
+
         card.innerHTML = `
           <div class="staff-card-left">
-            <div class="staff-avatar-circle" style="${isNew ? 'background: #7E22CE;' : ''}">${user.initials || 'EM'}</div>
+            <div class="staff-avatar-circle" style="color: ${avatarColor};">
+              ${user.initials || 'EM'}
+            </div>
             <div class="staff-name-role">
               <h4>${user.name}</h4>
               <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
                 <span class="staff-role-badge ${user.role === 'ADMIN' ? 'admin' : 'staff'}">
                   ${user.role === 'ADMIN' ? 'ADMINISTRATOR' : 'STAFF'}
                 </span>
-                ${isNew ? '<span style="background: #FAF5FF; color: #7E22CE; font-size: 8px; font-weight: 900; padding: 2px 5px; border-radius: 4px; border: 1px solid #D8B4FE;">★ CHOOSE PIN</span>' : ''}
+                ${isNew ? '<span class="staff-choose-pin-badge">★ CHOOSE PIN</span>' : ''}
               </div>
             </div>
           </div>
@@ -3847,31 +5418,93 @@
     // -------------------------------------------------------------
     // TODAY SCREEN: Tasks & Categories (Mobile Design)
     // -------------------------------------------------------------
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
     function renderCategoryFilterChips() {
       const container = document.getElementById("categoryChipsCarousel");
+      if (!container) return;
       container.innerHTML = "";
 
-      const allChip = document.createElement("div");
-      allChip.className = `filter-chip ${activeFilterCategory === 'ALL' ? 'active' : ''}`;
-      allChip.innerText = "ALL";
-      allChip.onclick = () => {
-        activeFilterCategory = 'ALL';
-        renderCategoryFilterChips();
-        renderTodayTasks();
-      };
-      container.appendChild(allChip);
+      const morningCat = categories.find(c => (c.name || '').toUpperCase().includes('MORNING')) || categories[0];
+      const eveningCat = categories.find(c => (c.name || '').toUpperCase().includes('EVENING')) || (categories[1] && categories[1] !== morningCat ? categories[1] : null);
 
-      categories.forEach(cat => {
-        const chip = document.createElement("div");
-        chip.className = `filter-chip ${activeFilterCategory == cat.id ? 'active' : ''}`;
-        chip.innerText = cat.name;
-        chip.onclick = () => {
-          activeFilterCategory = cat.id;
+      function toTitleCase(str) {
+        if (!str) return '';
+        return str.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+
+      // 1. Morning Tasks Pill
+      if (morningCat) {
+        const morningBtn = document.createElement("button");
+        morningBtn.type = "button";
+        morningBtn.className = `filter-pill-btn ${activeFilterCategory == morningCat.id ? 'active' : ''}`;
+        morningBtn.innerText = toTitleCase(morningCat.name);
+        morningBtn.onclick = () => {
+          activeFilterCategory = (activeFilterCategory == morningCat.id) ? 'ALL' : morningCat.id;
           renderCategoryFilterChips();
           renderTodayTasks();
         };
-        container.appendChild(chip);
-      });
+        container.appendChild(morningBtn);
+      }
+
+      // 2. Evening Tasks Pill
+      if (eveningCat) {
+        const eveningBtn = document.createElement("button");
+        eveningBtn.type = "button";
+        eveningBtn.className = `filter-pill-btn ${activeFilterCategory == eveningCat.id ? 'active' : ''}`;
+        eveningBtn.innerText = toTitleCase(eveningCat.name);
+        eveningBtn.onclick = () => {
+          activeFilterCategory = (activeFilterCategory == eveningCat.id) ? 'ALL' : eveningCat.id;
+          renderCategoryFilterChips();
+          renderTodayTasks();
+        };
+        container.appendChild(eveningBtn);
+      }
+
+      // 3. Additional Tasks Dropdown Pill
+      const isOtherActive = activeFilterCategory !== 'ALL' && 
+                            (!morningCat || activeFilterCategory != morningCat.id) && 
+                            (!eveningCat || activeFilterCategory != eveningCat.id);
+
+      const dropdownPill = document.createElement("div");
+      dropdownPill.className = `filter-pill-btn ${isOtherActive ? 'active' : ''}`;
+      dropdownPill.style.position = "relative";
+      dropdownPill.style.display = "inline-flex";
+      dropdownPill.style.alignItems = "center";
+      dropdownPill.style.gap = "4px";
+
+      let currentOtherLabel = "Additional Tasks";
+      if (isOtherActive) {
+        const matched = categories.find(c => c.id == activeFilterCategory);
+        if (matched) currentOtherLabel = toTitleCase(matched.name);
+      }
+
+      dropdownPill.innerHTML = `
+        <span>${currentOtherLabel}</span>
+        <span class="material-icons" style="font-size: 16px;">expand_more</span>
+        <select id="additionalTasksSelect" aria-label="Select category" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+          <option value="ALL" ${activeFilterCategory === 'ALL' ? 'selected' : ''}>All Categories</option>
+          ${categories.map(c => `<option value="${c.id}" ${activeFilterCategory == c.id ? 'selected' : ''}>${toTitleCase(c.name)}</option>`).join('')}
+        </select>
+      `;
+
+      const sel = dropdownPill.querySelector("select");
+      if (sel) {
+        sel.onchange = (e) => {
+          activeFilterCategory = e.target.value;
+          renderCategoryFilterChips();
+          renderTodayTasks();
+        };
+      }
+
+      container.appendChild(dropdownPill);
     }
 
     function handlePriorityFilterChange(val) {
@@ -4060,18 +5693,20 @@
         section.innerHTML = `
           <div class="category-header-phone">
             <span>${cat.name}</span>
-            <span style="font-size: 10px; color: var(--retail-text-secondary); font-weight: 700;">
+            <span style="font-size: 11px; color: #64748B; font-weight: 700;">
               ${completedCount} / ${catTasks.length} COMPLETED
             </span>
           </div>
         `;
+
+        const tasksGrid = document.createElement("div");
+        tasksGrid.className = "category-tasks-grid";
 
         catTasks.forEach(task => {
           const comp = completionsMap[`${task.id}_${selectedDate}`];
           const isSkipped = comp && comp.isSkipped;
           const isDone = comp && !comp.isPartial && !comp.isSkipped;
           const isPartial = comp && comp.isPartial && !comp.isSkipped;
-          const isLocked = isDone || isSkipped;
           const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
 
           const urgentOverride = urgentTasksMap[`${task.id}_${selectedDate}`];
@@ -4082,137 +5717,136 @@
           taskCard.id = `taskCard_${task.id}`;
           taskCard.className = `task-card-phone ${isUrgentToday ? 'urgent-today' : ''} ${isDone ? 'completed' : ''} ${isPartial ? 'partial' : ''} ${isSkipped ? 'skipped' : ''}`;
 
-          let bulletsPreview = "";
-          if (bullets.length > 0) {
-            bulletsPreview = `
-              <div class="subtasks-preview-phone">
-                <strong>${bullets.length} Checklist Items:</strong> ${bullets.slice(0, 2).join(' • ')}${bullets.length > 2 ? '...' : ''}
+          // 1. Title
+          const titleHtml = `<div class="task-title-phone">${escapeHtml(task.title)}</div>`;
+
+          // 2. Badges Row
+          let badgesHtml = "";
+          if (isUrgentToday) {
+            badgesHtml = `
+              <div class="task-badges-row">
+                <span class="badge-tag-urgent">
+                  <span class="material-icons" style="font-size: 13px;">local_fire_department</span>
+                  URGENT (TODAY)
+                </span>
+                <span class="badge-tag-regular">REGULAR</span>
+                ${isSkipped ? `<span class="badge-tag" style="background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D; font-weight: 900;">⚡ SKIPPED</span>` : ''}
+                ${isPartial ? `<span class="badge-tag partial">½ PARTIAL (${comp.completedSubTasksCount || 1}/${comp.totalSubTasksCount || bullets.length})</span>` : ''}
+              </div>
+            `;
+          } else {
+            const prio = (task.priority || 'HIGH').toUpperCase();
+            const daysLabel = (task.daysOfWeek || 'ALL').toUpperCase();
+            badgesHtml = `
+              <div class="task-badges-row">
+                <span class="badge-tag-dark">${prio}</span>
+                <span class="badge-tag-light">${daysLabel}</span>
+                ${task.isOneTime || task.daysOfWeek === 'ONE_TIME' ? `<span class="badge-tag-light" style="background:#F3E8FF;color:#6B21A8;border:1px solid #D8B4FE;">★ ONE-TIME</span>` : ''}
+                ${isSkipped ? `<span class="badge-tag" style="background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D; font-weight: 900;">⚡ SKIPPED</span>` : ''}
+                ${isPartial ? `<span class="badge-tag partial">½ PARTIAL (${comp.completedSubTasksCount || 1}/${comp.totalSubTasksCount || bullets.length})</span>` : ''}
               </div>
             `;
           }
 
+          // 3. Checklist Items Summary Box
+          let checklistSummaryHtml = "";
+          if (bullets.length > 0) {
+            checklistSummaryHtml = `
+              <div class="checklist-summary-box">
+                <strong>${bullets.length} Checklist Items:</strong> ${escapeHtml(bullets.slice(0, 3).join(' • '))}${bullets.length > 3 ? '...' : ''}
+              </div>
+            `;
+          }
+
+          // 4. Urgent Toggle Container
+          let urgentToggleHtml = "";
+          if (isRecurring) {
+            if (isUrgentToday) {
+              urgentToggleHtml = `
+                <div class="urgent-toggle-pill active" onclick="toggleTaskUrgentForToday('${task.id}', false)">
+                  <input type="checkbox" checked onclick="event.stopPropagation()" onchange="toggleTaskUrgentForToday('${task.id}', this.checked)" style="width: 18px; height: 18px; accent-color: #EF4444; cursor: pointer; flex-shrink: 0;">
+                  <span class="label-text">Urgent task for today only</span>
+                </div>
+              `;
+            } else {
+              urgentToggleHtml = `
+                <div class="urgent-toggle-pill" onclick="toggleTaskUrgentForToday('${task.id}', true)">
+                  <input type="checkbox" onclick="event.stopPropagation()" onchange="toggleTaskUrgentForToday('${task.id}', this.checked)" style="width: 18px; height: 18px; accent-color: #EF4444; cursor: pointer; flex-shrink: 0;">
+                  <span class="material-icons" style="font-size: 16px; color: #475569;">notifications</span>
+                  <span class="label-text" style="color: #334155;">Make urgent for today only</span>
+                </div>
+              `;
+            }
+          }
+
+          // 5. Primary Actions Row
+          let primaryActionRowHtml = "";
+          if (isDone) {
+            primaryActionRowHtml = `
+              <div class="task-primary-actions-row">
+                <div class="locked-badge-phone" style="flex: 1; margin: 0;">
+                  <span class="material-icons" style="font-size: 16px;">verified</span>
+                  <span>✓ LOCKED • ${comp.completedByUserInitials || 'DS'} (${formatTimestamp(comp.completedAt)})</span>
+                </div>
+              </div>
+            `;
+          } else if (isSkipped) {
+            primaryActionRowHtml = `
+              <div class="task-primary-actions-row">
+                <div class="locked-badge-phone" style="flex: 1; margin: 0; background: #FFF3E0; border: 1px solid #FFB74D; color: #E65100;">
+                  <span class="material-icons" style="font-size: 16px; color: #E65100;">warning</span>
+                  <span>⚡ SKIPPED by [${comp.completedByUserInitials || 'STAFF'}] ${comp.completedByUserName || 'Staff'} (${formatTimestamp(comp.completedAt)}) • Reason: "${escapeQuotes(comp.skipReason || 'Excused')}"</span>
+                </div>
+              </div>
+            `;
+          } else {
+            primaryActionRowHtml = `
+              <div class="task-primary-actions-row">
+                <button class="btn-main-checklist" onclick="openSubtasksModal('${task.id}', '${escapeQuotes(cat.name)}')">
+                  <span class="material-icons" style="font-size: 18px; color: #FFA000;">checklist</span>
+                  <span>CHECKLIST / SIGN OFF (${bullets.length})</span>
+                </button>
+                <button class="btn-main-skip" onclick="openSkipTaskModal('${task.id}', '${escapeQuotes(task.title)}', '${escapeQuotes(cat.name)}')">
+                  <span class="material-icons" style="font-size: 17px; color: #64748B;">visibility_off</span>
+                  <span>Skip</span>
+                </button>
+              </div>
+            `;
+          }
+
+          // 6. Secondary Actions Row (3-column grid)
           const noteCount = taskNotes.filter(n => n.taskId == task.id && n.dateString == selectedDate).length;
           const photoCount = taskPhotos.filter(p => p.taskId == task.id && p.dateString == selectedDate).length;
 
-          let actionBlock = "";
-          if (isSkipped) {
-            actionBlock = `
-              <div class="locked-badge-phone" style="background: #FFF3E0; border: 1px solid #FFB74D; color: #E65100;">
-                <span class="material-icons" style="font-size: 16px; color: #E65100;">warning</span>
-                <span>⚡ SKIPPED by [${comp.completedByUserInitials || 'STAFF'}] ${comp.completedByUserName || 'Staff'} (${formatTimestamp(comp.completedAt)}) • Reason: "${escapeQuotes(comp.skipReason || 'Excused')}"</span>
-              </div>
-            `;
-          } else if (isDone) {
-            actionBlock = `
-              <div class="locked-badge-phone">
-                <span class="material-icons" style="font-size: 16px;">verified</span>
-                <span>✓ LOCKED • ${comp.completedByUserInitials || 'DS'} (${formatTimestamp(comp.completedAt)})</span>
-              </div>
-            `;
-          } else {
-            actionBlock = `
-              <div style="display: flex; gap: 6px;">
-                <button class="btn-mobile-full sign-btn" style="flex: 1;" onclick="openSubtasksModal('${task.id}', '${cat.name}')">
-                  <span class="material-icons" style="font-size: 16px;">checklist</span>
-                  CHECKLIST / SIGN OFF (${bullets.length})
-                </button>
-                <button class="btn-mobile-full" onclick="openSkipTaskModal('${task.id}', '${escapeQuotes(task.title)}', '${cat.name}')" style="background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D; flex: 0 0 auto; width: auto; padding: 0 12px; font-weight: 900;" title="Skip task">
-                  <span class="material-icons" style="font-size: 16px;">warning</span> SKIP
-                </button>
-              </div>
-            `;
-          }
-
-          const isOneTime = task.isOneTime || task.daysOfWeek === 'ONE_TIME';
-          let scheduleBadge = "";
-          if (isOneTime) {
-            const start = task.oneTimeStartDate || '';
-            const isRollover = start && selectedDate > start && !isLocked;
-            scheduleBadge = `
-              <span class="badge-tag" style="background: #F3E8FF; color: #6B21A8; border: 1px solid #D8B4FE; font-weight: 800;">★ ONE-TIME</span>
-              ${isRollover ? `<span class="badge-tag" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; font-weight: 800;">ROLLED OVER</span>` : ''}
-            `;
-          } else {
-            scheduleBadge = `<span class="badge-tag days">${task.daysOfWeek || 'DAILY'}</span>`;
-          }
-
-          let priorityBadgeHtml = "";
-          if (isUrgentToday) {
-            priorityBadgeHtml = `
-              <span class="badge-tag URGENT">
-                <span class="material-icons" style="font-size: 11px;">local_fire_department</span>
-                🚨 URGENT (TODAY)
-              </span>
-              <span class="badge-tag ${task.priority || 'MEDIUM'}" style="text-decoration: line-through; opacity: 0.55;" title="Normally ${task.priority || 'MEDIUM'}">
-                REGULAR: ${task.priority || 'MEDIUM'}
-              </span>
-            `;
-          } else {
-            priorityBadgeHtml = `<span class="badge-tag ${task.priority || 'MEDIUM'}">${task.priority || 'MEDIUM'}</span>`;
-          }
-
-          let urgentToggleHtml = "";
-          if (isRecurring) {
-            urgentToggleHtml = `
-              <div class="urgent-toggle-strip ${isUrgentToday ? 'active' : ''}">
-                <label class="urgent-toggle-label" title="Tick to make this recurring task urgent for today (${selectedDate}) only">
-                  <input type="checkbox" class="urgent-checkbox" ${isUrgentToday ? 'checked' : ''} onchange="toggleTaskUrgentForToday('${task.id}', this.checked)">
-                  <span class="urgent-toggle-text ${isUrgentToday ? 'active' : ''}">
-                    <span class="material-icons" style="font-size: 15px; color: ${isUrgentToday ? '#DC2626' : 'var(--retail-text-secondary)'};">
-                      ${isUrgentToday ? 'local_fire_department' : 'notification_important'}
-                    </span>
-                    <span>${isUrgentToday ? 'Urgent task for today only' : 'Make urgent for today only'}</span>
-                  </span>
-                  ${isUrgentToday ? `
-                    <span class="urgent-status-pill">
-                      <span class="material-icons" style="font-size: 10px;">priority_high</span>
-                      URGENT TODAY
-                    </span>
-                  ` : ''}
-                </label>
-              </div>
-            `;
-          }
-
-          taskCard.innerHTML = `
-            <div class="task-card-top">
-              <div>
-                <div class="task-title-phone">${task.title}</div>
-                <div class="task-badges-row">
-                  ${priorityBadgeHtml}
-                  ${scheduleBadge}
-                  ${isSkipped ? `<span class="badge-tag" style="background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D; font-weight: 900;">⚡ SKIPPED</span>` : ''}
-                  ${isPartial ? `<span class="badge-tag partial">½ PARTIAL (${comp.completedSubTasksCount || 1}/${comp.totalSubTasksCount || bullets.length})</span>` : ''}
-                </div>
-              </div>
-            </div>
-
-            ${bulletsPreview}
-
-            <div class="task-actions-stack">
-              ${urgentToggleHtml}
-              ${actionBlock}
-              <div class="task-secondary-btns">
-                <button class="btn-mobile-outline" onclick="openNotesModal('${task.id}', '${escapeQuotes(task.title)}')">
-                  <span class="material-icons" style="font-size: 14px;">note</span>
-                  NOTES ${noteCount > 0 ? `(${noteCount})` : ''}
-                </button>
-                <button class="btn-mobile-outline" onclick="openPhotosModal('${task.id}', '${escapeQuotes(task.title)}')">
-                  <span class="material-icons" style="font-size: 14px;">camera_alt</span>
-                  PHOTOS ${photoCount > 0 ? `(${photoCount})` : ''}
-                </button>
-                ${activeStaffUser && activeStaffUser.role === 'ADMIN' ? `
-                <button class="btn-mobile-outline" onclick="openEditTaskModal('${task.id}')" style="color: #4F46E5; border-color: #C7D2FE; background: #EEF2FF;">
-                  <span class="material-icons" style="font-size: 14px;">edit</span>
-                  EDIT
-                </button>
-                ` : ''}
-              </div>
+          const secondaryActionRowHtml = `
+            <div class="task-secondary-actions-row">
+              <button class="btn-sub-action" onclick="openNotesModal('${task.id}', '${escapeQuotes(task.title)}')">
+                <span class="material-icons" style="font-size: 15px; color: #0F172A;">description</span>
+                <span>Notes ${noteCount > 0 ? `(${noteCount})` : ''}</span>
+              </button>
+              <button class="btn-sub-action" onclick="openPhotosModal('${task.id}', '${escapeQuotes(task.title)}')">
+                <span class="material-icons" style="font-size: 15px; color: #0F172A;">photo_camera</span>
+                <span>Photos ${photoCount > 0 ? `(${photoCount})` : ''}</span>
+              </button>
+              <button class="btn-sub-action" onclick="openEditTaskModal('${task.id}')">
+                <span class="material-icons" style="font-size: 15px; color: #0F172A;">edit</span>
+                <span>Edit</span>
+              </button>
             </div>
           `;
-          section.appendChild(taskCard);
+
+          taskCard.innerHTML = `
+            ${titleHtml}
+            ${badgesHtml}
+            ${checklistSummaryHtml}
+            ${urgentToggleHtml}
+            ${primaryActionRowHtml}
+            ${secondaryActionRowHtml}
+          `;
+          tasksGrid.appendChild(taskCard);
         });
 
+        section.appendChild(tasksGrid);
         container.appendChild(section);
       });
 
@@ -4246,10 +5880,34 @@
       const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
       const pending = Math.max(0, total - completed);
 
+      // Activity Hub Elements
+      const hubRatio = document.getElementById("hubCompletedRatio");
+      const hubPending = document.getElementById("hubPendingCount");
+      const hubPct = document.getElementById("hubPctText");
+      const ringCircle = document.getElementById("hubRingCircle");
+
+      if (hubRatio) hubRatio.innerText = `${completed} / ${total}`;
+      if (hubPending) hubPending.innerText = `${pending}`;
+      if (hubPct) hubPct.innerText = `${pct}%`;
+
+      if (ringCircle) {
+        const radius = 33;
+        const circumference = 2 * Math.PI * radius; // 207.345
+        const offset = circumference - (pct / 100) * circumference;
+        ringCircle.style.strokeDashoffset = offset;
+        if (pct === 100) {
+          ringCircle.style.stroke = "#10B981";
+        } else if (pct > 0) {
+          ringCircle.style.stroke = "#3B82F6";
+        } else {
+          ringCircle.style.stroke = "#CBD5E1";
+        }
+      }
+
+      // Legacy KPI IDs
       const progEl = document.getElementById("kpiProgressText");
       const pctEl = document.getElementById("kpiComplianceRate");
       const pendEl = document.getElementById("kpiPendingCount");
-
       if (progEl) progEl.innerText = `${completed} / ${total}`;
       if (pctEl) pctEl.innerText = `${pct}%`;
       if (pendEl) pendEl.innerText = `${pending}`;
@@ -4591,9 +6249,12 @@
     }
 
     function updateDateDisplay() {
-      const d = new Date(selectedDate);
+      const d = new Date(selectedDate + "T12:00:00Z");
       const options = { weekday: 'short', day: 'numeric', month: 'short' };
-      document.getElementById("currentDateBadge").innerText = d.toLocaleDateString('en-GB', options).toUpperCase();
+      const badge = document.getElementById("currentDateBadge");
+      if (badge) {
+        badge.innerText = d.toLocaleDateString('en-GB', options).replace(/,/g, '').toUpperCase();
+      }
       if (document.getElementById("historyDatePicker")) {
         document.getElementById("historyDatePicker").value = selectedDate;
       }
@@ -5088,8 +6749,7 @@
       document.querySelectorAll(".admin-phone-pane").forEach(el => el.style.display = "none");
       if (tab === 'LAYOUT') {
         document.getElementById("adminTabLayout").style.display = "block";
-        renderAdminCategoriesPhone();
-        renderAdminTasksPhone();
+        renderAdminLayoutAndTasks();
       } else if (tab === 'USERS') {
         document.getElementById("adminTabUsers").style.display = "block";
         renderAdminUsersPhone();
@@ -5106,100 +6766,563 @@
       }
     }
 
-    function renderAdminCategoriesPhone() {
-      const container = document.getElementById("adminCategoriesListPhone");
+    let openAdminCategoryIds = new Set();
+
+    function formatDaysChronological(daysOfWeek) {
+      if (!daysOfWeek || daysOfWeek.toUpperCase() === 'ALL') return 'ALL days';
+      if (daysOfWeek.toUpperCase() === 'WEEKDAYS') return 'Mon - Fri';
+      if (daysOfWeek.toUpperCase() === 'WEEKENDS') return 'Sat, Sun';
+      if (daysOfWeek.toUpperCase() === 'ONE_TIME') return 'One-time';
+      
+      const order = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+      const fullToShort = {
+        MONDAY: 'Mon', TUESDAY: 'Tue', WEDNESDAY: 'Wed', THURSDAY: 'Thu',
+        FRIDAY: 'Fri', SATURDAY: 'Sat', SUNDAY: 'Sun',
+        MON: 'Mon', TUE: 'Tue', WED: 'Wed', THU: 'Thu', FRI: 'Fri', SAT: 'Sat', SUN: 'Sun'
+      };
+      
+      const parts = daysOfWeek.split(',').map(s => s.trim().toUpperCase());
+      const matched = [];
+      order.forEach(d => {
+        if (parts.some(p => p === d || p.startsWith(d))) {
+          matched.push(fullToShort[d]);
+        }
+      });
+      if (matched.length === 7) return 'ALL days';
+      if (matched.length === 0) return daysOfWeek;
+      return matched.join(', ');
+    }
+
+    function toggleAdminAccordionCategory(catId) {
+      const idStr = String(catId);
+      if (openAdminCategoryIds.has(idStr)) {
+        openAdminCategoryIds.delete(idStr);
+      } else {
+        openAdminCategoryIds.add(idStr);
+      }
+      renderAdminLayoutAndTasks();
+    }
+
+    function openAddTaskForCategory(catId) {
+      openAddTaskModal();
+      if (catId) {
+        const select = document.getElementById("addTaskCategorySelect");
+        if (select) select.value = catId;
+      }
+    }
+
+    function openEditCategoryModal(catId) {
+      const cat = categories.find(c => String(c.id) === String(catId));
+      if (!cat) return;
+      document.getElementById("editCategoryId").value = cat.id;
+      document.getElementById("editCategoryName").value = cat.name || "";
+      document.getElementById("editCategoryModal").style.display = "flex";
+    }
+
+    function closeEditCategoryModal() {
+      document.getElementById("editCategoryModal").style.display = "none";
+    }
+
+    async function saveEditedCategory() {
+      const catId = document.getElementById("editCategoryId").value;
+      const name = document.getElementById("editCategoryName").value.trim().toUpperCase();
+      if (!name || !catId) return;
+
+      const cat = categories.find(c => String(c.id) === String(catId));
+      if (cat) cat.name = name;
+      const defCat = defaultCategories.find(c => String(c.id) === String(catId));
+      if (defCat) defCat.name = name;
+
+      try {
+        if (db) {
+          await db.collection("categories").doc(catId.toString()).update({ name });
+        }
+        showToast("Category updated.");
+      } catch (err) {
+        console.warn("Category update cloud notice:", err);
+        showToast("Category updated locally.");
+      }
+
+      closeEditCategoryModal();
+      renderCategoryFilterChips();
+      renderTodayTasks();
+      renderAdminLayoutAndTasks();
+    }
+
+    function handleDeleteFromEditModal() {
+      const taskId = document.getElementById("editTaskId").value;
+      if (!taskId) return;
+      closeEditTaskModal();
+      deleteTaskCloud(taskId);
+    }
+
+    function renderAdminLayoutAndTasks() {
+      const container = document.getElementById("adminAccordionContainer");
+      if (!container) return;
       container.innerHTML = "";
 
       if (categories.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: var(--retail-text-secondary); padding: 14px; font-size: 11px;">No categories configured. Tap + ADD to create one.</div>`;
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--retail-text-secondary); padding: 32px 16px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; font-size: 13px; font-weight: 700;">
+            No categories configured. Tap <strong>+ ADD CATEGORY</strong> to create one.
+          </div>
+        `;
         return;
+      }
+
+      // Default first category to open if user has not interacted with accordions yet
+      if (openAdminCategoryIds.size === 0 && categories.length > 0) {
+        openAdminCategoryIds.add(String(categories[0].id));
       }
 
       categories.forEach(cat => {
-        const item = document.createElement("div");
-        item.style = "display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--retail-surface-subtle); border-radius: 8px; margin-bottom: 8px; font-size: 12px; font-weight: 800; border: 1px solid var(--retail-border);";
-        item.innerHTML = `
-          <span>${cat.name}</span>
-          <button type="button" style="width: 34px; height: 34px; background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" onclick="deleteCategoryCloud('${cat.id}')" title="Delete category">
-            <span class="material-icons" style="font-size: 16px; pointer-events: none;">delete</span>
-          </button>
+        const catIdStr = String(cat.id);
+        const isOpen = openAdminCategoryIds.has(catIdStr);
+        const catTasks = tasks.filter(t => String(t.categoryId) === catIdStr);
+        catTasks.sort((a,b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+
+        const card = document.createElement("div");
+        card.className = "admin-cat-accordion";
+
+        // Category Accordion Header
+        const header = document.createElement("div");
+        header.className = "admin-cat-accordion-header";
+        header.onclick = () => toggleAdminAccordionCategory(cat.id);
+        header.innerHTML = `
+          <span class="admin-cat-header-title">${escapeHtml(cat.name)} (${catTasks.length})</span>
+          <span class="material-icons admin-cat-header-icon">${isOpen ? 'expand_less' : 'expand_more'}</span>
         `;
-        container.appendChild(item);
+        card.appendChild(header);
+
+        if (isOpen) {
+          const body = document.createElement("div");
+          body.className = "admin-cat-accordion-body";
+
+          // Sub-card
+          const subCard = document.createElement("div");
+          subCard.className = "admin-cat-sub-card";
+
+          // Top row inside sub-card
+          const subHeader = document.createElement("div");
+          subHeader.className = "admin-cat-sub-header";
+          subHeader.innerHTML = `
+            <div class="admin-cat-sub-left">
+              <span class="material-icons drag-handle">drag_indicator</span>
+              <span class="material-icons" style="font-size: 18px; color: #475569;">expand_more</span>
+              <span class="admin-cat-sub-title">${escapeHtml(cat.name)}</span>
+            </div>
+            <div class="admin-cat-sub-actions">
+              <button type="button" class="btn-cat-edit" onclick="event.stopPropagation(); openEditCategoryModal('${cat.id}')">
+                <span class="material-icons" style="font-size: 14px;">edit</span>
+                <span>Edit</span>
+              </button>
+              <button type="button" class="btn-cat-delete" onclick="event.stopPropagation(); deleteCategoryCloud('${cat.id}')" title="Delete category">
+                <span class="material-icons" style="font-size: 16px;">delete</span>
+              </button>
+            </div>
+          `;
+          subCard.appendChild(subHeader);
+
+          // Task list container
+          const tasksContainer = document.createElement("div");
+          tasksContainer.className = "admin-tasks-sub-list";
+
+          if (catTasks.length === 0) {
+            tasksContainer.innerHTML = `
+              <div style="text-align: center; color: var(--retail-text-secondary); padding: 18px 12px; font-size: 12px; font-weight: 600;">
+                No tasks in this category yet.
+              </div>
+            `;
+          } else {
+            catTasks.forEach(task => {
+              const taskRow = document.createElement("div");
+              taskRow.className = "admin-task-row-card";
+              taskRow.onclick = () => openEditTaskModal(task.id);
+
+              taskRow.setAttribute("draggable", "true");
+              taskRow.ondragstart = (e) => {
+                e.dataTransfer.setData("text/plain", task.id);
+                taskRow.style.opacity = "0.5";
+              };
+              taskRow.ondragend = () => {
+                taskRow.style.opacity = "1";
+                taskRow.style.borderColor = "";
+              };
+              taskRow.ondragover = (e) => {
+                e.preventDefault();
+                taskRow.style.borderColor = "var(--retail-orange)";
+              };
+              taskRow.ondragleave = () => {
+                taskRow.style.borderColor = "";
+              };
+              taskRow.ondrop = async (e) => {
+                e.preventDefault();
+                taskRow.style.borderColor = "";
+                const draggedTaskId = e.dataTransfer.getData("text/plain");
+                if (!draggedTaskId || draggedTaskId === String(task.id)) return;
+                
+                const draggedTask = tasks.find(t => String(t.id) === String(draggedTaskId));
+                if (!draggedTask) return;
+                
+                const targetIndex = tasks.findIndex(t => String(t.id) === String(task.id));
+                const fromIndex = tasks.findIndex(t => String(t.id) === String(draggedTaskId));
+                if (targetIndex !== -1 && fromIndex !== -1) {
+                  tasks.splice(fromIndex, 1);
+                  tasks.splice(targetIndex, 0, draggedTask);
+                  draggedTask.categoryId = cat.id;
+                  tasks.forEach((t, idx) => { t.sortOrder = idx + 1; });
+                  renderAdminLayoutAndTasks();
+                  renderTodayTasks();
+                  
+                  if (db) {
+                    try {
+                      await db.collection("tasks").doc(draggedTask.id.toString()).update({
+                        categoryId: cat.id,
+                        sortOrder: draggedTask.sortOrder
+                      });
+                    } catch (_) {}
+                  }
+                }
+              };
+
+              const prio = (task.priority || 'HIGH').toUpperCase();
+              const daysText = formatDaysChronological(task.daysOfWeek || 'ALL');
+
+              taskRow.innerHTML = `
+                <div class="admin-task-row-left">
+                  <span class="material-icons drag-handle" onclick="event.stopPropagation()">drag_indicator</span>
+                  <div class="admin-task-info">
+                    <div class="admin-task-title">${escapeHtml(task.title)}</div>
+                    <div class="admin-task-badges-row">
+                      <span class="admin-badge-prio ${prio}">${prio}</span>
+                      <span class="admin-badge-days">${daysText}</span>
+                      ${task.isOneTime || task.daysOfWeek === 'ONE_TIME' ? `<span class="admin-badge-days" style="color: #6B21A8; background: #F3E8FF; border: 1px solid #D8B4FE;">★ One-time</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn-task-pencil" onclick="event.stopPropagation(); openEditTaskModal('${task.id}')" title="Edit task">
+                  <span class="material-icons" style="font-size: 16px;">edit</span>
+                </button>
+              `;
+              tasksContainer.appendChild(taskRow);
+            });
+          }
+
+          subCard.appendChild(tasksContainer);
+          body.appendChild(subCard);
+
+          // Inline Add Task button
+          // Format category name for button text, e.g. "MORNING TASKS" -> "Morning"
+          let shortCatName = cat.name.replace(/tasks/i, '').trim();
+          if (!shortCatName) shortCatName = cat.name;
+          shortCatName = shortCatName.charAt(0).toUpperCase() + shortCatName.slice(1).toLowerCase();
+
+          const inlineAddBtn = document.createElement("button");
+          inlineAddBtn.type = "button";
+          inlineAddBtn.className = "btn-inline-add-task";
+          inlineAddBtn.onclick = () => openAddTaskForCategory(cat.id);
+          inlineAddBtn.innerHTML = `
+            <span class="material-icons" style="font-size: 18px;">add</span>
+            <span>Add Task in ${escapeHtml(shortCatName)}</span>
+          `;
+          body.appendChild(inlineAddBtn);
+
+          card.appendChild(body);
+        }
+
+        container.appendChild(card);
       });
     }
 
+    function renderAdminCategoriesPhone() {
+      renderAdminLayoutAndTasks();
+    }
+
     function renderAdminTasksPhone() {
-      const container = document.getElementById("adminTasksListPhone");
-      container.innerHTML = "";
+      renderAdminLayoutAndTasks();
+    }
 
-      if (tasks.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: var(--retail-text-secondary); padding: 14px; font-size: 11px;">No tasks configured. Tap + ADD TASK to create one.</div>`;
-        return;
-      }
+    let activeStaffFilter = 'ALL';
 
-      tasks.forEach(task => {
-        const cat = categories.find(c => String(c.id) === String(task.categoryId)) || { name: "GENERAL" };
-        const item = document.createElement("div");
-        item.style = "display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--retail-surface-subtle); border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--retail-border);";
-        item.innerHTML = `
-          <div style="flex: 1; padding-right: 8px;">
-            <div style="font-size: 13px; font-weight: 900; line-height: 1.3;">${task.title}</div>
-            <div style="font-size: 10px; color: var(--retail-text-secondary); margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-              <span>${cat.name}</span>
-              <span>•</span>
-              <span class="badge-tag ${task.priority || 'MEDIUM'}" style="font-size: 8px; padding: 1px 4px;">${task.priority || 'MEDIUM'}</span>
-              <span>•</span>
-              ${task.isOneTime || task.daysOfWeek === 'ONE_TIME' ?
-                `<span style="color: #6B21A8; font-weight: 800; background: #F3E8FF; padding: 1px 6px; border-radius: 4px; border: 1px solid #D8B4FE;">${task.completedDate ? `✓ ONE-TIME (DONE ${task.completedDate})` : '★ ONE-TIME ROLLOVER'}</span>` :
-                `<span>📅 ${task.daysOfWeek || 'DAILY'}</span>`
-              }
-            </div>
-          </div>
-          <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
-            <button type="button" style="width: 34px; height: 34px; background: #EEF2FF; color: #4F46E5; border: 1px solid #C7D2FE; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" onclick="openEditTaskModal('${task.id}')" title="Edit task">
-              <span class="material-icons" style="font-size: 16px; pointer-events: none;">edit</span>
-            </button>
-            <button type="button" style="width: 34px; height: 34px; background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" onclick="deleteTaskCloud('${task.id}')" title="Delete task">
-              <span class="material-icons" style="font-size: 16px; pointer-events: none;">delete</span>
-            </button>
-          </div>
-        `;
-        container.appendChild(item);
-      });
+    function setAdminStaffFilter(filter) {
+      activeStaffFilter = filter;
+      renderAdminUsersPhone();
     }
 
     function renderAdminUsersPhone() {
       const container = document.getElementById("adminUsersListPhone");
+      const pillsContainer = document.getElementById("adminStaffFilterPills");
+      if (!container) return;
+
+      const totalCount = users.length;
+      const adminCount = users.filter(u => u.role === 'ADMIN').length;
+      const pendingCount = users.filter(u => u.mustChangePin || !u.pinHash).length;
+
+      if (pillsContainer) {
+        pillsContainer.innerHTML = `
+          <button type="button" class="staff-filter-pill ${activeStaffFilter === 'ALL' ? 'active' : ''}" onclick="setAdminStaffFilter('ALL')">All (${totalCount})</button>
+          <button type="button" class="staff-filter-pill ${activeStaffFilter === 'ADMINS' ? 'active' : ''}" onclick="setAdminStaffFilter('ADMINS')">Admins (${adminCount})</button>
+          <button type="button" class="staff-filter-pill ${activeStaffFilter === 'PENDING_PIN' ? 'active' : ''}" onclick="setAdminStaffFilter('PENDING_PIN')">Pending PIN (${pendingCount})</button>
+        `;
+      }
+
       container.innerHTML = "";
 
       if (users.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: var(--retail-text-secondary); padding: 14px; font-size: 11px;">No staff registered. Tap + ADD STAFF to add one.</div>`;
+        container.innerHTML = `<div style="text-align: center; color: var(--retail-text-secondary); padding: 24px; font-size: 12px; font-weight: 700;">No staff registered. Tap <strong>+ ADD STAFF</strong> to add one.</div>`;
         return;
       }
 
-      users.forEach(user => {
-        const card = document.createElement("div");
-        card.style = "padding: 10px 12px; background: var(--retail-surface-subtle); border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--retail-border);";
-        card.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div class="staff-avatar-circle" style="width: 32px; height: 32px; font-size: 12px;">${user.initials}</div>
-            <div>
-              <div style="font-size: 13px; font-weight: 900;">${user.name}</div>
-              <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                <span class="staff-role-badge ${user.role === 'ADMIN' ? 'admin' : 'staff'}">${user.role}</span>
-                ${user.mustChangePin ? '<span style="background: #FAF5FF; color: #7C3AED; font-size: 8px; font-weight: 900; padding: 1px 5px; border-radius: 4px; border: 1px solid #D8B4FE;">★ PIN SETUP PENDING</span>' : ''}
+      let filteredUsers = users;
+      if (activeStaffFilter === 'ADMINS') {
+        filteredUsers = users.filter(u => u.role === 'ADMIN');
+      } else if (activeStaffFilter === 'PENDING_PIN') {
+        filteredUsers = users.filter(u => u.mustChangePin || !u.pinHash);
+      }
+
+      if (filteredUsers.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--retail-text-secondary); padding: 24px; font-size: 12px; font-weight: 700;">No staff match this filter.</div>`;
+        return;
+      }
+
+      const adminsList = filteredUsers.filter(u => u.role === 'ADMIN');
+      const staffList = filteredUsers.filter(u => u.role !== 'ADMIN');
+
+      function buildUserRowHtml(user) {
+        const isAdmin = user.role === 'ADMIN';
+        const isPending = user.mustChangePin || !user.pinHash;
+        const avatarColorClass = isAdmin ? 'admin' : 'staff';
+        const safeInitials = escapeQuotes(user.initials || (user.name ? user.name.slice(0, 2).toUpperCase() : 'ST'));
+
+        return `
+          <div class="staff-row-card">
+            <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+              <div class="staff-avatar-circle ${avatarColorClass}" style="width: 38px; height: 38px; font-size: 13px; font-weight: 900; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${safeInitials}</div>
+              <div style="min-width: 0;">
+                <div class="staff-row-name">${escapeQuotes(user.name)}</div>
+                <div style="display: flex; align-items: center; gap: 4px; margin-top: 3px; flex-wrap: wrap;">
+                  <span class="staff-role-badge ${isAdmin ? 'admin' : 'staff'}">${user.role}</span>
+                  ${isPending ? '<span class="staff-pending-pin-tag">★ PIN SETUP PENDING</span>' : ''}
+                </div>
               </div>
             </div>
-          </div>
-          <div style="display: flex; gap: 6px; align-items: center;">
-            <button type="button" class="btn-today-chip" style="font-size: 9px;" onclick="openChangePinModal('${user.id}', '${escapeQuotes(user.name)}')">PIN</button>
-            <button type="button" style="width: 30px; height: 30px; background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" onclick="deleteUserCloud('${user.id}')" title="Remove staff">
-              <span class="material-icons" style="font-size: 14px; pointer-events: none;">delete</span>
-            </button>
+            <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
+              ${isPending ? `<button type="button" class="btn-set-pin-action" onclick="openChangePinModal('${user.id}', '${escapeQuotes(user.name)}')">Set PIN</button>` : ''}
+              <button type="button" class="btn-manage-staff-action" onclick="openManageStaffModal('${user.id}')">Manage &bull;&bull;&bull;</button>
+            </div>
           </div>
         `;
-        container.appendChild(card);
-      });
+      }
+
+      let html = "";
+      if (adminsList.length > 0) {
+        html += `<div class="staff-section-title">ADMINISTRATORS (${adminsList.length})</div>`;
+        html += `<div class="staff-tablet-grid">`;
+        adminsList.forEach(u => {
+          html += buildUserRowHtml(u);
+        });
+        html += `</div>`;
+      }
+
+      if (staffList.length > 0) {
+        html += `<div class="staff-section-title" style="margin-top: ${adminsList.length > 0 ? '16px' : '8px'};">STORE STAFF (${staffList.length})</div>`;
+        html += `<div class="staff-tablet-grid">`;
+        staffList.forEach(u => {
+          html += buildUserRowHtml(u);
+        });
+        html += `</div>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    let currentManageUserId = null;
+    let currentManageUserRole = 'STAFF';
+
+    function openManageStaffModal(userId) {
+      const user = users.find(u => String(u.id) === String(userId));
+      if (!user) return;
+
+      currentManageUserId = userId;
+      currentManageUserRole = user.role || 'STAFF';
+
+      document.getElementById("manageStaffId").value = userId;
+      document.getElementById("manageStaffNameInput").value = user.name;
+      document.getElementById("manageStaffHeaderName").innerText = user.name;
+      document.getElementById("manageStaffHeaderRole").innerText = `${user.role} • ${user.mustChangePin || !user.pinHash ? 'PIN Setup Pending' : 'PIN Active'}`;
+      
+      const avatarEl = document.getElementById("manageStaffAvatar");
+      if (avatarEl) {
+        avatarEl.innerText = user.initials || (user.name ? user.name.slice(0, 2).toUpperCase() : 'ST');
+        avatarEl.className = `staff-avatar-circle ${user.role === 'ADMIN' ? 'admin' : 'staff'}`;
+      }
+
+      setManageStaffRole(currentManageUserRole);
+
+      // PIN Status in drawer
+      const isPending = user.mustChangePin || !user.pinHash;
+      const pinStatusEl = document.getElementById("manageStaffPinStatus");
+      const pinDescEl = document.getElementById("manageStaffPinDesc");
+      const changePinBtn = document.getElementById("manageStaffChangePinBtn");
+      const requirePinBtn = document.getElementById("manageStaffRequirePinBtn");
+
+      if (isPending) {
+        if (pinStatusEl) {
+          pinStatusEl.innerText = "PENDING FIRST-TIME SETUP";
+          pinStatusEl.style.color = "#7C3AED";
+        }
+        if (pinDescEl) {
+          pinDescEl.innerText = "This employee has not completed their 4-digit PIN setup yet. You can set a temporary PIN for them now, or let them choose when they tap their name.";
+        }
+        if (changePinBtn) changePinBtn.innerText = "Set 4-Digit PIN Now";
+        if (requirePinBtn) requirePinBtn.style.display = "none";
+      } else {
+        if (pinStatusEl) {
+          pinStatusEl.innerText = "ACTIVE & CONFIGURED";
+          pinStatusEl.style.color = "#16A34A";
+        }
+        if (pinDescEl) {
+          pinDescEl.innerText = "A private 4-digit PIN is configured. To change it, click below. You can also require the staff member to choose a new PIN on next sign-in.";
+        }
+        if (changePinBtn) changePinBtn.innerText = "Change / Reset PIN";
+        if (requirePinBtn) {
+          requirePinBtn.style.display = "inline-flex";
+          requirePinBtn.innerText = "Require PIN Reset";
+        }
+      }
+
+      // Check if this is the active logged in account
+      const isCurrentActiveUser = !!(activeStaffUser && String(activeStaffUser.id) === String(userId));
+      const deleteBtn = document.getElementById("manageStaffDeleteBtn");
+      const activeNotice = document.getElementById("manageStaffActiveNotice");
+
+      if (isCurrentActiveUser) {
+        if (deleteBtn) deleteBtn.style.display = "none";
+        if (activeNotice) activeNotice.style.display = "block";
+      } else {
+        if (deleteBtn) deleteBtn.style.display = "inline-flex";
+        if (activeNotice) activeNotice.style.display = "none";
+      }
+
+      document.getElementById("manageStaffModal").style.display = "flex";
+    }
+
+    function closeManageStaffModal() {
+      document.getElementById("manageStaffModal").style.display = "none";
+      currentManageUserId = null;
+    }
+
+    function setManageStaffRole(role) {
+      currentManageUserRole = role;
+      const staffBtn = document.getElementById("roleBtnStaff");
+      const adminBtn = document.getElementById("roleBtnAdmin");
+      if (staffBtn && adminBtn) {
+        if (role === 'ADMIN') {
+          adminBtn.classList.add("active");
+          staffBtn.classList.remove("active");
+        } else {
+          staffBtn.classList.add("active");
+          adminBtn.classList.remove("active");
+        }
+      }
+    }
+
+    async function saveManageStaffChanges() {
+      if (!currentManageUserId) return;
+      const user = users.find(u => String(u.id) === String(currentManageUserId));
+      if (!user) return;
+
+      const newName = document.getElementById("manageStaffNameInput").value.trim().toUpperCase();
+      if (!newName) {
+        alert("Please enter a valid staff name.");
+        return;
+      }
+
+      const newRole = currentManageUserRole;
+      const newInitials = newName.split(" ").filter(Boolean).map(w => w[0]).join("").slice(0, 2) || "U";
+
+      user.name = newName;
+      user.role = newRole;
+      user.initials = newInitials;
+
+      const defUser = defaultUsers.find(u => String(u.id) === String(currentManageUserId));
+      if (defUser) {
+        defUser.name = newName;
+        defUser.role = newRole;
+        defUser.initials = newInitials;
+      }
+
+      if (activeStaffUser && String(activeStaffUser.id) === String(currentManageUserId)) {
+        activeStaffUser.name = newName;
+        activeStaffUser.role = newRole;
+        activeStaffUser.initials = newInitials;
+        const avatarEl = document.getElementById("sessionUserAvatar");
+        if (avatarEl) avatarEl.innerText = newInitials;
+        const nameEl = document.getElementById("sessionUserName");
+        if (nameEl) nameEl.innerText = newName;
+        const roleEl = document.getElementById("sessionUserRole");
+        if (roleEl) roleEl.innerText = newRole;
+      }
+
+      try {
+        if (db) {
+          await db.collection("users").doc(currentManageUserId.toString()).update({
+            name: newName,
+            role: newRole,
+            initials: newInitials
+          });
+        }
+        showToast("Staff member updated.");
+      } catch (err) {
+        console.warn("Update staff error:", err);
+        showToast("Staff member updated locally.");
+      }
+
+      closeManageStaffModal();
+      renderStaffRosterPhone();
+      renderAdminUsersPhone();
+    }
+
+    function triggerManageStaffPinChange() {
+      if (!currentManageUserId) return;
+      const user = users.find(u => String(u.id) === String(currentManageUserId));
+      if (!user) return;
+      const uid = currentManageUserId;
+      const uname = user.name;
+      closeManageStaffModal();
+      openChangePinModal(uid, uname);
+    }
+
+    async function triggerManageStaffRequirePin() {
+      if (!currentManageUserId) return;
+      const user = users.find(u => String(u.id) === String(currentManageUserId));
+      if (!user) return;
+
+      user.mustChangePin = true;
+      const defUser = defaultUsers.find(u => String(u.id) === String(currentManageUserId));
+      if (defUser) defUser.mustChangePin = true;
+
+      try {
+        if (db) {
+          await db.collection("users").doc(currentManageUserId.toString()).update({
+            mustChangePin: true
+          });
+        }
+        showToast(`${user.name} will be prompted to reset PIN on next sign-in.`);
+      } catch (err) {
+        console.warn("Require PIN update error:", err);
+        showToast("PIN reset requirement saved locally.");
+      }
+
+      closeManageStaffModal();
+      renderAdminUsersPhone();
+    }
+
+    function deleteFromManageModal() {
+      if (!currentManageUserId) return;
+      const uid = currentManageUserId;
+      closeManageStaffModal();
+      deleteUserCloud(uid);
     }
 
     let adminAuditDate = (function() {
@@ -5797,7 +7920,7 @@
 
       const csvContent = "\uFEFF" + rows.join("\r\n");
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const fileName = `ShiftTask_KPI_Report_${adminReportMonth}.csv`;
+      const fileName = `OnestopDaily_KPI_Report_${adminReportMonth}.csv`;
 
       const link = document.createElement("a");
       if (link.download !== undefined) {
@@ -6173,6 +8296,10 @@
     }
 
     function deleteUserCloud(userId) {
+      if (activeStaffUser && String(activeStaffUser.id) === String(userId)) {
+        alert("Cannot remove the currently logged-in active administrator account.");
+        return;
+      }
       const u = users.find(x => String(x.id) === String(userId));
       const name = u ? u.name : "this staff member";
       showConfirmDialog("Remove Staff Member", `Are you sure you want to remove ${name}?`, async () => {
@@ -6946,7 +9073,7 @@
         badge.style.borderColor = "#F59E0B";
         badge.style.color = "#FBBF24";
 
-        desc.innerText = "iOS Safari requires adding ShiftTask to your Home Screen before it allows Lock Screen banner alerts and badges.";
+        desc.innerText = "iOS Safari requires adding Onestop Daily to your Home Screen before it allows Lock Screen banner alerts and badges.";
         installSteps.style.display = "block";
 
         actionArea.innerHTML = `
@@ -6986,7 +9113,7 @@
         badge.style.color = "#F87171";
 
         desc.innerText = isIos
-          ? "Alerts are currently blocked. To enable, open iPhone Settings > Notifications > ShiftTask > Allow Notifications."
+          ? "Alerts are currently blocked. To enable, open iPhone Settings > Notifications > Onestop Daily > Allow Notifications."
           : "Notifications are blocked in your browser site permissions. Please allow notifications in site settings.";
 
         actionArea.innerHTML = `
@@ -7001,7 +9128,7 @@
         badge.style.borderColor = "#3B82F6";
         badge.style.color = "#93C5FD";
 
-        desc.innerText = "Tap below to allow ShiftTask to send lock screen notifications whenever tasks are added to your shift.";
+        desc.innerText = "Tap below to allow Onestop Daily to send lock screen notifications whenever tasks are added to your shift.";
 
         actionArea.innerHTML = `
           <button onclick="requestPushNotificationPermission()" style="background: #3B82F6; color: #FFFFFF; border: none; border-radius: 8px; padding: 11px 14px; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);">
@@ -7014,7 +9141,7 @@
 
     async function requestPushNotificationPermission() {
       if (!('Notification' in window)) {
-        alert("This browser does not support web push notifications. If using iPhone, please add ShiftTask to your Home Screen first.");
+        alert("This browser does not support web push notifications. If using iPhone, please add Onestop Daily to your Home Screen first.");
         return;
       }
 
@@ -7210,6 +9337,9 @@
       users = [...defaultUsers];
       categories = [];
       tasks = [];
+
+      // Initialize Unified Phone & Tablet Layout
+      initLayoutMode();
 
       renderStaffRosterPhone();
       renderCategoryFilterChips();
