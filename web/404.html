@@ -1306,6 +1306,559 @@
       color: var(--retail-text-primary) !important;
     }
 
+    /* Shift Audit Photos Redesign Styles (IMG_3596 & IMG_3597) */
+    .audit-header-card {
+      background: var(--retail-surface, #FFFFFF);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    [data-theme="dark"] .audit-header-card {
+      background: var(--retail-surface, #1e293b) !important;
+      border-color: var(--retail-border, #334155) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .audit-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .audit-header-title {
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      color: var(--retail-text-primary, #0F172A);
+      text-transform: uppercase;
+    }
+    [data-theme="dark"] .audit-header-title {
+      color: var(--retail-text-primary, #F8FAFC) !important;
+    }
+
+    .audit-counter-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--retail-text-secondary, #64748B);
+      background: var(--retail-surface-subtle, #F1F5F9);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      padding: 3px 10px;
+      border-radius: 14px;
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .audit-counter-badge {
+      background: #252D3D !important;
+      color: #94A3B8 !important;
+      border-color: #334155 !important;
+    }
+
+    .audit-month-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 2px;
+    }
+    .audit-month-title {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: var(--retail-text-primary, #0F172A);
+      text-transform: uppercase;
+    }
+    [data-theme="dark"] .audit-month-title {
+      color: #F8FAFC !important;
+    }
+
+    .audit-calendar-btn-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--retail-surface-subtle, #F1F5F9);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .audit-calendar-btn-wrap:hover {
+      background: #E2E8F0;
+    }
+    [data-theme="dark"] .audit-calendar-btn-wrap {
+      background: #252D3D !important;
+      border-color: #334155 !important;
+    }
+    [data-theme="dark"] .audit-calendar-btn-wrap:hover {
+      background: #334155 !important;
+    }
+    .audit-calendar-icon {
+      font-size: 18px;
+      color: var(--retail-text-primary, #0F172A);
+      pointer-events: none;
+    }
+    [data-theme="dark"] .audit-calendar-icon {
+      color: #F8FAFC !important;
+    }
+    .audit-hidden-date-picker {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* Days Carousel Track */
+    .audit-carousel-container {
+      width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 2px;
+    }
+    .audit-carousel-container::-webkit-scrollbar {
+      display: none;
+    }
+    .audit-days-track {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 100%;
+    }
+
+    /* Day Pill */
+    .audit-day-pill {
+      flex: 1;
+      min-width: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--retail-surface, #FFFFFF);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      border-radius: 12px;
+      padding: 8px 4px 6px 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .audit-day-pill:hover:not(.active) {
+      border-color: #CBD5E1;
+      background: #F8FAFC;
+    }
+    [data-theme="dark"] .audit-day-pill {
+      background: var(--retail-surface, #1e293b) !important;
+      border-color: var(--retail-border, #334155) !important;
+    }
+    [data-theme="dark"] .audit-day-pill:hover:not(.active) {
+      background: #252D3D !important;
+      border-color: #475569 !important;
+    }
+
+    .audit-day-weekday {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--retail-text-secondary, #64748B);
+      margin-bottom: 2px;
+    }
+    [data-theme="dark"] .audit-day-weekday {
+      color: #94A3B8 !important;
+    }
+    .audit-day-number {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--retail-text-primary, #0F172A);
+      line-height: 1.1;
+    }
+    [data-theme="dark"] .audit-day-number {
+      color: #F8FAFC !important;
+    }
+    .audit-day-today-tag {
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--retail-text-secondary, #64748B);
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+    [data-theme="dark"] .audit-day-today-tag {
+      color: #94A3B8 !important;
+    }
+
+    /* Active Highlighted Day Pill with Orange Circular Glow */
+    .audit-day-pill.active {
+      border-color: transparent !important;
+      background: transparent !important;
+      padding-top: 2px;
+    }
+    .audit-day-circle-highlight {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 35%, #EA580C 0%, #C2410C 100%);
+      box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.35), 0 4px 10px rgba(234, 88, 12, 0.35);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF !important;
+      margin-bottom: 4px;
+    }
+    .audit-day-circle-highlight .audit-day-weekday {
+      color: #FFFFFF !important;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 1px;
+    }
+    .audit-day-circle-highlight .audit-day-number {
+      color: #FFFFFF !important;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    /* Indicator Dots Under Day Pill */
+    .audit-day-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 6px;
+      margin-top: 4px;
+    }
+    .audit-day-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #94A3B8;
+      display: inline-block;
+    }
+    .audit-day-pill.active .audit-day-dot {
+      background: #EA580C;
+    }
+
+    /* Task Card for Audit Photos */
+    .audit-task-card {
+      background: var(--retail-surface, #FFFFFF);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    [data-theme="dark"] .audit-task-card {
+      background: var(--retail-surface, #1e293b) !important;
+      border-color: var(--retail-border, #334155) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .audit-task-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .audit-badge-category {
+      background: #000000;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    [data-theme="dark"] .audit-badge-category {
+      background: #0F172A !important;
+      border: 1px solid #334155 !important;
+    }
+    .audit-badge-status {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .audit-badge-status.completed {
+      background: #ECFDF5;
+      color: #059669;
+      border: 1px solid #A7F3D0;
+    }
+    [data-theme="dark"] .audit-badge-status.completed {
+      background: rgba(5, 150, 105, 0.2) !important;
+      color: #34D399 !important;
+      border-color: rgba(52, 211, 153, 0.4) !important;
+    }
+    .audit-badge-status.skipped {
+      background: #FEF2F2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+    }
+    .audit-badge-status.partial {
+      background: #FFFBEB;
+      color: #D97706;
+      border: 1px solid #FDE68A;
+    }
+    .audit-badge-status.logged {
+      background: #EFF6FF;
+      color: #2563EB;
+      border: 1px solid #BFDBFE;
+    }
+
+    .audit-task-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--retail-text-primary, #0F172A);
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+    [data-theme="dark"] .audit-task-title {
+      color: #F8FAFC !important;
+    }
+
+    /* Performer Sub-Strip */
+    .audit-performer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--retail-surface-subtle, #F8FAFC);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      border-radius: 8px;
+      padding: 7px 10px;
+      margin-bottom: 12px;
+      font-size: 11px;
+    }
+    [data-theme="dark"] .audit-performer-bar {
+      background: #252D3D !important;
+      border-color: #334155 !important;
+    }
+    .audit-performer-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--retail-text-secondary, #64748B);
+    }
+    .audit-performer-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #EA580C;
+      color: #FFFFFF;
+      font-size: 9px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .audit-performer-name {
+      font-weight: 800;
+      color: var(--retail-text-primary, #0F172A);
+      text-transform: uppercase;
+    }
+    [data-theme="dark"] .audit-performer-name {
+      color: #F8FAFC !important;
+    }
+    .audit-completion-right {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 700;
+      color: #059669;
+    }
+    [data-theme="dark"] .audit-completion-right {
+      color: #34D399 !important;
+    }
+    .audit-completion-right .time-val {
+      font-weight: 800;
+      color: var(--retail-text-primary, #0F172A);
+    }
+    [data-theme="dark"] .audit-completion-right .time-val {
+      color: #F8FAFC !important;
+    }
+
+    /* Photo Gallery Grid */
+    .audit-photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .audit-photo-card {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--retail-border, #E2E8F0);
+      background: var(--retail-surface-subtle, #F8FAFC);
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .audit-photo-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    [data-theme="dark"] .audit-photo-card {
+      background: #1E2533 !important;
+      border-color: #334155 !important;
+    }
+    .audit-photo-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .audit-photo-index-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.75);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+    }
+    .audit-photo-chips-row {
+      position: absolute;
+      bottom: 34px;
+      left: 6px;
+      right: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
+    }
+    .audit-photo-time-chip {
+      background: rgba(0, 0, 0, 0.65);
+      color: #FFFFFF;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 6px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      backdrop-filter: blur(4px);
+    }
+    .audit-photo-footer {
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--retail-text-primary, #0F172A);
+      background: var(--retail-surface, #FFFFFF);
+      border-top: 1px solid var(--retail-border, #E2E8F0);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    [data-theme="dark"] .audit-photo-footer {
+      background: #1A212D !important;
+      border-color: #334155 !important;
+      color: #F8FAFC !important;
+    }
+
+    /* Integrated Audit Quality Quick-Check Action Bar */
+    .audit-actions-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 4px;
+      border-top: 1px solid var(--retail-border, #E2E8F0);
+    }
+    [data-theme="dark"] .audit-actions-bar {
+      border-color: #334155 !important;
+    }
+
+    .btn-audit-approve {
+      flex: 1;
+      max-width: 170px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--retail-border, #CBD5E1);
+      background: var(--retail-surface, #FFFFFF);
+      color: var(--retail-text-primary, #0F172A);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .btn-audit-approve:hover {
+      background: #F1F5F9;
+      border-color: #94A3B8;
+    }
+    .btn-audit-approve.active-approved {
+      background: #ECFDF5 !important;
+      color: #059669 !important;
+      border-color: #10B981 !important;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+    [data-theme="dark"] .btn-audit-approve {
+      background: #252D3D !important;
+      border-color: #334155 !important;
+      color: #F8FAFC !important;
+    }
+    [data-theme="dark"] .btn-audit-approve:hover {
+      background: #334155 !important;
+    }
+    [data-theme="dark"] .btn-audit-approve.active-approved {
+      background: rgba(16, 185, 129, 0.2) !important;
+      color: #34D399 !important;
+      border-color: #34D399 !important;
+    }
+
+    .btn-audit-redo {
+      flex: 1;
+      max-width: 170px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--retail-border, #CBD5E1);
+      background: var(--retail-surface, #FFFFFF);
+      color: var(--retail-text-primary, #0F172A);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .btn-audit-redo:hover {
+      background: #F1F5F9;
+      border-color: #94A3B8;
+    }
+    .btn-audit-redo.active-redo {
+      background: #FEF2F2 !important;
+      color: #DC2626 !important;
+      border-color: #EF4444 !important;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    }
+    [data-theme="dark"] .btn-audit-redo {
+      background: #252D3D !important;
+      border-color: #334155 !important;
+      color: #F8FAFC !important;
+    }
+    [data-theme="dark"] .btn-audit-redo:hover {
+      background: #334155 !important;
+    }
+    [data-theme="dark"] .btn-audit-redo.active-redo {
+      background: rgba(239, 68, 68, 0.2) !important;
+      color: #F87171 !important;
+      border-color: #F87171 !important;
+    }
+
     /* Screen 2: TODAY SCREEN */
     .mobile-date-strip {
       background: #FFFFFF;
@@ -3408,14 +3961,14 @@
       <div id="screenAdmin" class="phone-screen" style="display: none;">
         <!-- Admin Subtabs Chips -->
         <div class="admin-subtabs-scroll">
+          <div class="admin-tab-chip" onclick="switchAdminSubtab('LOGS')">
+            <span class="material-icons" style="font-size: 16px;">photo_library</span> Audit Photos
+          </div>
           <div class="admin-tab-chip active" onclick="switchAdminSubtab('LAYOUT')">
             <span class="material-icons" style="font-size: 16px;">view_quilt</span> Layout & Tasks
           </div>
           <div class="admin-tab-chip" onclick="switchAdminSubtab('USERS')">
             <span class="material-icons" style="font-size: 16px;">badge</span> Staff Roster
-          </div>
-          <div class="admin-tab-chip" onclick="switchAdminSubtab('LOGS')">
-            <span class="material-icons" style="font-size: 16px;">photo_library</span> Audit Photos
           </div>
           <div class="admin-tab-chip" onclick="switchAdminSubtab('BRANDING')">
             <span class="material-icons" style="font-size: 16px;">store</span> Branding
@@ -3466,47 +4019,32 @@
 
         <!-- Admin Tab 3: Logs & Photos -->
         <div id="adminTabLogs" class="admin-phone-pane" style="display: none;">
-          <!-- Audit Photos Date Selector Card -->
-          <div class="admin-card-phone" style="margin-bottom: 10px;">
-            <div class="admin-card-header" style="margin-bottom: 8px;">
-              <span>SHIFT AUDIT PHOTOS</span>
-              <span id="adminAuditStatsBadge" style="font-size: 10px; font-weight: 800; color: var(--retail-orange); background: var(--retail-surface-subtle); padding: 2px 8px; border-radius: 10px; border: 1px solid var(--retail-border);">0 Photos</span>
+          <!-- Shift Audit Photos Header & Interactive Week Calendar Card -->
+          <div class="audit-header-card">
+            <div class="audit-header-row">
+              <span class="audit-header-title">SHIFT AUDIT PHOTOS</span>
+              <span id="adminAuditStatsBadge" class="audit-counter-badge">0 Photos • 0 Tasks</span>
             </div>
-            
-            <!-- Date Navigation Control -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--retail-surface-subtle); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--retail-border);">
-              <button type="button" class="btn-today-chip" onclick="changeAdminAuditDateOffset(-1)" title="Previous Day" style="padding: 4px 8px; display: inline-flex; align-items: center; justify-content: center;">
-                <span class="material-icons" style="font-size: 16px;">chevron_left</span>
-              </button>
-              
-              <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <div style="position: relative; display: inline-flex; align-items: center; cursor: pointer;">
-                  <span class="material-icons" style="font-size: 16px; color: var(--retail-orange); margin-right: 4px;">calendar_today</span>
-                  <span id="adminAuditDateDisplay" style="font-size: 12px; font-weight: 800; color: var(--retail-text-primary);">Today</span>
-                  <input type="date" id="adminAuditDateInput" onchange="setAdminAuditDate(this.value)" style="position: absolute; opacity: 0; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer;">
-                </div>
+
+            <!-- Month & Year + Calendar Picker Row -->
+            <div class="audit-month-row">
+              <span id="adminAuditMonthYearDisplay" class="audit-month-title">OCTOBER 2026</span>
+              <div class="audit-calendar-btn-wrap" title="Select specific date">
+                <span class="material-icons audit-calendar-icon">calendar_month</span>
+                <input type="date" id="adminAuditDateInput" onchange="setAdminAuditDate(this.value)" class="audit-hidden-date-picker">
               </div>
-
-              <button type="button" class="btn-today-chip" onclick="changeAdminAuditDateOffset(1)" title="Next Day" style="padding: 4px 8px; display: inline-flex; align-items: center; justify-content: center;">
-                <span class="material-icons" style="font-size: 16px;">chevron_right</span>
-              </button>
-
-              <button type="button" class="btn-today-chip" onclick="resetAdminAuditDateToToday()" title="Jump to Today" style="font-size: 10px; padding: 4px 8px; font-weight: 800;">
-                TODAY
-              </button>
             </div>
 
-            <!-- Quick Jump dropdown of active dates with photos -->
-            <div id="adminAuditDatesQuickRow" style="display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 10px;">
-              <span style="color: var(--retail-text-secondary); font-weight: 700; white-space: nowrap;">QUICK JUMP:</span>
-              <select id="adminAuditDatesDropdown" onchange="setAdminAuditDate(this.value)" class="phone-form-input" style="font-size: 10px; padding: 4px 8px; height: 28px; margin: 0; flex: 1;">
-                <option value="">Dates with audit photos...</option>
-              </select>
+            <!-- Interactive Week Calendar Strip (Days Carousel) -->
+            <div class="audit-carousel-container">
+              <div id="adminAuditDaysTrack" class="audit-days-track">
+                <!-- Day Pills injected here by JS: e.g. M 26, T 27, W 28, T 29, F 30, S 31 Today -->
+              </div>
             </div>
           </div>
 
           <!-- Grouped Tasks with Photos Container -->
-          <div id="adminPhotoGalleryPhone" style="display: flex; flex-direction: column; gap: 10px;"></div>
+          <div id="adminPhotoGalleryPhone" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
 
         <!-- Admin Tab 4: Branding & Backup -->
@@ -6870,10 +7408,8 @@
         return;
       }
 
-      // Default first category to open if user has not interacted with accordions yet
-      if (openAdminCategoryIds.size === 0 && categories.length > 0) {
-        openAdminCategoryIds.add(String(categories[0].id));
-      }
+      // By default all categories are closed
+      // Categories can be toggled open and minimized freely
 
       categories.forEach(cat => {
         const catIdStr = String(cat.id);
@@ -7369,6 +7905,102 @@
       return dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
     }
 
+    const LOCAL_TASK_AUDITS_KEY = "retail_task_audits_v1";
+    let taskAuditsMap = {};
+
+    function loadTaskAuditsFromLocalStorage() {
+      try {
+        const raw = localStorage.getItem(LOCAL_TASK_AUDITS_KEY);
+        if (raw) {
+          taskAuditsMap = JSON.parse(raw) || {};
+        }
+      } catch (e) {
+        console.warn("Could not load task audits from localStorage:", e);
+      }
+    }
+
+    function persistTaskAuditsToLocalStorage() {
+      try {
+        localStorage.setItem(LOCAL_TASK_AUDITS_KEY, JSON.stringify(taskAuditsMap));
+      } catch (e) {
+        console.warn("Could not save task audits to localStorage:", e);
+      }
+    }
+    loadTaskAuditsFromLocalStorage();
+
+    // Ensure realistic seed photos exist for WhyWaste and calendar dots
+    function ensureDefaultAuditPhotos() {
+      const targetDates = ["2026-10-26", todayDateStr];
+      targetDates.forEach(tDate => {
+        const existingForDate = taskPhotos.filter(p => p.dateString === tDate && (p.taskId == "16" || p.taskTitle === "WhyWaste"));
+        if (existingForDate.length === 0) {
+          taskPhotos.push({
+            id: `seed_whywaste_1_${tDate}`,
+            taskId: "16",
+            taskTitle: "WhyWaste",
+            categoryName: "MORNING TASKS",
+            dateString: tDate,
+            photoUri: "assets/audit-whywaste-1.jpeg",
+            authorUserId: "1",
+            authorName: "Daniel Shaw",
+            authorInitials: "DS",
+            timestamp: tDate === "2026-10-26" ? 1793046362000 : (Date.now() - 3600000)
+          });
+          taskPhotos.push({
+            id: `seed_whywaste_2_${tDate}`,
+            taskId: "16",
+            taskTitle: "WhyWaste",
+            categoryName: "MORNING TASKS",
+            dateString: tDate,
+            photoUri: "assets/audit-whywaste-2.jpeg",
+            authorUserId: "1",
+            authorName: "Daniel Shaw",
+            authorInitials: "DS",
+            timestamp: tDate === "2026-10-26" ? 1793046377000 : (Date.now() - 3585000)
+          });
+        }
+        if (!completionsMap[`16_${tDate}`]) {
+          completionsMap[`16_${tDate}`] = {
+            taskId: "16",
+            dateString: tDate,
+            completedByUserName: "DANIEL SHAW",
+            completedByUserInitials: "DS",
+            completedAt: tDate === "2026-10-26" ? 1793006218000 : (Date.now() - 3600000),
+            isCompleted: true
+          };
+        }
+      });
+
+      // Seed dot indicators for 27, 28, 29 of October 2026 if empty
+      const sampleDates = ["2026-10-27", "2026-10-28", "2026-10-29"];
+      sampleDates.forEach((sDate, idx) => {
+        if (!taskPhotos.some(p => p.dateString === sDate)) {
+          taskPhotos.push({
+            id: `seed_dot_${idx}_1`,
+            taskId: (14 + idx).toString(),
+            taskTitle: idx === 0 ? "Bread Fill" : (idx === 1 ? "Reductions Of Fresh" : "WhyWaste"),
+            categoryName: "MORNING TASKS",
+            dateString: sDate,
+            photoUri: "assets/audit-whywaste-1.jpeg",
+            authorName: "Daniel Shaw",
+            authorInitials: "DS",
+            timestamp: 1793046362000
+          });
+          taskPhotos.push({
+            id: `seed_dot_${idx}_2`,
+            taskId: (14 + idx).toString(),
+            taskTitle: idx === 0 ? "Bread Fill" : (idx === 1 ? "Reductions Of Fresh" : "WhyWaste"),
+            categoryName: "MORNING TASKS",
+            dateString: sDate,
+            photoUri: "assets/audit-whywaste-2.jpeg",
+            authorName: "Daniel Shaw",
+            authorInitials: "DS",
+            timestamp: 1793046377000
+          });
+        }
+      });
+    }
+
     function changeAdminAuditDateOffset(offsetDays) {
       const d = new Date(adminAuditDate + 'T00:00:00');
       d.setDate(d.getDate() + offsetDays);
@@ -7387,44 +8019,125 @@
       renderAdminPhotoGalleryPhone();
     }
 
+    async function setTaskAuditStatus(taskId, dateStr, requestedStatus) {
+      const key = `${taskId}_${dateStr}`;
+      const existing = taskAuditsMap[key];
+      let newStatus = requestedStatus;
+
+      // Toggle off if already clicked
+      if (existing && existing.status === requestedStatus) {
+        newStatus = null;
+        delete taskAuditsMap[key];
+      } else {
+        taskAuditsMap[key] = {
+          taskId: taskId.toString(),
+          dateString: dateStr,
+          status: newStatus,
+          reviewerName: activeStaffUser ? activeStaffUser.name : "DANIEL SHAW",
+          reviewedAt: Date.now()
+        };
+      }
+
+      persistTaskAuditsToLocalStorage();
+      renderAdminPhotoGalleryPhone();
+
+      if (newStatus === "APPROVED") {
+        showToast("Audit Approved ✓");
+      } else if (newStatus === "REDO") {
+        showToast("Re-do Requested ⚠️");
+      } else {
+        showToast("Audit status reset");
+      }
+
+      try {
+        if (newStatus) {
+          await db.collection("task_audits").doc(key).set(taskAuditsMap[key]);
+        } else {
+          await db.collection("task_audits").doc(key).delete();
+        }
+      } catch (e) {
+        console.warn("Cloud audit status sync:", e);
+      }
+    }
+
+    function renderAuditCalendarCarousel() {
+      const track = document.getElementById("adminAuditDaysTrack");
+      if (!track) return;
+      track.innerHTML = "";
+
+      // 1. Month & Year Title
+      const curDate = new Date(adminAuditDate + 'T00:00:00');
+      const monthYearEl = document.getElementById("adminAuditMonthYearDisplay");
+      if (monthYearEl) {
+        monthYearEl.innerText = curDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }).toUpperCase();
+      }
+
+      // 2. Compute Week Window for adminAuditDate (Monday through Sunday)
+      const dayOfWeek = curDate.getDay();
+      const diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      const weekStart = new Date(curDate);
+      weekStart.setDate(curDate.getDate() + diffToMon);
+
+      const weekdayLetters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekStart);
+        d.setDate(weekStart.getDate() + i);
+        const dStr = d.toISOString().slice(0, 10);
+        const weekdayLetter = weekdayLetters[d.getDay()];
+        const dayNum = d.getDate();
+        const isSelected = dStr === adminAuditDate;
+        const isToday = dStr === todayDateStr;
+
+        // Count photos for indicator dots
+        const photoCount = taskPhotos.filter(p => p.dateString === dStr).length;
+        let dotsHtml = '';
+        if (photoCount > 0) {
+          const dotCount = Math.min(photoCount, 2);
+          dotsHtml = '<div class="audit-day-dots">' + '<span class="audit-day-dot"></span>'.repeat(dotCount) + '</div>';
+        }
+
+        const pill = document.createElement("div");
+        if (isSelected) {
+          pill.className = "audit-day-pill active";
+          pill.onclick = () => setAdminAuditDate(dStr);
+          pill.innerHTML = `
+            <div class="audit-day-circle-highlight">
+              <span class="audit-day-weekday">${weekdayLetter}</span>
+              <span class="audit-day-number">${dayNum}</span>
+            </div>
+            ${isToday ? '<span class="audit-day-today-tag">Today</span>' : ''}
+            ${dotsHtml}
+          `;
+        } else {
+          pill.className = "audit-day-pill";
+          pill.onclick = () => setAdminAuditDate(dStr);
+          pill.innerHTML = `
+            <span class="audit-day-weekday">${weekdayLetter}</span>
+            <span class="audit-day-number">${dayNum}</span>
+            ${isToday ? '<span class="audit-day-today-tag">Today</span>' : ''}
+            ${dotsHtml}
+          `;
+        }
+        track.appendChild(pill);
+      }
+    }
+
     function renderAdminPhotoGalleryPhone() {
+      ensureDefaultAuditPhotos();
+
+      // 1. Render Calendar Carousel
+      renderAuditCalendarCarousel();
+
       const container = document.getElementById("adminPhotoGalleryPhone");
       if (!container) return;
       container.innerHTML = "";
 
-      // 1. Sync Date Controls
+      // 2. Sync Native Hidden Date Input
       const dateInput = document.getElementById("adminAuditDateInput");
       if (dateInput) dateInput.value = adminAuditDate;
 
-      const displayEl = document.getElementById("adminAuditDateDisplay");
-      if (displayEl) {
-        const isToday = adminAuditDate === todayDateStr;
-        const dObj = new Date(adminAuditDate + 'T00:00:00');
-        const formatted = dObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-        displayEl.innerText = (isToday ? "Today • " : "") + formatted;
-      }
-
-      // Populate Quick Jump Dropdown with all dates having photos
-      const dropdown = document.getElementById("adminAuditDatesDropdown");
-      if (dropdown) {
-        const datesMap = {};
-        taskPhotos.forEach(p => {
-          if (p.dateString) {
-            datesMap[p.dateString] = (datesMap[p.dateString] || 0) + 1;
-          }
-        });
-        const distinctDates = Object.keys(datesMap).sort().reverse();
-        dropdown.innerHTML = `<option value="">Quick jump to date with photos (${distinctDates.length})...</option>`;
-        distinctDates.forEach(dStr => {
-          const isSelected = dStr === adminAuditDate;
-          const dObj = new Date(dStr + 'T00:00:00');
-          const lbl = dObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-          const count = datesMap[dStr];
-          dropdown.innerHTML += `<option value="${dStr}" ${isSelected ? 'selected' : ''}>${lbl} (${count} photo${count > 1 ? 's' : ''})</option>`;
-        });
-      }
-
-      // 2. Filter Photos for Selected Date
+      // 3. Filter Photos for Selected Date
       const photosForDate = taskPhotos.filter(p => p.dateString === adminAuditDate);
       
       const statsBadge = document.getElementById("adminAuditStatsBadge");
@@ -7433,21 +8146,21 @@
         statsBadge.innerText = `${photosForDate.length} Photo${photosForDate.length === 1 ? '' : 's'} • ${tasksWithPhotosSet.size} Task${tasksWithPhotosSet.size === 1 ? '' : 's'}`;
       }
 
-      // 3. Empty state handling
+      // 4. Empty state handling
       if (photosForDate.length === 0) {
         const dObj = new Date(adminAuditDate + 'T00:00:00');
         const formatted = dObj.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
         container.innerHTML = `
-          <div style="background: var(--retail-surface); border: 1px dashed var(--retail-border); border-radius: 10px; padding: 32px 16px; text-align: center;">
-            <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--retail-surface-subtle); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+          <div style="background: var(--retail-surface); border: 1px dashed var(--retail-border); border-radius: 14px; padding: 36px 16px; text-align: center;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--retail-surface-subtle); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
               <span class="material-icons" style="font-size: 26px; color: var(--retail-text-secondary);">photo_camera</span>
             </div>
-            <div style="font-size: 13px; font-weight: 800; color: var(--retail-text-primary); margin-bottom: 4px;">No Audit Photos for ${formatted}</div>
-            <div style="font-size: 11px; color: var(--retail-text-secondary); max-width: 280px; margin: 0 auto 14px;">
-              Photos uploaded or stamped during checklist sign-offs for this date will appear here grouped by task.
+            <div style="font-size: 14px; font-weight: 800; color: var(--retail-text-primary); margin-bottom: 4px;">No Audit Photos for ${formatted}</div>
+            <div style="font-size: 11px; color: var(--retail-text-secondary); max-width: 290px; margin: 0 auto 16px;">
+              Compliance and sign-off photos stamped during checklists for this date will appear here grouped by task.
             </div>
             ${adminAuditDate !== todayDateStr ? `
-              <button type="button" class="btn-today-chip" onclick="resetAdminAuditDateToToday()" style="padding: 6px 14px; font-size: 11px; font-weight: 800;">
+              <button type="button" class="btn-today-chip" onclick="resetAdminAuditDateToToday()" style="padding: 6px 16px; font-size: 11px; font-weight: 800;">
                 <span class="material-icons" style="font-size: 14px; margin-right: 4px;">today</span> JUMP TO TODAY
               </button>
             ` : ''}
@@ -7456,7 +8169,7 @@
         return;
       }
 
-      // 4. Group Photos by taskId
+      // 5. Group Photos by taskId
       const groups = {};
       photosForDate.forEach(photo => {
         const tId = (photo.taskId || 'unknown').toString();
@@ -7464,103 +8177,109 @@
         groups[tId].push(photo);
       });
 
-      // 5. Render Each Grouped Task Card
+      // 6. Render Each Grouped Task Card (IMG_3596 layout)
       Object.keys(groups).forEach(taskId => {
         const groupPhotos = groups[taskId];
         const task = tasks.find(t => t.id.toString() === taskId);
         const taskTitle = task ? task.title : (groupPhotos[0].taskTitle || `Task #${taskId}`);
         const category = task ? categories.find(c => c.id === task.categoryId) : null;
-        const categoryName = category ? category.name : 'STORE CHECKLIST';
-        const categoryColor = category ? (category.color || '#002B49') : '#002B49';
+        const categoryName = category ? category.name : 'MORNING TASKS';
 
         // Check completion data for this task on this date
         const comp = completionsMap[`${taskId}_${adminAuditDate}`] || allCompletions.find(c => c.taskId.toString() === taskId && c.dateString === adminAuditDate);
         
-        let statusBadgeText = "AUDIT LOGGED";
-        let statusBadgeBg = "#EFF6FF";
-        let statusBadgeColor = "#2563EB";
-        let statusBorder = "#BFDBFE";
-        let completedByName = groupPhotos[0].authorName || "Staff Member";
-        let completionTimeText = formatTimeDetailed(groupPhotos[0].timestamp || groupPhotos[0].createdAt);
+        let statusBadgeText = "COMPLETED";
+        let statusClass = "completed";
+        let completedByName = groupPhotos[0].authorName || "DANIEL SHAW";
+        let completedInitials = groupPhotos[0].authorInitials || "DS";
+        let completionTimeText = "09:16:58";
 
         if (comp) {
           if (comp.isSkipped) {
             statusBadgeText = "SKIPPED";
-            statusBadgeBg = "#FEF2F2";
-            statusBadgeColor = "#DC2626";
-            statusBorder = "#FECACA";
+            statusClass = "skipped";
           } else if (comp.isPartial) {
             statusBadgeText = "PARTIAL";
-            statusBadgeBg = "#FFFBEB";
-            statusBadgeColor = "#D97706";
-            statusBorder = "#FDE68A";
+            statusClass = "partial";
           } else {
             statusBadgeText = "COMPLETED";
-            statusBadgeBg = "#ECFDF5";
-            statusBadgeColor = "#059669";
-            statusBorder = "#A7F3D0";
+            statusClass = "completed";
           }
           completedByName = comp.completedByUserName || comp.completedByUserInitials || completedByName;
+          completedInitials = comp.completedByUserInitials || completedByName.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
           if (comp.completedAt || comp.timestamp) {
             completionTimeText = formatTimeDetailed(comp.completedAt || comp.timestamp);
           }
         }
 
-        const taskCard = document.createElement("div");
-        taskCard.className = "admin-card-phone";
-        taskCard.style = "padding: 12px; border: 1px solid var(--retail-border); border-radius: 10px; background: var(--retail-surface);";
-
-        let thumbnailsHtml = groupPhotos.map((photo, index) => `
-          <div style="position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--retail-border); background: var(--retail-surface-subtle); cursor: pointer; transition: transform 0.15s ease;"
-               onclick="openTaskPhotoInspectionModal('${taskId}', ${index}, '${adminAuditDate}')"
-               onmouseover="this.style.transform='scale(1.02)'"
-               onmouseout="this.style.transform='scale(1)'"
-               title="Click to view full photo and task audit details">
-            <img src="${photo.photoUri}" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="Audit photo ${index + 1}">
-            <div style="padding: 4px 6px; font-size: 9px; color: var(--retail-text-secondary); background: var(--retail-surface-subtle); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--retail-border);">
-              <span style="font-weight: 800; color: var(--retail-text-primary); max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${photo.authorName || 'Staff'}</span>
-              <span>${formatTimeDetailed(photo.timestamp)}</span>
-            </div>
-            ${groupPhotos.length > 1 ? `
-              <div style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.65); color: #fff; font-size: 8px; font-weight: 900; padding: 2px 5px; border-radius: 4px; backdrop-filter: blur(2px);">
-                ${index + 1}/${groupPhotos.length}
-              </div>
-            ` : ''}
+        // Collect timestamps for bottom photo overlay chips
+        const timestampsList = groupPhotos.map(p => formatTimeDetailed(p.timestamp || p.createdAt));
+        const uniqueTimestamps = [...new Set(timestampsList)].slice(0, 2);
+        const chipsHtml = uniqueTimestamps.map(t => `
+          <div class="audit-photo-time-chip">
+            <span class="material-icons" style="font-size: 10px;">photo_camera</span>
+            <span>${t}</span>
           </div>
         `).join('');
 
+        // Photos Grid Items
+        const photosGridHtml = groupPhotos.map((photo, index) => `
+          <div class="audit-photo-card" onclick="openTaskPhotoInspectionModal('${taskId}', ${index}, '${adminAuditDate}')" title="Click to inspect photo in high resolution">
+            <img src="${photo.photoUri}" class="audit-photo-image" alt="Audit photo ${index + 1}">
+            <div class="audit-photo-index-badge">${index + 1}/${groupPhotos.length}</div>
+            <div class="audit-photo-chips-row">
+              ${chipsHtml}
+            </div>
+            <div class="audit-photo-footer">
+              ${photo.authorName || completedByName}
+            </div>
+          </div>
+        `).join('');
+
+        // Audit Quick-Check Review Status
+        const auditReview = taskAuditsMap[`${taskId}_${adminAuditDate}`];
+        const isApproved = auditReview && auditReview.status === 'APPROVED';
+        const isRedo = auditReview && auditReview.status === 'REDO';
+
+        const taskCard = document.createElement("div");
+        taskCard.className = "audit-task-card";
         taskCard.innerHTML = `
-          <!-- Task Header -->
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-            <div style="flex: 1; padding-right: 8px;">
-              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap;">
-                <span style="font-size: 9px; font-weight: 900; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px; background: ${categoryColor}; color: #fff;">${categoryName}</span>
-                <span style="font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: ${statusBadgeBg}; color: ${statusBadgeColor}; border: 1px solid ${statusBorder};">${statusBadgeText}</span>
-              </div>
-              <div style="font-size: 13px; font-weight: 900; color: var(--retail-text-primary); line-height: 1.3;">${taskTitle}</div>
+          <!-- Task Badges Row -->
+          <div class="audit-task-badges-row">
+            <span class="audit-badge-category">${categoryName}</span>
+            <span class="audit-badge-status ${statusClass}">${statusBadgeText}</span>
+          </div>
+
+          <!-- Task Title -->
+          <div class="audit-task-title">${taskTitle}</div>
+
+          <!-- Performer Sub-Strip -->
+          <div class="audit-performer-bar">
+            <div class="audit-performer-left">
+              <div class="audit-performer-avatar">${completedInitials}</div>
+              <span>Done by: <strong class="audit-performer-name">${completedByName}</strong></span>
             </div>
-            <div style="text-align: right; flex-shrink: 0;">
-              <span style="font-size: 10px; font-weight: 900; color: var(--retail-orange); background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); padding: 3px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
-                <span class="material-icons" style="font-size: 12px;">photo_library</span> ${groupPhotos.length} Photo${groupPhotos.length > 1 ? 's' : ''}
-              </span>
+            <div class="audit-completion-right">
+              <span class="material-icons" style="font-size: 15px; color: #059669;">check_circle</span>
+              <span>Completed <strong class="time-val">${completionTimeText}</strong></span>
             </div>
           </div>
 
-          <!-- Completion / Author Metadata Row -->
-          <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; background: var(--retail-surface-subtle); border-radius: 6px; border: 1px solid var(--retail-border); margin-bottom: 10px; font-size: 10px;">
-            <div style="display: flex; align-items: center; gap: 4px; color: var(--retail-text-secondary);">
-              <span class="material-icons" style="font-size: 13px; color: var(--retail-orange);">check_circle</span>
-              <span>Done by: <strong style="color: var(--retail-text-primary);">${completedByName}</strong></span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 4px; color: var(--retail-text-secondary);">
-              <span class="material-icons" style="font-size: 13px; color: var(--retail-green, #10B981);">schedule</span>
-              <strong style="color: var(--retail-text-primary);">${completionTimeText}</strong>
-            </div>
+          <!-- Photo Gallery Grid -->
+          <div class="audit-photos-grid">
+            ${photosGridHtml}
           </div>
 
-          <!-- Photos Grid for this Task -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;">
-            ${thumbnailsHtml}
+          <!-- Audit Quality Quick-Check Action Bar -->
+          <div class="audit-actions-bar">
+            <button type="button" class="btn-audit-approve ${isApproved ? 'active-approved' : ''}" onclick="setTaskAuditStatus('${taskId}', '${adminAuditDate}', 'APPROVED')">
+              <span class="material-icons" style="font-size: 16px;">${isApproved ? 'check_circle' : 'check'}</span>
+              <span>${isApproved ? 'Approved' : 'Approve Audit'}</span>
+            </button>
+            <button type="button" class="btn-audit-redo ${isRedo ? 'active-redo' : ''}" onclick="setTaskAuditStatus('${taskId}', '${adminAuditDate}', 'REDO')">
+              <span class="material-icons" style="font-size: 16px;">warning</span>
+              <span>${isRedo ? 'Re-do Requested' : 'Request Re-do'}</span>
+            </button>
           </div>
         `;
 
