@@ -3868,55 +3868,97 @@
       }
     }
 
-    /* Tablet Mode Container & Body */
+    /* Tablet Mode Container & Body - Truly Edge-to-Edge Full Screen Utilization */
     body.tablet-viewport {
-      background-color: #0B0E14;
+      background-color: var(--retail-bg) !important;
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-height: 100vh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow-x: hidden !important;
     }
 
     #appShell.tablet-mode {
-      max-width: 1200px;
-      width: 95%;
-      margin: 14px auto;
-      border-radius: 20px;
-      box-shadow: 0 12px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      width: 100% !important;
+      max-width: 100% !important;
+      min-height: 100vh !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      border: none !important;
+      box-sizing: border-box !important;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--app-bottom-nav-height) + 28px) !important;
     }
 
     #appShell.tablet-mode .mobile-header {
-      border-radius: 20px 20px 0 0;
+      border-radius: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    #appShell.tablet-mode .header-brand-row {
+      padding: 12px 28px calc(10px + env(safe-area-inset-top, 0px)) 28px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    #appShell.tablet-mode .header-status-strip {
+      padding: 8px 28px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    #appShell.tablet-mode .user-session-bar {
+      border-radius: 0 !important;
+      margin-bottom: 0 !important;
+      padding: 9px 28px !important;
+      font-size: 13px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
     }
 
     #appShell.tablet-mode main.phone-content {
-      padding: 18px 26px;
+      padding: 20px 28px calc(var(--app-bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 36px) 28px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
     }
 
-    /* Tablet Bottom Navigation Dock */
+    /* Tablet Bottom Navigation Dock - Edge-to-Edge Spanning Across Screen */
     #appShell.tablet-mode nav.bottom-nav-bar {
-      max-width: 1200px;
-      border-radius: 18px 18px 0 0;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 8px 36px calc(env(safe-area-inset-bottom, 0px) + 8px);
-      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.55);
+      width: 100% !important;
+      max-width: 100% !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      transform: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 8px 32px calc(env(safe-area-inset-bottom, 0px) + 8px) 32px !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      justify-content: space-around !important;
+      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.45) !important;
     }
 
     #appShell.tablet-mode .bottom-nav-tab {
-      height: 54px;
-      max-width: 220px;
-      font-size: 13px;
-      flex-direction: row;
-      gap: 8px;
+      height: 52px !important;
+      flex: 1 !important;
+      max-width: 260px !important;
+      font-size: 13.5px !important;
+      font-weight: 800 !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 10px !important;
+      border-radius: 12px !important;
     }
 
     #appShell.tablet-mode .bottom-nav-tab .material-icons {
-      font-size: 22px;
-    }
-
-    /* Tablet User Session Bar */
-    #appShell.tablet-mode .user-session-bar {
-      border-radius: 12px;
-      margin-bottom: 14px;
-      padding: 8px 20px;
-      font-size: 13px;
+      font-size: 22px !important;
     }
 
     /* Kiosk Sign-in Screen on Tablet */
@@ -3929,26 +3971,29 @@
     }
 
     #appShell.tablet-mode .kiosk-tablet-wrapper {
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 22px;
-      align-items: start;
+      display: grid !important;
+      grid-template-columns: minmax(320px, 380px) 1fr !important;
+      gap: 24px !important;
+      align-items: start !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
     }
 
     #appShell.tablet-mode .kiosk-tablet-info-box {
-      display: block;
-      background: linear-gradient(135deg, #181E29 0%, #131720 100%);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 16px;
-      margin-top: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      display: block !important;
+      background: linear-gradient(135deg, #181E29 0%, #131720 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 16px !important;
+      padding: 18px !important;
+      margin-top: 16px !important;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2) !important;
     }
 
     #appShell.tablet-mode #staffRosterPhoneList {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 12px;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+      gap: 14px !important;
+      width: 100% !important;
     }
 
     /* Today Screen on Tablet */
@@ -3957,28 +4002,86 @@
     }
 
     #appShell.tablet-mode .today-top-grid {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 16px;
-      align-items: stretch;
-      margin-bottom: 14px;
+      display: grid !important;
+      grid-template-columns: minmax(300px, 340px) 1fr !important;
+      gap: 18px !important;
+      align-items: stretch !important;
+      margin-bottom: 16px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
     }
 
     #appShell.tablet-mode .today-top-grid .mobile-date-strip {
-      margin-bottom: 0;
-      height: 100%;
+      margin-bottom: 0 !important;
+      height: 100% !important;
+      box-sizing: border-box !important;
     }
 
     #appShell.tablet-mode .activity-hub-card {
-      margin-bottom: 0;
+      margin-bottom: 0 !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 24px !important;
+      padding: 16px 24px !important;
+    }
+
+    #appShell.tablet-mode .hub-content {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+    }
+
+    #appShell.tablet-mode .today-search-add-belt {
+      width: 100% !important;
+      gap: 14px !important;
+      margin-bottom: 14px !important;
+    }
+
+    #appShell.tablet-mode .today-search-box {
+      height: 44px !important;
+    }
+
+    #appShell.tablet-mode .today-search-box input {
+      font-size: 14px !important;
+    }
+
+    #appShell.tablet-mode .btn-belt-add {
+      height: 44px !important;
+      padding: 0 20px !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+
+    #appShell.tablet-mode .filter-pills-belt {
+      width: 100% !important;
+      margin-bottom: 16px !important;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+
+    #appShell.tablet-mode .filter-pill-btn {
+      height: 38px !important;
+      padding: 0 18px !important;
+      font-size: 13px !important;
     }
 
     #appShell.tablet-mode .category-group-phone {
-      background: var(--retail-surface);
-      border: 1px solid var(--retail-border);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 18px;
+      background: var(--retail-surface) !important;
+      border: 1px solid var(--retail-border) !important;
+      border-radius: 16px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    #appShell.tablet-mode .category-header-phone {
+      padding: 4px 2px 12px 2px !important;
+      font-size: 15px !important;
     }
 
     .category-tasks-grid {
@@ -3986,9 +4089,19 @@
     }
 
     #appShell.tablet-mode .category-tasks-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-      gap: 12px;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+      gap: 14px !important;
+      width: 100% !important;
+    }
+
+    #appShell.tablet-mode .task-card-phone {
+      margin-bottom: 0 !important;
+      height: 100% !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
     }
 
     /* Admin Staff Roster on Tablet */
@@ -3997,28 +4110,44 @@
     }
 
     #appShell.tablet-mode .staff-tablet-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 12px;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+      gap: 14px !important;
+      width: 100% !important;
     }
 
     /* Admin Subtabs on Tablet */
     #appShell.tablet-mode .admin-subtabs-scroll {
-      justify-content: flex-start;
-      gap: 10px;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      justify-content: flex-start !important;
+      gap: 10px !important;
+      width: 100% !important;
+      margin-bottom: 18px !important;
     }
 
     #appShell.tablet-mode .admin-tab-chip {
-      height: 42px;
-      padding: 0 20px;
-      font-size: 13.5px;
+      height: 42px !important;
+      padding: 0 20px !important;
+      font-size: 13.5px !important;
     }
 
-    /* Admin Accordion on Tablet */
+    /* Admin Task Management on Tablet */
+    #appShell.tablet-mode #adminTabTasks {
+      width: 100% !important;
+    }
+
+    #appShell.tablet-mode .admin-category-card {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      margin-bottom: 14px !important;
+    }
+
     #appShell.tablet-mode .admin-tasks-sub-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 10px;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+      gap: 12px !important;
+      width: 100% !important;
     }
 
     /* History on Tablet */
@@ -4027,26 +4156,64 @@
     }
 
     #appShell.tablet-mode .history-tablet-wrapper {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 18px;
-      align-items: start;
+      display: grid !important;
+      grid-template-columns: minmax(300px, 340px) 1fr !important;
+      gap: 20px !important;
+      align-items: start !important;
+      width: 100% !important;
     }
 
     #appShell.tablet-mode #historyCardsContainer {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 12px;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+      gap: 14px !important;
+      width: 100% !important;
     }
 
-    /* KPI Tiles on Tablet */
+    /* Admin KPI Tiles & Layout on Tablet */
+    #appShell.tablet-mode #adminTabReport[style*="display: block"] {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)) !important;
+      gap: 16px !important;
+      align-items: start !important;
+      width: 100% !important;
+    }
+
     #appShell.tablet-mode .kpi-tiles-grid {
+      display: grid !important;
       grid-template-columns: repeat(4, 1fr) !important;
+      gap: 14px !important;
+      width: 100% !important;
     }
 
-    /* Photo Gallery on Tablet */
+    @media (max-width: 900px) {
+      #appShell.tablet-mode .kpi-tiles-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+
+    /* Admin Photo Gallery on Tablet */
+    #appShell.tablet-mode #adminPhotoGalleryPhone {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)) !important;
+      gap: 16px !important;
+      width: 100% !important;
+    }
+
     #appShell.tablet-mode #adminPhotoGalleryGridPhone {
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+      gap: 14px !important;
+      width: 100% !important;
+    }
+
+    /* Admin Branding on Tablet */
+    #appShell.tablet-mode #adminTabBranding[style*="display: block"] {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)) !important;
+      gap: 16px !important;
+      align-items: start !important;
+      width: 100% !important;
     }
   </style>
 </head>
