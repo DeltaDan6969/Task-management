@@ -64,7 +64,7 @@
       --retail-text-primary: #111827;
       --retail-text-secondary: #6B7280;
       --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --app-bottom-nav-height: 60px;
+      --app-bottom-nav-height: 66px;
     }
 
     /* Night-Shift Dark Theme */
@@ -173,23 +173,33 @@
       position: relative;
       box-shadow: 0 0 50px rgba(0,0,0,0.5);
       overflow-x: hidden;
-      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--app-bottom-nav-height));
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--app-bottom-nav-height) + 24px);
     }
 
     /* Mobile App Top Header */
+    /* Mobile App Top Header (Executive Dual-Tier Redesign) */
     header.mobile-header {
       background-color: var(--retail-header-black);
       color: #FFFFFF;
-      padding: 10px 16px;
-      padding-top: calc(10px + env(safe-area-inset-top, 0px));
+      padding: 0;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid var(--retail-orange);
+      flex-direction: column;
+      border-bottom: 2.5px solid var(--retail-orange);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    }
+
+    .header-brand-row {
+      padding: 8px 12px 6px;
+      padding-top: calc(8px + env(safe-area-inset-top, 0px));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .brand-left {
@@ -197,6 +207,8 @@
       align-items: center;
       gap: 10px;
       cursor: pointer;
+      min-width: 0;
+      flex: 1;
     }
 
     .brand-icon-mini {
@@ -209,6 +221,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
     .brand-icon-mini .material-icons {
@@ -216,15 +229,20 @@
       color: var(--retail-header-black);
     }
 
+    .brand-titles {
+      min-width: 0;
+      flex: 1;
+    }
+
     .brand-titles h1 {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 900;
       letter-spacing: 0.3px;
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 190px;
+      color: #FFFFFF;
     }
 
     .brand-titles p {
@@ -233,39 +251,135 @@
       color: var(--retail-orange);
       letter-spacing: 0.8px;
       text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-header-store {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #FFFFFF;
+      height: 30px;
+      padding: 0 9px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-header-store:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.35);
+      color: #FFFFFF;
+    }
+
+    .btn-header-store:active {
+      transform: scale(0.94);
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-header-theme,
+    .btn-header-notif {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #FFFFFF;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-header-theme:hover,
+    .btn-header-notif:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .btn-header-theme:active,
+    .btn-header-notif:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Top Telemetry & Status Strip */
+    .header-status-strip {
+      background: rgba(0, 0, 0, 0.38);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 4px 12px 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .cloud-status-badge {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 4px 8px;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 8px;
       border-radius: 12px;
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 800;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #F3F4F6;
+      border: 1px solid rgba(255, 255, 255, 0.14);
       cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+      min-width: 0;
+    }
+
+    .cloud-status-badge:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    .cloud-status-badge:active {
+      transform: scale(0.96);
+    }
+
+    .status-subtext {
+      color: #9CA3AF;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
     }
 
     .status-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: #4CAF50;
-      box-shadow: 0 0 6px #4CAF50;
+      background: #10B981;
+      box-shadow: 0 0 7px #10B981;
       flex-shrink: 0;
     }
 
     .status-dot.syncing {
       background: var(--retail-amber);
-      box-shadow: 0 0 6px var(--retail-amber);
+      box-shadow: 0 0 7px var(--retail-amber);
       animation: pulse 1s infinite alternate;
     }
 
@@ -274,46 +388,33 @@
       to { opacity: 1; transform: scale(1.1); }
     }
 
-    .btn-header-theme {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #FFFFFF;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.15s, color 0.15s;
-    }
-
-    .btn-header-theme:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .btn-header-theme:active {
-      transform: scale(0.92);
-      background: rgba(255, 255, 255, 0.25);
-    }
-
     .btn-header-sync {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #FFFFFF;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
+      background: rgba(230, 81, 0, 0.18);
+      border: 1px solid rgba(230, 81, 0, 0.45);
+      color: #FFA726;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 10px;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 4px;
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
       cursor: pointer;
-      transition: background 0.15s, transform 0.15s;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-header-sync:hover {
+      background: rgba(230, 81, 0, 0.32);
+      border-color: rgba(230, 81, 0, 0.65);
+      color: #FFB74D;
     }
 
     .btn-header-sync:active {
-      background: rgba(255, 255, 255, 0.15);
-      transform: scale(0.92);
+      transform: scale(0.94);
     }
 
     /* ============================================================ */
@@ -365,14 +466,20 @@
 
     .nav-notif-dot {
       position: absolute;
-      top: -1px;
-      right: -4px;
-      width: 8px;
-      height: 8px;
+      top: -3px;
+      right: -7px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       background: #EF4444;
-      border: 1.5px solid var(--retail-surface);
-      box-shadow: 0 0 5px rgba(239, 68, 68, 0.8);
+      border: 2px solid #11141B;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.95);
+      animation: pulseAlertDot 2s infinite;
+    }
+
+    @keyframes pulseAlertDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.85; }
     }
 
     @keyframes badgePop {
@@ -589,50 +696,102 @@
       gap: 4px;
     }
 
-    /* Fixed Mobile Bottom Navigation Bar */
+    /* Fixed Mobile Bottom Navigation Bar (High-Contrast iOS Redesign) */
     nav.bottom-nav-bar {
       position: fixed;
       bottom: 0;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
       width: 100%;
       max-width: 440px;
-      height: var(--app-bottom-nav-height);
-      background: var(--retail-surface);
-      border-top: 1px solid var(--retail-border);
+      height: calc(var(--app-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+      min-height: calc(var(--app-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+      background: #11141B; /* Solid high-contrast executive dark slate - never blends with white cards or light gray */
+      border-top: 2.5px solid var(--retail-orange); /* Vibrant Retail Orange top dividing accent line */
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-around;
-      z-index: 90;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
-      padding-bottom: env(safe-area-inset-bottom, 0px);
+      z-index: 999;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45), 0 -1px 0 rgba(255, 255, 255, 0.08);
+      padding: 6px 8px env(safe-area-inset-bottom, 0px);
+      box-sizing: border-box;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    [data-theme="dark"] nav.bottom-nav-bar {
+      background: #080A0E;
+      border-top: 2.5px solid var(--retail-orange);
+      box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.7), 0 -1px 0 rgba(255, 255, 255, 0.12);
     }
 
     .bottom-nav-tab {
       flex: 1;
-      height: 100%;
+      height: 52px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 3px;
-      color: var(--retail-text-secondary);
+      color: #A0AEC0; /* Crisp light silver-gray against dark bar for instant legibility */
       cursor: pointer;
-      font-size: 10px;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 700;
       letter-spacing: 0.3px;
-      transition: all 0.15s;
+      padding: 4px 6px;
+      margin: 0 3px;
+      border-radius: 12px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .bottom-nav-tab .material-icons {
       font-size: 22px;
-      transition: transform 0.15s;
+      color: #A0AEC0;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
     }
 
+    /* Hover & Tap State */
+    .bottom-nav-tab:hover,
+    .bottom-nav-tab:active {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .bottom-nav-tab:hover .material-icons,
+    .bottom-nav-tab:active .material-icons {
+      color: #FFFFFF;
+    }
+
+    /* Active Tab: Vibrant Illuminated Retail Accent Pill */
     .bottom-nav-tab.active {
-      color: var(--retail-orange);
+      color: #FFA000; /* High-visibility vibrant amber-orange */
+      font-weight: 900;
+      background: rgba(230, 81, 0, 0.22);
+      border: 1px solid rgba(230, 81, 0, 0.5);
+      box-shadow: 0 2px 10px rgba(230, 81, 0, 0.35);
     }
 
     .bottom-nav-tab.active .material-icons {
-      transform: scale(1.1);
+      color: #FFA000;
+      transform: scale(1.12);
+      filter: drop-shadow(0 2px 4px rgba(230, 81, 0, 0.6));
+    }
+
+    /* Active Top Indicator Pip */
+    .bottom-nav-tab.active::before {
+      content: '';
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 3px;
+      background: #FFA000;
+      border-radius: 0 0 3px 3px;
+      box-shadow: 0 0 8px rgba(255, 160, 0, 0.95);
     }
 
     /* Main Content Container */
@@ -1604,41 +1763,49 @@
 
     <!-- Top Mobile App Header -->
     <header class="mobile-header">
-      <div class="brand-left" onclick="handleBrandClick()">
-        <div class="brand-icon-mini">
-          <span class="material-icons">storefront</span>
+      <!-- Main Brand & Action Bar -->
+      <div class="header-brand-row">
+        <div class="brand-left" onclick="handleBrandClick()" title="Store Settings & Switcher">
+          <div class="brand-icon-mini">
+            <span class="material-icons">storefront</span>
+          </div>
+          <div class="brand-titles">
+            <h1 id="headerStoreName">ONESTOP CANTERBURY</h1>
+            <p id="headerTagline">SHIFT TERMINAL</p>
+          </div>
         </div>
-        <div class="brand-titles">
-          <h1 id="headerStoreName">ONESTOP CANTERBURY</h1>
-          <p id="headerTagline">SHIFT TERMINAL</p>
+
+        <div class="header-actions">
+          <!-- Return to Store Website Link -->
+          <a href="website.html" class="btn-header-store" title="Back to Customer Store Website">
+            <span class="material-icons" style="font-size: 14px;">storefront</span>
+            <span>STORE</span>
+          </a>
+
+          <!-- Global Theme Toggle (Light / Dark Night-Shift Mode) -->
+          <button class="btn-header-theme" id="btnThemeToggle" onclick="toggleGlobalTheme()" title="Toggle Dark / Light Mode" aria-label="Toggle Night Shift Theme">
+            <span class="material-icons" id="themeToggleIcon" style="font-size: 17px;">dark_mode</span>
+          </button>
+
+          <!-- Notification Bell Button -->
+          <button class="btn-header-notif" id="btnHeaderNotif" onclick="openNotificationCenter()" title="Notification Center (New Tasks & Alerts)" aria-label="Notifications">
+            <span class="material-icons" style="font-size: 18px;">notifications</span>
+            <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+          </button>
         </div>
       </div>
 
-      <div class="header-actions">
-        <!-- Return to Store Website Link -->
-        <a href="website.html" class="btn-header-theme" style="text-decoration: none; padding: 4px 8px; width: auto; font-size: 11px; font-weight: 800; gap: 4px; display: inline-flex; align-items: center;" title="Back to Store Website">
-          <span class="material-icons" style="font-size: 15px;">store</span>
-          <span style="font-size: 10px;">WEBSITE</span>
-        </a>
-
-        <!-- Notification Bell Button -->
-        <button class="btn-header-notif" id="btnHeaderNotif" onclick="openNotificationCenter()" title="Notification Center (New Tasks & Alerts)" aria-label="Notifications">
-          <span class="material-icons" style="font-size: 19px;">notifications</span>
-          <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
-        </button>
-
-        <!-- Global Theme Toggle (Light / Dark Night-Shift Mode) -->
-        <button class="btn-header-theme" id="btnThemeToggle" onclick="toggleGlobalTheme()" title="Toggle Dark / Light Mode" aria-label="Toggle Night Shift Theme">
-          <span class="material-icons" id="themeToggleIcon" style="font-size: 18px;">dark_mode</span>
-        </button>
-
-        <div class="cloud-status-badge" id="cloudBadge" onclick="handleCloudBadgeClick()" title="Google Cloud Live Sync Status">
+      <!-- Integrated Shift Telemetry & Status Strip -->
+      <div class="header-status-strip">
+        <div class="cloud-status-badge" id="cloudBadge" onclick="handleCloudBadgeClick()" title="Google Cloud Live Sync Status • Tap for account options">
           <div class="status-dot" id="cloudDot"></div>
-          <span id="cloudStatusText">LIVE CLOUD</span>
+          <span id="cloudStatusText" style="font-weight: 800; letter-spacing: 0.3px;">CLOUD ON</span>
+          <span class="status-subtext">• FIRESTORE SYNC ACTIVE</span>
         </div>
 
-        <button class="btn-header-sync" onclick="syncWithCloudNow()" title="Sync with Google Cloud">
-          <span class="material-icons" style="font-size: 18px;">sync</span>
+        <button class="btn-header-sync" onclick="syncWithCloudNow()" title="Trigger immediate cloud sync">
+          <span class="material-icons" style="font-size: 13px;">sync</span>
+          <span>SYNC NOW</span>
         </button>
       </div>
     </header>
@@ -1819,7 +1986,7 @@
         <div class="mobile-date-strip" style="margin-bottom: 8px;">
           <span style="font-size: 11px; font-weight: 800; color: var(--retail-text-secondary);">DATE:</span>
           <input type="date" id="historyDatePicker" onchange="handleHistoryDatePick(this.value)" style="border: 1px solid var(--retail-border); border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 700;">
-          <select class="filter-select" id="historyStaffFilter" onchange="renderHistoryFeed()" style="max-width: 130px; padding: 4px 6px;">
+          <select class="filter-select" id="historyStaffFilter" onchange="handleHistoryStaffFilterChange(this.value)" style="max-width: 140px; padding: 4px 8px; font-weight: 700;">
             <option value="ALL">ALL STAFF</option>
           </select>
         </div>
@@ -2996,6 +3163,7 @@
 
     let selectedDate = new Date().toISOString().slice(0, 10);
     const todayDateStr = new Date().toISOString().slice(0, 10);
+    let selectedHistoryStaff = "ALL";
 
     let categories = [];
     let tasks = [];
@@ -4739,20 +4907,111 @@
       renderHistoryFeed();
     }
 
-    function renderHistoryFeed() {
-      const container = document.getElementById("historyCardsContainer");
-      container.innerHTML = "";
+    function handleHistoryStaffFilterChange(val) {
+      selectedHistoryStaff = val || 'ALL';
+      renderHistoryFeed();
+    }
 
-      const filterStaff = document.getElementById("historyStaffFilter").value;
-      let dayCompletions = allCompletions.filter(c => c.dateString === selectedDate);
-      if (filterStaff !== 'ALL') {
-        dayCompletions = dayCompletions.filter(c => c.completedByUserName === filterStaff);
+    function populateHistoryStaffFilter() {
+      const staffSelect = document.getElementById("historyStaffFilter");
+      if (!staffSelect) return;
+
+      // Extract unique list of staff members from both users and existing completions
+      const staffMap = new Map();
+
+      if (Array.isArray(users)) {
+        users.forEach(u => {
+          if (u && u.name) {
+            const trimmed = u.name.trim();
+            staffMap.set(trimmed.toLowerCase(), trimmed);
+          }
+        });
       }
 
-      document.getElementById("historyLogCount").innerText = `${dayCompletions.length} records`;
+      if (Array.isArray(allCompletions)) {
+        allCompletions.forEach(c => {
+          if (c && c.completedByUserName) {
+            const trimmed = c.completedByUserName.trim();
+            if (!staffMap.has(trimmed.toLowerCase())) {
+              staffMap.set(trimmed.toLowerCase(), trimmed);
+            }
+          }
+        });
+      }
+
+      const sortedNames = Array.from(staffMap.values()).sort((a, b) => a.localeCompare(b));
+
+      let optionsHtml = `<option value="ALL" ${selectedHistoryStaff === 'ALL' ? 'selected' : ''}>ALL STAFF</option>`;
+      sortedNames.forEach(name => {
+        const isSelected = (name.toLowerCase() === selectedHistoryStaff.toLowerCase());
+        optionsHtml += `<option value="${escapeQuotes(name)}" ${isSelected ? 'selected' : ''}>${escapeQuotes(name)}</option>`;
+      });
+
+      staffSelect.innerHTML = optionsHtml;
+      staffSelect.value = selectedHistoryStaff;
+    }
+
+    function renderHistoryFeed() {
+      const container = document.getElementById("historyCardsContainer");
+      if (!container) return;
+
+      // Synchronize date picker input value with active selectedDate
+      const datePicker = document.getElementById("historyDatePicker");
+      if (datePicker && datePicker.value !== selectedDate) {
+        datePicker.value = selectedDate;
+      }
+
+      // Populate & synchronize staff filter options while maintaining current selection
+      populateHistoryStaffFilter();
+
+      const filterStaff = selectedHistoryStaff || 'ALL';
+
+      let dayCompletions = allCompletions.filter(c => c.dateString === selectedDate);
+      if (filterStaff !== 'ALL') {
+        const target = filterStaff.trim().toLowerCase();
+        dayCompletions = dayCompletions.filter(c => {
+          const userName = (c.completedByUserName || '').trim().toLowerCase();
+          const userInitials = (c.completedByUserInitials || '').trim().toLowerCase();
+          return userName === target || userInitials === target;
+        });
+      }
+
+      // Sort by completion timestamp descending (latest completions first)
+      dayCompletions.sort((a, b) => {
+        const getTs = (obj) => {
+          if (!obj) return 0;
+          if (obj.completedAt && obj.completedAt.seconds) return obj.completedAt.seconds * 1000;
+          if (obj.completedAt && typeof obj.completedAt.toDate === 'function') return obj.completedAt.toDate().getTime();
+          if (obj.timestamp && obj.timestamp.seconds) return obj.timestamp.seconds * 1000;
+          return 0;
+        };
+        return getTs(b) - getTs(a);
+      });
+
+      const countEl = document.getElementById("historyLogCount");
+      if (countEl) {
+        countEl.innerText = `${dayCompletions.length} records`;
+      }
+
+      container.innerHTML = "";
 
       if (dayCompletions.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: var(--retail-text-secondary); padding: 30px; font-size: 12px;">No shift completions recorded on this date.</div>`;
+        const emptyMsg = (filterStaff !== 'ALL')
+          ? `No shift task completions recorded for "${filterStaff}" on this date (${selectedDate}).`
+          : `No shift task completions recorded on this date (${selectedDate}).`;
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--retail-text-secondary); padding: 36px 16px; font-size: 12px; background: var(--retail-surface); border: 1px solid var(--retail-border); border-radius: 8px; margin-top: 8px;">
+            <span class="material-icons" style="font-size: 32px; opacity: 0.45; margin-bottom: 8px; display: block;">assignment_late</span>
+            <div style="font-weight: 800; font-size: 13px; color: var(--retail-text-primary); margin-bottom: 4px;">No Completion Records</div>
+            <div style="margin-bottom: 12px;">${emptyMsg}</div>
+            ${filterStaff !== 'ALL' ? `
+              <button onclick="handleHistoryStaffFilterChange('ALL')" style="background: var(--retail-orange); color: #FFF; border: none; border-radius: 6px; padding: 7px 16px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                <span class="material-icons" style="font-size: 14px;">groups</span>
+                SHOW ALL STAFF
+              </button>
+            ` : ''}
+          </div>
+        `;
         return;
       }
 
@@ -4772,30 +5031,23 @@
 
         card.innerHTML = `
           <div class="history-top-line">
-            <span class="history-title">${c.taskTitle}</span>
+            <span class="history-title">${escapeQuotes(c.taskTitle || 'Shift Task')}</span>
             ${badgeHtml}
           </div>
           <div style="font-size: 11px; color: var(--retail-orange); font-weight: 700; margin-bottom: 4px;">
-            ${c.categoryName}
+            ${escapeQuotes(c.categoryName || 'GENERAL')}
           </div>
           ${isSkipped && c.skipReason ? `
             <div style="font-size: 11px; color: #E65100; font-weight: 700; background: #FFF8E1; border: 1px solid #FFE082; border-radius: 4px; padding: 4px 8px; margin-bottom: 6px;">
-              Reason: "${c.skipReason}"
+              Reason: "${escapeQuotes(c.skipReason)}"
             </div>
           ` : ''}
           <div class="history-staff-row">
-            <span><strong>${c.completedByUserName || 'Staff'}</strong> (${c.completedByUserInitials || 'DS'})</span>
+            <span><strong>${escapeQuotes(c.completedByUserName || 'Staff')}</strong> (${escapeQuotes(c.completedByUserInitials || 'DS')})</span>
             <span style="font-family: monospace; font-weight: 700;">${formatTimestamp(c.completedAt)}</span>
           </div>
         `;
         container.appendChild(card);
-      });
-
-      // Populate history staff filter options
-      const staffSelect = document.getElementById("historyStaffFilter");
-      staffSelect.innerHTML = `<option value="ALL">ALL STAFF</option>`;
-      users.forEach(u => {
-        staffSelect.innerHTML += `<option value="${u.name}">${u.name}</option>`;
       });
     }
 
