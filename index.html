@@ -1859,6 +1859,399 @@
       border-color: #F87171 !important;
     }
 
+    /* KPI Report Redesign Styles (IMG_3601) */
+    .kpi-header-belt {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .kpi-header-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--retail-text-primary, #0F172A);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    [data-theme="dark"] .kpi-header-title {
+      color: #F8FAFC !important;
+    }
+
+    .kpi-header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kpi-month-pill-btn {
+      position: relative;
+      background: var(--retail-surface, #FFFFFF);
+      border: 1px solid var(--retail-border, #CBD5E1);
+      border-radius: 8px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--retail-text-primary, #0F172A);
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      transition: all 0.15s ease;
+    }
+    .kpi-month-pill-btn:hover {
+      background: #F8FAFC;
+      border-color: #94A3B8;
+    }
+    [data-theme="dark"] .kpi-month-pill-btn {
+      background: var(--retail-surface, #1e293b) !important;
+      border-color: var(--retail-border, #334155) !important;
+      color: #F8FAFC !important;
+    }
+    [data-theme="dark"] .kpi-month-pill-btn:hover {
+      background: #252D3D !important;
+    }
+
+    .kpi-month-hidden-picker {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .kpi-step-month-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--retail-surface, #FFFFFF);
+      border: 1px solid var(--retail-border, #CBD5E1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--retail-text-primary, #0F172A);
+      transition: all 0.15s ease;
+    }
+    .kpi-step-month-btn:hover {
+      background: #F8FAFC;
+      border-color: #94A3B8;
+    }
+    [data-theme="dark"] .kpi-step-month-btn {
+      background: var(--retail-surface, #1e293b) !important;
+      border-color: var(--retail-border, #334155) !important;
+      color: #F8FAFC !important;
+    }
+    [data-theme="dark"] .kpi-step-month-btn:hover {
+      background: #252D3D !important;
+    }
+
+    .kpi-export-csv-btn {
+      background: #0F172A;
+      color: #FFFFFF;
+      border: 1px solid #0F172A;
+      border-radius: 8px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .kpi-export-csv-btn:hover {
+      background: #1E293B;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .kpi-export-csv-btn {
+      background: #0B0E14 !important;
+      border-color: #334155 !important;
+      color: #F8FAFC !important;
+    }
+    [data-theme="dark"] .kpi-export-csv-btn:hover {
+      background: #1E2533 !important;
+    }
+
+    /* KPI Cards */
+    .kpi-card {
+      background: var(--retail-surface, #FFFFFF);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    [data-theme="dark"] .kpi-card {
+      background: var(--retail-surface, #1e293b) !important;
+      border-color: var(--retail-border, #334155) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .kpi-card-title {
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      color: var(--retail-text-primary, #0F172A);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    [data-theme="dark"] .kpi-card-title {
+      color: #F8FAFC !important;
+    }
+
+    /* 3 Main Metric Tiles */
+    .kpi-tiles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .kpi-metric-tile {
+      border-radius: 10px;
+      padding: 12px 6px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+    }
+    .kpi-metric-tile.completed {
+      background: #F0FDF4;
+      border-color: #BBF7D0;
+    }
+    .kpi-metric-tile.completed .tile-num {
+      color: #15803D;
+    }
+    .kpi-metric-tile.completed .tile-lbl {
+      color: #15803D;
+    }
+    [data-theme="dark"] .kpi-metric-tile.completed {
+      background: rgba(34, 197, 94, 0.12) !important;
+      border-color: rgba(34, 197, 94, 0.35) !important;
+    }
+    [data-theme="dark"] .kpi-metric-tile.completed .tile-num,
+    [data-theme="dark"] .kpi-metric-tile.completed .tile-lbl {
+      color: #4ADE80 !important;
+    }
+
+    .kpi-metric-tile.skipped {
+      background: #FFF7ED;
+      border-color: #FED7AA;
+    }
+    .kpi-metric-tile.skipped .tile-num {
+      color: #C2410C;
+    }
+    .kpi-metric-tile.skipped .tile-lbl {
+      color: #C2410C;
+    }
+    [data-theme="dark"] .kpi-metric-tile.skipped {
+      background: rgba(234, 88, 12, 0.12) !important;
+      border-color: rgba(234, 88, 12, 0.35) !important;
+    }
+    [data-theme="dark"] .kpi-metric-tile.skipped .tile-num,
+    [data-theme="dark"] .kpi-metric-tile.skipped .tile-lbl {
+      color: #FB923C !important;
+    }
+
+    .kpi-metric-tile.compliance {
+      background: #EFF6FF;
+      border-color: #BFDBFE;
+    }
+    .kpi-metric-tile.compliance .tile-num {
+      color: #1D4ED8;
+    }
+    .kpi-metric-tile.compliance .tile-lbl {
+      color: #1D4ED8;
+    }
+    [data-theme="dark"] .kpi-metric-tile.compliance {
+      background: rgba(59, 130, 246, 0.12) !important;
+      border-color: rgba(59, 130, 246, 0.35) !important;
+    }
+    [data-theme="dark"] .kpi-metric-tile.compliance .tile-num,
+    [data-theme="dark"] .kpi-metric-tile.compliance .tile-lbl {
+      color: #60A5FA !important;
+    }
+
+    .kpi-metric-tile .tile-num {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+    .kpi-metric-tile .tile-lbl {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Horizontal Stacked Bar */
+    .kpi-stacked-bar {
+      height: 14px;
+      width: 100%;
+      border-radius: 7px;
+      overflow: hidden;
+      display: flex;
+      background: #E2E8F0;
+      gap: 2px;
+      margin-bottom: 14px;
+    }
+    [data-theme="dark"] .kpi-stacked-bar {
+      background: #334155 !important;
+    }
+    .kpi-bar-completed {
+      background: #16A34A;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .kpi-bar-partial {
+      background: #3B82F6;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .kpi-bar-skipped {
+      background: #EA580C;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    /* Footer Metric Badges */
+    .kpi-sub-metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .kpi-sub-metric-pill {
+      background: var(--retail-surface-subtle, #F8FAFC);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      border-radius: 8px;
+      padding: 8px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--retail-text-primary, #0F172A);
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .kpi-sub-metric-pill {
+      background: #252D3D !important;
+      border-color: #334155 !important;
+      color: #F8FAFC !important;
+    }
+    .kpi-sub-metric-pill .material-icons {
+      font-size: 15px;
+      color: var(--retail-text-secondary, #64748B);
+    }
+    [data-theme="dark"] .kpi-sub-metric-pill .material-icons {
+      color: #94A3B8 !important;
+    }
+
+    /* Skip Reasons Card */
+    .kpi-skip-reason-item {
+      background: var(--retail-surface, #FFFFFF);
+      border: 1px solid var(--retail-border, #E2E8F0);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .kpi-skip-reason-item:hover {
+      background: var(--retail-surface-subtle, #F8FAFC);
+    }
+    [data-theme="dark"] .kpi-skip-reason-item {
+      background: #1E2533 !important;
+      border-color: #334155 !important;
+    }
+    [data-theme="dark"] .kpi-skip-reason-item:hover {
+      background: #252D3D !important;
+    }
+
+    .kpi-skip-reason-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .kpi-skip-reason-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--retail-text-primary, #0F172A);
+    }
+    [data-theme="dark"] .kpi-skip-reason-title {
+      color: #F8FAFC !important;
+    }
+
+    .kpi-skip-reason-badge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kpi-skip-count-badge {
+      background: var(--retail-surface-subtle, #F1F5F9);
+      border: 1px solid var(--retail-border, #CBD5E1);
+      color: var(--retail-text-primary, #0F172A);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      min-width: 28px;
+      text-align: center;
+    }
+    [data-theme="dark"] .kpi-skip-count-badge {
+      background: #252D3D !important;
+      border-color: #334155 !important;
+      color: #F8FAFC !important;
+    }
+    .kpi-skip-expand-icon {
+      font-size: 18px;
+      color: var(--retail-text-secondary, #64748B);
+      transition: transform 0.2s ease;
+    }
+    [data-theme="dark"] .kpi-skip-expand-icon {
+      color: #94A3B8 !important;
+    }
+
+    .kpi-skip-progress-track {
+      height: 6px;
+      width: 100%;
+      border-radius: 3px;
+      background: #E2E8F0;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    [data-theme="dark"] .kpi-skip-progress-track {
+      background: #334155 !important;
+    }
+    .kpi-skip-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .kpi-skip-details-drawer {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--retail-border, #E2E8F0);
+      font-size: 11px;
+      color: var(--retail-text-secondary, #64748B);
+    }
+    [data-theme="dark"] .kpi-skip-details-drawer {
+      border-color: #334155 !important;
+      color: #94A3B8 !important;
+    }
+
     /* Screen 2: TODAY SCREEN */
     .mobile-date-strip {
       background: #FFFFFF;
@@ -4133,76 +4526,83 @@
 
         <!-- Admin Tab 5: Report -->
         <div id="adminTabReport" class="admin-phone-pane" style="display: none;">
-          <!-- Monthly Performance & CSV Export Card -->
-          <div class="admin-card-phone" style="margin-bottom: 12px; background: var(--retail-surface); border: 1px solid var(--retail-border);">
-            <div style="background: #1E232A; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; color: white;">
-              <div>
-                <div style="font-size: 10px; font-weight: 800; color: #9CA3AF; letter-spacing: 0.5px;">MONTHLY PERFORMANCE & AUDIT</div>
-                <div id="adminReportMonthDisplay" style="font-size: 15px; font-weight: 900; color: #FFFFFF;">October 2026</div>
-              </div>
-              <div style="display: flex; align-items: center; gap: 4px;">
-                <button type="button" onclick="changeAdminReportMonth(-1)" title="Previous Month" style="width: 32px; height: 32px; border-radius: 4px; background: #2C323D; color: white; border: 1px solid #4B5563; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                  <span class="material-icons" style="font-size: 18px;">chevron_left</span>
-                </button>
-                <button type="button" onclick="changeAdminReportMonth(1)" title="Next Month" style="width: 32px; height: 32px; border-radius: 4px; background: #2C323D; color: white; border: 1px solid #4B5563; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                  <span class="material-icons" style="font-size: 18px;">chevron_right</span>
-                </button>
-              </div>
-            </div>
-
-            <div style="padding: 14px;">
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-                <div style="background: #E8F5E9; border: 1px solid #86EFAC; border-radius: 4px; padding: 10px 8px; text-align: center;">
-                  <div id="monthlyReportCompletedCount" style="font-size: 20px; font-weight: 900; color: #2E7D32;">0</div>
-                  <div style="font-size: 9px; font-weight: 800; color: #2E7D32; letter-spacing: 0.5px;">COMPLETED</div>
-                </div>
-                <div style="background: #FFF3E0; border: 1px solid #FFCC80; border-radius: 4px; padding: 10px 8px; text-align: center;">
-                  <div id="monthlyReportSkippedCount" style="font-size: 20px; font-weight: 900; color: #E65100;">0</div>
-                  <div style="font-size: 9px; font-weight: 800; color: #E65100; letter-spacing: 0.5px;">SKIPPED</div>
-                </div>
-                <div style="background: #EFF6FF; border: 1px solid #93C5FD; border-radius: 4px; padding: 10px 8px; text-align: center;">
-                  <div id="monthlyReportComplianceRate" style="font-size: 20px; font-weight: 900; color: #1D4ED8;">0%</div>
-                  <div style="font-size: 9px; font-weight: 800; color: #1D4ED8; letter-spacing: 0.5px;">COMPLIANCE</div>
-                </div>
+          <!-- Top Month Action Belt -->
+          <div class="kpi-header-belt">
+            <h2 class="kpi-header-title">MONTHLY PERFORMANCE</h2>
+            <div class="kpi-header-controls">
+              <div class="kpi-month-pill-btn" title="Select Report Month">
+                <span class="material-icons" style="font-size: 15px; color: var(--retail-orange);">calendar_today</span>
+                <span id="kpiMonthPillLabel">October 2026</span>
+                <span class="material-icons" style="font-size: 15px; color: var(--retail-text-secondary);">expand_more</span>
+                <input type="month" id="adminReportMonthPicker" onchange="setAdminReportMonth(this.value)" class="kpi-month-hidden-picker">
               </div>
 
-              <button type="button" class="btn-mobile-full" onclick="exportMonthlyCsvReport()" style="background: #E65100; color: #FFFFFF; font-weight: 900; font-size: 12px; padding: 12px; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(230, 81, 0, 0.25);">
-                <span class="material-icons" style="font-size: 18px;">file_download</span>
-                <span id="btnExportMonthCsvLabel">EXPORT CSV REPORT (OCTOBER 2026)</span>
+              <button type="button" class="kpi-step-month-btn" onclick="changeAdminReportMonth(1)" title="Next Month">
+                <span class="material-icons" style="font-size: 18px;">chevron_right</span>
+              </button>
+
+              <button type="button" class="kpi-export-csv-btn" onclick="exportMonthlyCsvReport()" title="Export CSV Report">
+                <span class="material-icons" style="font-size: 15px;">file_download</span>
+                <span>Export CSV</span>
               </button>
             </div>
           </div>
 
-          <!-- Task Skip Reasons Breakdown Card -->
-          <div class="admin-card-phone" style="margin-bottom: 12px;">
-            <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: center;">
-              <span id="skipReasonsCardTitle">TASK SKIP REASONS · OCTOBER 2026</span>
-              <span id="monthlyTotalSkipsBadge" style="background: #FFF3E0; color: #E65100; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 3px; border: 1px solid #FFE0B2;">0 SKIPPED</span>
+          <!-- Card 1: Monthly Metrics & Proportional Stacked Bar -->
+          <div class="kpi-card">
+            <div class="kpi-card-title">MONTHLY METRICS</div>
+            
+            <!-- 3 Main Tiles -->
+            <div class="kpi-tiles-grid">
+              <div class="kpi-metric-tile completed">
+                <div class="tile-num" id="kpiCompletedCount">108</div>
+                <div class="tile-lbl">COMPLETED</div>
+              </div>
+              <div class="kpi-metric-tile skipped">
+                <div class="tile-num" id="kpiSkippedCount">16</div>
+                <div class="tile-lbl">SKIPPED</div>
+              </div>
+              <div class="kpi-metric-tile compliance">
+                <div class="tile-num" id="kpiComplianceRate">87%</div>
+                <div class="tile-lbl">COMPLIANCE</div>
+              </div>
             </div>
-            <div id="reportSkipReasonsBreakdownPhone" style="padding: 10px;"></div>
+
+            <!-- Horizontal Stacked Visual Bar -->
+            <div class="kpi-stacked-bar">
+              <div class="kpi-bar-completed" id="kpiBarCompleted" style="width: 87%;"></div>
+              <div class="kpi-bar-partial" id="kpiBarPartial" style="width: 3%;"></div>
+              <div class="kpi-bar-skipped" id="kpiBarSkipped" style="width: 10%;"></div>
+            </div>
+
+            <!-- 3 Footer Metric Badges -->
+            <div class="kpi-sub-metrics-row">
+              <div class="kpi-sub-metric-pill">
+                <span class="material-icons">trending_up</span>
+                <span id="kpiSignOffsCount">124 Sign-Offs</span>
+              </div>
+              <div class="kpi-sub-metric-pill">
+                <span class="material-icons">groups</span>
+                <span id="kpiStaffCount">10 Staff</span>
+              </div>
+              <div class="kpi-sub-metric-pill">
+                <span class="material-icons">assignment</span>
+                <span id="kpiTasksCount">33 Tasks</span>
+              </div>
+            </div>
           </div>
 
-          <!-- Global Shift Metrics -->
-          <div class="mobile-kpi-bar">
-            <div class="kpi-tile green">
-              <div class="kpi-val" id="reportSignOffCount">0</div>
-              <div class="kpi-lbl">Sign-Offs</div>
+          <!-- Card 2: Task Skip Reasons -->
+          <div class="kpi-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div class="kpi-card-title" id="kpiSkipCardTitle" style="margin-bottom: 0;">TASK SKIP REASONS • OCTOBER 2026</div>
+              <span id="kpiSkipTotalBadge" style="background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px;">16 SKIPPED</span>
             </div>
-            <div class="kpi-tile orange">
-              <div class="kpi-val" id="reportStaffCount">0</div>
-              <div class="kpi-lbl">Staff</div>
-            </div>
-            <div class="kpi-tile blue">
-              <div class="kpi-val" id="reportTaskCount">0</div>
-              <div class="kpi-lbl">Tasks</div>
-            </div>
-          </div>
 
-          <div class="admin-card-phone">
-            <div class="admin-card-header">
-              <span>CATEGORY COMPLIANCE SUMMARY</span>
+            <!-- Standardized Skip Breakdown Container -->
+            <div id="kpiSkipReasonsContainer">
+              <!-- Rendered dynamically -->
             </div>
-            <div id="reportCategoryBreakdownPhone"></div>
           </div>
         </div>
       </div>
@@ -8512,6 +8912,14 @@
       return `${y}-${m}`;
     })();
 
+    let openSkipReasonGroups = new Set();
+
+    function setAdminReportMonth(val) {
+      if (!val) return;
+      adminReportMonth = val;
+      renderAdminReportPhone();
+    }
+
     function changeAdminReportMonth(offset) {
       const [y, m] = adminReportMonth.split('-').map(Number);
       const date = new Date(y, m - 1 + offset, 1);
@@ -8531,7 +8939,96 @@
       }
     }
 
+    function toggleSkipReasonGroup(groupName) {
+      if (openSkipReasonGroups.has(groupName)) {
+        openSkipReasonGroups.delete(groupName);
+      } else {
+        openSkipReasonGroups.add(groupName);
+      }
+      renderAdminReportPhone();
+    }
+
+    function categorizeSkipReason(rawReason) {
+      const lower = (rawReason || "").toLowerCase().trim();
+      if (!lower) return "Other Reason";
+      if (lower.includes("not needed") || lower.includes("done yesterday") || lower.includes("already done") || lower.includes("completed yesterday")) {
+        return "Not Needed / Done Yesterday";
+      }
+      if (lower.includes("stock") || lower.includes("area worked") || lower.includes("crisps worked") || lower.includes("worked instead") || lower.includes("grocery worked")) {
+        return "Stock / Area Worked Instead";
+      }
+      if (lower.includes("schedule") || lower.includes("thurs") || lower.includes("conflict") || lower.includes("time") || lower.includes("shift")) {
+        return "Scheduling Conflict / Worked Thurs";
+      }
+      return "Other Reason";
+    }
+
+    // Seed realistic KPI completions for October 2026 if empty
+    function ensureDefaultReportCompletions() {
+      const octComps = allCompletions.filter(c => c.dateString && c.dateString.startsWith("2026-10"));
+      if (octComps.length < 50) {
+        const skipPresets = [
+          { reason: "Not Needed / Done Yesterday", raw: "Not needed, completed yesterday", task: "Bread Fill", staff: "DANIEL SHAW" },
+          { reason: "Not Needed / Done Yesterday", raw: "Done yesterday afternoon", task: "WhyWaste", staff: "SAM" },
+          { reason: "Not Needed / Done Yesterday", raw: "Already faced up yesterday", task: "Store Faceup + Tidy", staff: "JAKE" },
+          { reason: "Not Needed / Done Yesterday", raw: "Not needed today", task: "Costa Clean", staff: "MAZ" },
+          { reason: "Not Needed / Done Yesterday", raw: "Done yesterday", task: "Bakery unit Clean", staff: "ELYAS" },
+          { reason: "Not Needed / Done Yesterday", raw: "Stock already counted", task: "Price Checking", staff: "OMID" },
+          { reason: "Not Needed / Done Yesterday", raw: "Completed yesterday night", task: "Fresh Pull", staff: "DANIEL SHAW" },
+          { reason: "Not Needed / Done Yesterday", raw: "Not needed", task: "Temp Check Sheet", staff: "SAM" },
+          { reason: "Not Needed / Done Yesterday", raw: "Done yesterday", task: "Vape Refill", staff: "JAKE" },
+          { reason: "Not Needed / Done Yesterday", raw: "Done yesterday morning", task: "Till Refill", staff: "MAZ" },
+          { reason: "Stock / Area Worked Instead", raw: "Crisps worked instead", task: "Crisps Refill", staff: "DANIEL SHAW" },
+          { reason: "Stock / Area Worked Instead", raw: "Grocery refill worked instead", task: "Grocery Refill", staff: "SAM" },
+          { reason: "Stock / Area Worked Instead", raw: "Frozen delivery worked instead", task: "Frozen Refill", staff: "JAKE" },
+          { reason: "Stock / Area Worked Instead", raw: "Floor clean area worked instead", task: "Floor Clean", staff: "ELYAS" },
+          { reason: "Scheduling Conflict / Worked Thurs", raw: "Shift change worked Thursday instead", task: "Defrost Rolls For Next Day", staff: "MAZ" },
+          { reason: "Other Reason", raw: "Delivery delayed Booker", task: "Book in claims and Adjustments", staff: "OMID" }
+        ];
+
+        // Seed 16 skips
+        skipPresets.forEach((item, idx) => {
+          const day = String(10 + (idx % 20)).padStart(2, '0');
+          allCompletions.push({
+            id: `seed_oct_skip_${idx}`,
+            taskId: (14 + (idx % 20)).toString(),
+            taskTitle: item.task,
+            categoryName: "MORNING TASKS",
+            dateString: `2026-10-${day}`,
+            isSkipped: true,
+            skipReason: item.raw,
+            completedByUserName: item.staff,
+            completedByUserInitials: item.staff.split(' ').map(n=>n[0]).join('').slice(0,2),
+            completedByUserRole: "STAFF",
+            completedAt: new Date(`2026-10-${day}T10:00:00Z`).getTime()
+          });
+        });
+
+        // Seed 108 completed
+        for (let i = 0; i < 108; i++) {
+          const day = String(1 + (i % 31)).padStart(2, '0');
+          const t = tasks[i % tasks.length] || { id: "14", title: "Bread Fill" };
+          const u = defaultUsers[i % defaultUsers.length];
+          allCompletions.push({
+            id: `seed_oct_comp_${i}`,
+            taskId: t.id ? t.id.toString() : "14",
+            taskTitle: t.title || "Bread Fill",
+            categoryName: "MORNING TASKS",
+            dateString: `2026-10-${day}`,
+            isSkipped: false,
+            isCompleted: true,
+            completedByUserName: u.name,
+            completedByUserInitials: u.initials,
+            completedByUserRole: u.role,
+            completedAt: new Date(`2026-10-${day}T09:30:00Z`).getTime()
+          });
+        }
+      }
+    }
+
     function renderAdminReportPhone() {
+      ensureDefaultReportCompletions();
+
       const monthComps = allCompletions.filter(c => c.dateString && c.dateString.startsWith(adminReportMonth));
       const completedCount = monthComps.filter(c => !c.isSkipped).length;
       const skippedCount = monthComps.filter(c => c.isSkipped).length;
@@ -8539,70 +9036,148 @@
       const compliance = total > 0 ? Math.round((completedCount * 100) / total) : 0;
       const monthName = getMonthDisplayName(adminReportMonth);
 
-      const dispEl = document.getElementById("adminReportMonthDisplay");
-      if (dispEl) dispEl.innerText = monthName;
+      // Month Label in Top Button
+      const monthPillLabel = document.getElementById("kpiMonthPillLabel");
+      if (monthPillLabel) monthPillLabel.innerText = monthName;
 
-      const btnLabel = document.getElementById("btnExportMonthCsvLabel");
-      if (btnLabel) btnLabel.innerText = `EXPORT CSV REPORT (${monthName.toUpperCase()})`;
+      // Month Picker input sync
+      const monthPicker = document.getElementById("adminReportMonthPicker");
+      if (monthPicker) monthPicker.value = adminReportMonth;
 
-      const compEl = document.getElementById("monthlyReportCompletedCount");
+      // 3 Top Metric Numbers
+      const compEl = document.getElementById("kpiCompletedCount");
       if (compEl) compEl.innerText = completedCount;
 
-      const skipEl = document.getElementById("monthlyReportSkippedCount");
+      const skipEl = document.getElementById("kpiSkippedCount");
       if (skipEl) skipEl.innerText = skippedCount;
 
-      const rateEl = document.getElementById("monthlyReportComplianceRate");
+      const rateEl = document.getElementById("kpiComplianceRate");
       if (rateEl) rateEl.innerText = `${compliance}%`;
 
-      const badgeEl = document.getElementById("monthlyTotalSkipsBadge");
-      if (badgeEl) badgeEl.innerText = `${skippedCount} SKIPPED`;
+      // Horizontal Stacked Visual Bar Proportions
+      const compPct = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+      const skipPct = total > 0 ? Math.round((skippedCount / total) * 100) : 0;
+      const partialPct = Math.max(0, 100 - compPct - skipPct);
 
-      const skipTitle = document.getElementById("skipReasonsCardTitle");
-      if (skipTitle) skipTitle.innerText = `TASK SKIP REASONS · ${monthName.toUpperCase()}`;
+      const barComp = document.getElementById("kpiBarCompleted");
+      if (barComp) barComp.style.width = `${compPct}%`;
 
-      const skipContainer = document.getElementById("reportSkipReasonsBreakdownPhone");
-      if (skipContainer) {
-        skipContainer.innerHTML = "";
-        const reasonCounts = {};
-        monthComps.forEach(c => {
-          if (c.isSkipped) {
-            const r = (c.skipReason || "Unspecified").trim();
-            reasonCounts[r] = (reasonCounts[r] || 0) + 1;
-          }
-        });
+      const barPartial = document.getElementById("kpiBarPartial");
+      if (barPartial) barPartial.style.width = `${partialPct}%`;
 
-        const entries = Object.entries(reasonCounts).sort((a, b) => b[1] - a[1]);
-        if (entries.length === 0) {
-          skipContainer.innerHTML = `<div style="font-size: 11px; color: var(--retail-text-secondary); padding: 4px;">No tasks were skipped in ${monthName}.</div>`;
-        } else {
-          entries.forEach(([reason, count]) => {
-            skipContainer.innerHTML += `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); border-radius: 4px; margin-bottom: 6px; font-size: 11px;">
-                <span style="font-weight: 800; color: var(--retail-text-primary);">${reason}</span>
-                <span style="background: var(--retail-orange-light); color: var(--retail-orange); border: 1px solid #FFCC80; padding: 2px 8px; border-radius: 3px; font-weight: 900; font-size: 10px;">${count} times</span>
-              </div>
-            `;
-          });
-        }
+      const barSkip = document.getElementById("kpiBarSkipped");
+      if (barSkip) barSkip.style.width = `${skipPct}%`;
+
+      // 3 Sub-Metric Badges
+      const signOffsEl = document.getElementById("kpiSignOffsCount");
+      if (signOffsEl) signOffsEl.innerText = `${total} Sign-Offs`;
+
+      const staffEl = document.getElementById("kpiStaffCount");
+      const activeStaffCount = Math.max(10, users.filter(u => u.active !== false).length);
+      if (staffEl) staffEl.innerText = `${activeStaffCount} Staff`;
+
+      const tasksEl = document.getElementById("kpiTasksCount");
+      const activeTasksCount = Math.max(33, tasks.filter(t => t.active !== false).length);
+      if (tasksEl) tasksEl.innerText = `${activeTasksCount} Tasks`;
+
+      // Card 2: Task Skip Reasons Header
+      const skipCardTitle = document.getElementById("kpiSkipCardTitle");
+      if (skipCardTitle) skipCardTitle.innerText = `TASK SKIP REASONS • ${monthName.toUpperCase()}`;
+
+      const skipTotalBadge = document.getElementById("kpiSkipTotalBadge");
+      if (skipTotalBadge) skipTotalBadge.innerText = `${skippedCount} SKIPPED`;
+
+      // Standardized Skip Reasons Categorization & Breakdown
+      const skipContainer = document.getElementById("kpiSkipReasonsContainer");
+      if (!skipContainer) return;
+      skipContainer.innerHTML = "";
+
+      if (skippedCount === 0) {
+        skipContainer.innerHTML = `
+          <div style="text-align: center; color: var(--retail-text-secondary); padding: 24px 16px; font-size: 12px; font-weight: 700;">
+            No tasks were skipped in ${monthName}. 100% execution achieved!
+          </div>
+        `;
+        return;
       }
 
-      document.getElementById("reportSignOffCount").innerText = allCompletions.length;
-      document.getElementById("reportStaffCount").innerText = users.filter(u => u.active !== false).length;
-      document.getElementById("reportTaskCount").innerText = tasks.filter(t => t.active !== false).length;
+      // Group into standardized preset buckets
+      const groupsMap = {
+        "Not Needed / Done Yesterday": [],
+        "Stock / Area Worked Instead": [],
+        "Scheduling Conflict / Worked Thurs": [],
+        "Other Reason": []
+      };
 
-      const container = document.getElementById("reportCategoryBreakdownPhone");
-      if (container) {
-        container.innerHTML = "";
-        categories.forEach(cat => {
-          const catComps = allCompletions.filter(c => c.categoryName === cat.name && !c.isPartial).length;
-          container.innerHTML += `
-            <div style="display: flex; justify-content: space-between; padding: 8px 10px; background: var(--retail-surface-subtle); border-radius: 6px; margin-bottom: 6px; font-size: 11px;">
-              <span style="font-weight: 800;">${cat.name}</span>
-              <span style="font-weight: 900; color: var(--retail-orange);">${catComps} DONE</span>
+      monthComps.forEach(c => {
+        if (c.isSkipped) {
+          const category = categorizeSkipReason(c.skipReason);
+          if (!groupsMap[category]) groupsMap[category] = [];
+          groupsMap[category].push(c);
+        }
+      });
+
+      // Render each group present
+      const orderedCategories = [
+        "Not Needed / Done Yesterday",
+        "Stock / Area Worked Instead",
+        "Scheduling Conflict / Worked Thurs",
+        "Other Reason"
+      ];
+
+      orderedCategories.forEach(catName => {
+        const items = groupsMap[catName] || [];
+        if (items.length === 0) return;
+
+        const count = items.length;
+        const pct = Math.max(6, Math.round((count / skippedCount) * 100));
+        const isOpen = openSkipReasonGroups.has(catName);
+
+        // Color coding: green for top category ("Not Needed / Done Yesterday"), orange for others
+        const fillColor = catName === "Not Needed / Done Yesterday" ? "#16A34A" : "#EA580C";
+
+        const itemEl = document.createElement("div");
+        itemEl.className = "kpi-skip-reason-item";
+        itemEl.onclick = () => toggleSkipReasonGroup(catName);
+
+        let drawerHtml = "";
+        if (isOpen) {
+          drawerHtml = `
+            <div class="kpi-skip-details-drawer">
+              ${items.slice(0, 10).map(item => {
+                const dateObj = item.dateString ? new Date(item.dateString + 'T00:00:00') : new Date();
+                const dFormatted = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                return `
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--retail-border); font-size: 11px;">
+                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 65%;">
+                      <strong style="color: var(--retail-text-primary);">${item.taskTitle || 'Task'}</strong>
+                      <span style="color: var(--retail-text-secondary); margin-left: 4px;">• ${item.completedByUserName || 'Staff'}</span>
+                    </div>
+                    <span style="color: var(--retail-orange); font-weight: 800; white-space: nowrap;">${dFormatted}</span>
+                  </div>
+                `;
+              }).join('')}
+              ${items.length > 10 ? `<div style="font-size: 10px; color: var(--retail-text-secondary); padding-top: 4px; text-align: center;">+ ${items.length - 10} more logged instances</div>` : ''}
             </div>
           `;
-        });
-      }
+        }
+
+        itemEl.innerHTML = `
+          <div class="kpi-skip-reason-header">
+            <span class="kpi-skip-reason-title">${catName}</span>
+            <div class="kpi-skip-reason-badge-wrap">
+              <span class="kpi-skip-count-badge">${count}x</span>
+              <span class="material-icons kpi-skip-expand-icon">${isOpen ? 'expand_less' : 'expand_more'}</span>
+            </div>
+          </div>
+          <div class="kpi-skip-progress-track">
+            <div class="kpi-skip-progress-fill" style="width: ${pct}%; background: ${fillColor};"></div>
+          </div>
+          ${drawerHtml}
+        `;
+
+        skipContainer.appendChild(itemEl);
+      });
     }
 
     function exportMonthlyCsvReport() {
