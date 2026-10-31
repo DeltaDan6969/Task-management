@@ -2267,7 +2267,7 @@
         </span>
         <span>Alerts</span>
       </div>
-      <div class="bottom-nav-tab" id="tabNavAdmin" onclick="handleAdminTabClick()">
+      <div class="bottom-nav-tab" id="tabNavAdmin" onclick="handleAdminTabClick()" style="display: none;">
         <span class="material-icons">admin_panel_settings</span>
         <span>Admin</span>
       </div>
@@ -3533,13 +3533,33 @@
     // -------------------------------------------------------------
     // Screen Navigation
     // -------------------------------------------------------------
+    // Screen Navigation & Role-Based UI Visibility
+    // -------------------------------------------------------------
+    function updateAdminPrivilegesUI() {
+      const adminTab = document.getElementById("tabNavAdmin");
+      const isAdmin = !!(activeStaffUser && activeStaffUser.role === 'ADMIN');
+      if (adminTab) {
+        adminTab.style.display = isAdmin ? "flex" : "none";
+      }
+    }
+
     function navigateToScreen(screen) {
+      // Guard: Non-admin staff cannot view ADMIN screen
+      if (screen === 'ADMIN' && (!activeStaffUser || activeStaffUser.role !== 'ADMIN')) {
+        showToast("Access restricted: Admin console requires manager credentials.");
+        navigateToScreen('TODAY');
+        return;
+      }
+
       currentScreen = screen;
       document.querySelectorAll(".phone-screen").forEach(el => el.style.display = "none");
       document.querySelectorAll(".bottom-nav-tab").forEach(el => el.classList.remove("active"));
 
       const navEl = document.getElementById("mobileBottomNav");
       const userBar = document.getElementById("userSessionBar");
+
+      // Dynamically hide or show Admin tab on task bar based on active user privileges
+      updateAdminPrivilegesUI();
 
       if (screen === 'SIGN_IN') {
         document.getElementById("screenSignIn").style.display = "block";
@@ -3568,9 +3588,8 @@
     }
 
     function handleAdminTabClick() {
-      if (!activeStaffUser) return;
-      if (activeStaffUser.role !== 'ADMIN') {
-        alert("ACCESS RESTRICTED: Admin Console requires manager credentials.");
+      if (!activeStaffUser || activeStaffUser.role !== 'ADMIN') {
+        showToast("Access restricted: Admin console requires manager credentials.");
         return;
       }
       navigateToScreen('ADMIN');
@@ -7196,6 +7215,7 @@
       renderCategoryFilterChips();
       renderTodayTasks();
       applyStoreBranding();
+      updateAdminPrivilegesUI();
 
       // Initialize Notification Engine and PWA Service Worker
       initNotificationServiceWorker();
