@@ -3667,9 +3667,6 @@
       <!-- Main Brand & Action Bar -->
       <div class="header-brand-row">
         <div class="brand-left" onclick="handleBrandClick()" title="Store Settings & Switcher">
-          <div class="brand-icon-mini" style="overflow: hidden; padding: 0;">
-            <img src="apple-touch-icon.png" alt="One Stop Canterbury Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-          </div>
           <div class="brand-titles">
             <h1 id="headerStoreName">ONESTOP CANTERBURY</h1>
             <p id="headerTagline">SHIFT TERMINAL</p>
@@ -3688,12 +3685,6 @@
               <span class="layout-btn-label">Tablet</span>
             </button>
           </div>
-
-          <!-- Return to Store Website Link -->
-          <a href="website.html" class="btn-header-store" title="Back to Customer Store Website">
-            <span class="material-icons" style="font-size: 14px;">storefront</span>
-            <span>STORE</span>
-          </a>
 
           <!-- Global Theme Toggle (Light / Dark Night-Shift Mode) -->
           <button class="btn-header-theme" id="btnThemeToggle" onclick="toggleGlobalTheme()" title="Toggle Dark / Light Mode" aria-label="Toggle Night Shift Theme">
@@ -4068,8 +4059,23 @@
 
           <div class="admin-card-phone">
             <div class="admin-card-header">
-              <span>STORE BRANDING</span>
+              <span>STORE BRANDING & ICON</span>
             </div>
+
+            <!-- Store Icon Showcase -->
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px; padding: 12px; background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); border-radius: 12px;">
+              <div style="width: 54px; height: 54px; border-radius: 12px; overflow: hidden; border: 1px solid var(--retail-border); box-shadow: 0 2px 6px rgba(0,0,0,0.1); flex-shrink: 0; background: #002B49;">
+                <img id="adminStoreIconImg" src="apple-touch-icon.png" alt="Store Icon" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              </div>
+              <div style="flex: 1;">
+                <div style="font-size: 13px; font-weight: 800; color: var(--retail-text-primary);">Store Brand Icon</div>
+                <div style="font-size: 10px; color: var(--retail-text-secondary); margin-top: 2px;">Official One Stop Canterbury app & terminal icon</div>
+                <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+                  <span style="font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0;">ACTIVE ICON</span>
+                </div>
+              </div>
+            </div>
+
             <label style="font-size: 10px; font-weight: 800; color: var(--retail-text-secondary);">STORE NAME</label>
             <input type="text" class="phone-form-input" id="adminInputStoreName" value="ONESTOP CANTERBURY">
 
@@ -4077,6 +4083,16 @@
             <input type="text" class="phone-form-input" id="adminInputTagline" value="SIGN IN TO START YOUR SHIFT">
 
             <button class="btn-mobile-full full-green" onclick="saveStoreBranding()">SAVE BRANDING</button>
+
+            <!-- Customer Storefront Website Link -->
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--retail-border);">
+              <label style="font-size: 10px; font-weight: 800; color: var(--retail-text-secondary); display: block; margin-bottom: 6px;">CUSTOMER STORE WEBSITE</label>
+              <a href="website.html" class="btn-mobile-outline" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; color: var(--retail-text-primary); background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); transition: all 0.15s ease;" title="Open Customer Storefront Website">
+                <span class="material-icons" style="font-size: 18px; color: var(--retail-orange);">storefront</span>
+                <span>OPEN STORE WEBSITE</span>
+                <span class="material-icons" style="font-size: 16px; margin-left: auto; color: var(--retail-text-secondary);">arrow_forward</span>
+              </a>
+            </div>
           </div>
 
           <div class="admin-card-phone">
