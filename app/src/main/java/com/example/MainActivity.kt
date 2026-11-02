@@ -41,15 +41,22 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        try {
+            requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } catch (_: Exception) {}
         enableEdgeToEdge()
 
         val database = AppDatabase.getDatabase(applicationContext)
-        val syncManager = com.example.data.FirestoreSyncManager(
-            context = applicationContext,
-            database = database,
-            scope = lifecycleScope
-        )
+        val syncManager = try {
+            com.example.data.FirestoreSyncManager(
+                context = applicationContext,
+                database = database,
+                scope = lifecycleScope
+            )
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Failed to initialize FirestoreSyncManager, running offline", e)
+            null
+        }
         val repository = TaskRepository(database.taskDao(), syncManager)
 
         setContent {
@@ -80,6 +87,7 @@ class MainActivity : ComponentActivity() {
                 val isCloudConnected by viewModel.isCloudConnected.collectAsStateWithLifecycle()
                 val cloudUserEmail by viewModel.cloudUserEmail.collectAsStateWithLifecycle()
                 val syncStatus by viewModel.syncStatus.collectAsStateWithLifecycle()
+                val allShiftHandovers by viewModel.allShiftHandovers.collectAsStateWithLifecycle()
 
                 val storeName = storeConfigs["store_name"] ?: "ONESTOP CANTERBURY"
                 val tagline = storeConfigs["tagline"] ?: "SIGN IN TO START YOUR SHIFT"
@@ -234,6 +242,7 @@ class MainActivity : ComponentActivity() {
                                         photos = photos,
                                         allCompletions = allCompletions,
                                         allPhotos = allPhotos,
+                                        allShiftHandovers = allShiftHandovers,
                                         reportStats = reportStats,
                                         monthlyReportStats = monthlyReportStats,
                                         outstandingDaysMap = outstandingDaysMap,
@@ -279,6 +288,7 @@ class MainActivity : ComponentActivity() {
                                         photos = photos,
                                         allCompletions = allCompletions,
                                         allPhotos = allPhotos,
+                                        allShiftHandovers = allShiftHandovers,
                                         reportStats = reportStats,
                                         monthlyReportStats = monthlyReportStats,
                                         outstandingDaysMap = outstandingDaysMap,
@@ -339,6 +349,7 @@ private fun ActiveScreenContent(
     photos: List<com.example.data.TaskPhotoEntity>,
     allCompletions: List<com.example.data.TaskCompletionEntity>,
     allPhotos: List<com.example.data.TaskPhotoEntity>,
+    allShiftHandovers: List<com.example.data.ShiftHandoverEntity>,
     reportStats: ReportStats,
     monthlyReportStats: com.example.ui.MonthlyReportStats,
     outstandingDaysMap: Map<Long, Int>,
@@ -371,6 +382,9 @@ private fun ActiveScreenContent(
                 notes = notes,
                 photos = photos,
                 outstandingDaysMap = outstandingDaysMap,
+                handovers = allShiftHandovers,
+                activeUsers = users,
+                adminUsers = users.filter { it.role == "ADMIN" },
                 onToggleTask = { task, catName ->
                     viewModel.toggleTask(task, catName)
                 },
@@ -401,14 +415,33 @@ private fun ActiveScreenContent(
                 },
                 onSkipTask = { task, catName, reason ->
                     viewModel.skipTask(task, catName, reason)
+                },
+                onAddShiftHandover = { targetDate, shiftType, category, priority, message, authorUser ->
+                    viewModel.addShiftHandover(targetDate, shiftType, category, priority, message, authorUser)
+                },
+                onAcknowledgeShiftHandover = { handoverId ->
+                    viewModel.acknowledgeShiftHandover(handoverId, activeUser)
+                },
+                onDeleteShiftHandover = { handoverId ->
+                    viewModel.deleteShiftHandover(handoverId)
+                },
+                onUnlockTask = { task, comp, adminUser ->
+                    viewModel.unlockTask(task.id, selectedDate, adminUser)
                 }
             )
         }
         AppScreen.HISTORY -> {
             HistoryScreen(
                 allCompletions = allCompletions,
+                tasks = tasks,
+                categories = categories,
+                currentUser = activeUser,
+                adminUsers = users.filter { it.role == "ADMIN" },
                 selectedDate = selectedDate,
-                onSelectDate = { viewModel.setSelectedDate(it) }
+                onSelectDate = { viewModel.setSelectedDate(it) },
+                onUnlockTask = { task, comp, adminUser ->
+                    viewModel.unlockTask(task.id, selectedDate, adminUser)
+                }
             )
         }
         AppScreen.ADMIN -> {

@@ -31,20 +31,36 @@ class FirestoreSyncManager(
 ) {
     private val TAG = "FirestoreSyncManager"
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val databaseId: String = context.getString(R.string.firestore_database_id)
-    val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(databaseId)
+    private val auth: FirebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
+    private val databaseId: String by lazy {
+        try {
+            context.getString(R.string.firestore_database_id)
+        } catch (_: Exception) {
+            ""
+        }
+    }
+    val firestore: FirebaseFirestore by lazy {
+        try {
+            if (databaseId.isNotBlank()) {
+                FirebaseFirestore.getInstance(databaseId)
+            } else {
+                FirebaseFirestore.getInstance()
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Custom databaseId '$databaseId' failed, using default Firestore", e)
+            FirebaseFirestore.getInstance()
+        }
+    }
 
     private val _isCloudConnected = MutableStateFlow(true)
     val isCloudConnected: StateFlow<Boolean> = _isCloudConnected.asStateFlow()
 
-    private val _cloudUserEmail = MutableStateFlow<String?>(auth.currentUser?.email)
+    private val _cloudUserEmail = MutableStateFlow<String?>(null)
     val cloudUserEmail: StateFlow<String?> = _cloudUserEmail.asStateFlow()
 
-    private val _syncStatus = MutableStateFlow(
-        if (auth.currentUser != null) "Connected: ${auth.currentUser?.email}"
-        else "Google Cloud Live Database Active"
-    )
+    private val _syncStatus = MutableStateFlow("Google Cloud Live Database Active")
     val syncStatus: StateFlow<String> = _syncStatus.asStateFlow()
 
     private val listeners = mutableListOf<ListenerRegistration>()
@@ -64,12 +80,26 @@ class FirestoreSyncManager(
     }
 
     init {
-        auth.addAuthStateListener(authStateListener)
-        // Connect to Firestore real-time listeners immediately on startup
-        startRealtimeListeners()
-        // Automatically ensure seed data exists and sync with Google Cloud Firestore
+        try {
+            _cloudUserEmail.value = auth.currentUser?.email
+            if (auth.currentUser != null) {
+                _syncStatus.value = "Connected: ${auth.currentUser?.email}"
+            }
+            auth.addAuthStateListener(authStateListener)
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed initializing auth listener", e)
+        }
+        try {
+            startRealtimeListeners()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed starting realtime listeners", e)
+        }
         scope.launch(Dispatchers.IO) {
-            syncAllLocalToCloud()
+            try {
+                syncAllLocalToCloud()
+            } catch (e: Exception) {
+                Log.w(TAG, "Startup cloud sync error", e)
+            }
         }
     }
 
@@ -172,29 +202,33 @@ class FirestoreSyncManager(
                 }
                 if (snapshot == null) return@addSnapshotListener
                 scope.launch(Dispatchers.IO) {
-                    if (isRestoringBackup) return@launch
-                    val cloudIds = snapshot.documents.mapNotNull { it.id.toLongOrNull() }.toSet()
-                    val localCategories = taskDao.getAllCategories().first()
-                    for (localCat in localCategories) {
-                        if (localCat.id !in cloudIds) {
-                            taskDao.deleteCategory(localCat.id)
-                            taskDao.deleteTasksByCategoryId(localCat.id)
+                    try {
+                        if (isRestoringBackup) return@launch
+                        val cloudIds = snapshot.documents.mapNotNull { it.id.toLongOrNull() }.toSet()
+                        val localCategories = taskDao.getAllCategories().first()
+                        for (localCat in localCategories) {
+                            if (localCat.id !in cloudIds) {
+                                taskDao.deleteCategory(localCat.id)
+                                taskDao.deleteTasksByCategoryId(localCat.id)
+                            }
                         }
-                    }
-                    for (doc in snapshot.documents) {
-                        val id = doc.id.toLongOrNull() ?: continue
-                        val name = doc.extractString("name")
-                        if (name.isBlank()) continue
-                        val sortOrder = doc.extractInt("sortOrder", 1)
-                        val active = doc.extractBoolean("active", true)
-                        taskDao.insertCategory(
-                            CategoryEntity(
-                                id = id,
-                                name = name,
-                                sortOrder = sortOrder,
-                                active = active
+                        for (doc in snapshot.documents) {
+                            val id = doc.id.toLongOrNull() ?: continue
+                            val name = doc.extractString("name")
+                            if (name.isBlank()) continue
+                            val sortOrder = doc.extractInt("sortOrder", 1)
+                            val active = doc.extractBoolean("active", true)
+                            taskDao.insertCategory(
+                                CategoryEntity(
+                                    id = id,
+                                    name = name,
+                                    sortOrder = sortOrder,
+                                    active = active
+                                )
                             )
-                        )
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error processing categories snapshot", e)
                     }
                 }
             }
@@ -210,42 +244,46 @@ class FirestoreSyncManager(
                 }
                 if (snapshot == null) return@addSnapshotListener
                 scope.launch(Dispatchers.IO) {
-                    if (isRestoringBackup) return@launch
-                    val cloudIds = snapshot.documents.mapNotNull { it.id.toLongOrNull() }.toSet()
-                    val localTasks = taskDao.getAllTasks().first()
-                    for (localTask in localTasks) {
-                        if (localTask.id !in cloudIds) {
-                            taskDao.deleteTask(localTask.id)
+                    try {
+                        if (isRestoringBackup) return@launch
+                        val cloudIds = snapshot.documents.mapNotNull { it.id.toLongOrNull() }.toSet()
+                        val localTasks = taskDao.getAllTasks().first()
+                        for (localTask in localTasks) {
+                            if (localTask.id !in cloudIds) {
+                                taskDao.deleteTask(localTask.id)
+                            }
                         }
-                    }
-                    for (doc in snapshot.documents) {
-                        val id = doc.id.toLongOrNull() ?: continue
-                        val categoryId = doc.extractLong("categoryId") ?: 1L
-                        val title = doc.extractString("title")
-                        if (title.isBlank()) continue
-                        val bulletPoints = doc.extractString("bulletPoints")
-                        val priority = doc.extractString("priority", TaskPriority.MEDIUM)
-                        val daysOfWeek = doc.extractString("daysOfWeek", DaysOfWeek.ALL)
-                        val isOneTime = doc.extractBoolean("isOneTime", false) || daysOfWeek.equals(DaysOfWeek.ONE_TIME, ignoreCase = true)
-                        val oneTimeStartDate = doc.extractString("oneTimeStartDate")
-                        val completedDate = doc.extractString("completedDate")
-                        val sortOrder = doc.extractInt("sortOrder", 1)
-                        val active = doc.extractBoolean("active", true)
-                        taskDao.insertTask(
-                            TaskEntity(
-                                id = id,
-                                categoryId = categoryId,
-                                title = title,
-                                bulletPoints = bulletPoints,
-                                priority = priority,
-                                daysOfWeek = daysOfWeek,
-                                sortOrder = sortOrder,
-                                active = active,
-                                isOneTime = isOneTime,
-                                oneTimeStartDate = oneTimeStartDate,
-                                completedDate = completedDate
+                        for (doc in snapshot.documents) {
+                            val id = doc.id.toLongOrNull() ?: continue
+                            val categoryId = doc.extractLong("categoryId") ?: 1L
+                            val title = doc.extractString("title")
+                            if (title.isBlank()) continue
+                            val bulletPoints = doc.extractString("bulletPoints")
+                            val priority = doc.extractString("priority", TaskPriority.MEDIUM)
+                            val daysOfWeek = doc.extractString("daysOfWeek", DaysOfWeek.ALL)
+                            val isOneTime = doc.extractBoolean("isOneTime", false) || daysOfWeek.equals(DaysOfWeek.ONE_TIME, ignoreCase = true)
+                            val oneTimeStartDate = doc.extractString("oneTimeStartDate")
+                            val completedDate = doc.extractString("completedDate")
+                            val sortOrder = doc.extractInt("sortOrder", 1)
+                            val active = doc.extractBoolean("active", true)
+                            taskDao.insertTask(
+                                TaskEntity(
+                                    id = id,
+                                    categoryId = categoryId,
+                                    title = title,
+                                    bulletPoints = bulletPoints,
+                                    priority = priority,
+                                    daysOfWeek = daysOfWeek,
+                                    sortOrder = sortOrder,
+                                    active = active,
+                                    isOneTime = isOneTime,
+                                    oneTimeStartDate = oneTimeStartDate,
+                                    completedDate = completedDate
+                                )
                             )
-                        )
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error processing tasks snapshot", e)
                     }
                 }
             }
@@ -260,47 +298,51 @@ class FirestoreSyncManager(
                 }
                 if (snapshot == null) return@addSnapshotListener
                 scope.launch(Dispatchers.IO) {
-                    for (doc in snapshot.documents) {
-                        val taskId = doc.extractLong("taskId") ?: continue
-                        val dateString = doc.extractString("dateString")
-                        if (dateString.isBlank()) continue
-                        val taskTitle = doc.extractString("taskTitle")
-                        val categoryName = doc.extractString("categoryName")
-                        val completedByUserId = doc.extractLong("completedByUserId") ?: 0L
-                        val completedByUserName = doc.extractString("completedByUserName")
-                        val completedByUserInitials = doc.extractString("completedByUserInitials")
-                        val completedByUserRole = doc.extractString("completedByUserRole", "STAFF")
-                        val isPartial = doc.extractBoolean("isPartial", false)
-                        val isSkipped = doc.extractBoolean("isSkipped", false)
-                        val skipReason = doc.extractString("skipReason", "")
-                        val completedSubTasksJson = doc.extractString("completedSubTasksJson")
-                        val outstandingSubTasksJson = doc.extractString("outstandingSubTasksJson")
-                        val totalSubTasksCount = doc.extractInt("totalSubTasksCount", 0)
-                        val completedSubTasksCount = doc.extractInt("completedSubTasksCount", 0)
-                        val timestamp = doc.getTimestamp("completedAt")?.toDate()?.time ?: System.currentTimeMillis()
+                    try {
+                        for (doc in snapshot.documents) {
+                            val taskId = doc.extractLong("taskId") ?: continue
+                            val dateString = doc.extractString("dateString")
+                            if (dateString.isBlank()) continue
+                            val taskTitle = doc.extractString("taskTitle")
+                            val categoryName = doc.extractString("categoryName")
+                            val completedByUserId = doc.extractLong("completedByUserId") ?: 0L
+                            val completedByUserName = doc.extractString("completedByUserName")
+                            val completedByUserInitials = doc.extractString("completedByUserInitials")
+                            val completedByUserRole = doc.extractString("completedByUserRole", "STAFF")
+                            val isPartial = doc.extractBoolean("isPartial", false)
+                            val isSkipped = doc.extractBoolean("isSkipped", false)
+                            val skipReason = doc.extractString("skipReason", "")
+                            val completedSubTasksJson = doc.extractString("completedSubTasksJson")
+                            val outstandingSubTasksJson = doc.extractString("outstandingSubTasksJson")
+                            val totalSubTasksCount = doc.extractInt("totalSubTasksCount", 0)
+                            val completedSubTasksCount = doc.extractInt("completedSubTasksCount", 0)
+                            val timestamp = doc.getTimestamp("completedAt")?.toDate()?.time ?: System.currentTimeMillis()
 
-                        val existing = taskDao.getCompletionsForDate(dateString).first().find { it.taskId == taskId }
-                        taskDao.insertCompletion(
-                            TaskCompletionEntity(
-                                id = existing?.id ?: 0L,
-                                taskId = taskId,
-                                taskTitle = taskTitle,
-                                categoryName = categoryName,
-                                dateString = dateString,
-                                completedAt = timestamp,
-                                completedByUserId = completedByUserId,
-                                completedByUserName = completedByUserName,
-                                completedByUserInitials = completedByUserInitials,
-                                completedByUserRole = completedByUserRole,
-                                isPartial = isPartial,
-                                isSkipped = isSkipped,
-                                skipReason = skipReason,
-                                completedSubTasksJson = completedSubTasksJson,
-                                outstandingSubTasksJson = outstandingSubTasksJson,
-                                totalSubTasksCount = totalSubTasksCount,
-                                completedSubTasksCount = completedSubTasksCount
+                            val existing = taskDao.getCompletionsForDate(dateString).first().find { it.taskId == taskId }
+                            taskDao.insertCompletion(
+                                TaskCompletionEntity(
+                                    id = existing?.id ?: 0L,
+                                    taskId = taskId,
+                                    taskTitle = taskTitle,
+                                    categoryName = categoryName,
+                                    dateString = dateString,
+                                    completedAt = timestamp,
+                                    completedByUserId = completedByUserId,
+                                    completedByUserName = completedByUserName,
+                                    completedByUserInitials = completedByUserInitials,
+                                    completedByUserRole = completedByUserRole,
+                                    isPartial = isPartial,
+                                    isSkipped = isSkipped,
+                                    skipReason = skipReason,
+                                    completedSubTasksJson = completedSubTasksJson,
+                                    outstandingSubTasksJson = outstandingSubTasksJson,
+                                    totalSubTasksCount = totalSubTasksCount,
+                                    completedSubTasksCount = completedSubTasksCount
+                                )
                             )
-                        )
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error processing completions snapshot", e)
                     }
                 }
             }
@@ -315,30 +357,34 @@ class FirestoreSyncManager(
                 }
                 if (snapshot == null) return@addSnapshotListener
                 scope.launch(Dispatchers.IO) {
-                    for (doc in snapshot.documents) {
-                        val taskId = doc.extractLong("taskId") ?: continue
-                        val dateString = doc.extractString("dateString")
-                        if (dateString.isBlank()) continue
-                        val text = doc.extractString("text")
-                        if (text.isBlank()) continue
-                        val authorUserId = doc.extractLong("authorUserId") ?: 0L
-                        val authorName = doc.extractString("authorName")
-                        val authorInitials = doc.extractString("authorInitials")
-                        val timestamp = doc.getTimestamp("timestamp")?.toDate()?.time ?: System.currentTimeMillis()
-                        val id = doc.id.toLongOrNull() ?: 0L
+                    try {
+                        for (doc in snapshot.documents) {
+                            val taskId = doc.extractLong("taskId") ?: continue
+                            val dateString = doc.extractString("dateString")
+                            if (dateString.isBlank()) continue
+                            val text = doc.extractString("text")
+                            if (text.isBlank()) continue
+                            val authorUserId = doc.extractLong("authorUserId") ?: 0L
+                            val authorName = doc.extractString("authorName")
+                            val authorInitials = doc.extractString("authorInitials")
+                            val timestamp = doc.getTimestamp("timestamp")?.toDate()?.time ?: System.currentTimeMillis()
+                            val id = doc.id.toLongOrNull() ?: 0L
 
-                        taskDao.insertNote(
-                            TaskNoteEntity(
-                                id = id,
-                                taskId = taskId,
-                                dateString = dateString,
-                                text = text,
-                                authorUserId = authorUserId,
-                                authorName = authorName,
-                                authorInitials = authorInitials,
-                                timestamp = timestamp
+                            taskDao.insertNote(
+                                TaskNoteEntity(
+                                    id = id,
+                                    taskId = taskId,
+                                    dateString = dateString,
+                                    text = text,
+                                    authorUserId = authorUserId,
+                                    authorName = authorName,
+                                    authorInitials = authorInitials,
+                                    timestamp = timestamp
+                                )
                             )
-                        )
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error processing notes snapshot", e)
                     }
                 }
             }
@@ -353,34 +399,38 @@ class FirestoreSyncManager(
                 }
                 if (snapshot == null) return@addSnapshotListener
                 scope.launch(Dispatchers.IO) {
-                    for (doc in snapshot.documents) {
-                        val taskId = doc.extractLong("taskId") ?: continue
-                        val dateString = doc.extractString("dateString")
-                        if (dateString.isBlank()) continue
-                        val photoUri = doc.extractString("photoUri")
-                        if (photoUri.isBlank()) continue
-                        val authorUserId = doc.extractLong("authorUserId") ?: 0L
-                        val authorName = doc.extractString("authorName")
-                        val timestamp = doc.getTimestamp("timestamp")?.toDate()?.time ?: System.currentTimeMillis()
-                        val id = doc.id.toLongOrNull() ?: 0L
+                    try {
+                        for (doc in snapshot.documents) {
+                            val taskId = doc.extractLong("taskId") ?: continue
+                            val dateString = doc.extractString("dateString")
+                            if (dateString.isBlank()) continue
+                            val photoUri = doc.extractString("photoUri")
+                            if (photoUri.isBlank()) continue
+                            val authorUserId = doc.extractLong("authorUserId") ?: 0L
+                            val authorName = doc.extractString("authorName")
+                            val timestamp = doc.getTimestamp("timestamp")?.toDate()?.time ?: System.currentTimeMillis()
+                            val id = doc.id.toLongOrNull() ?: 0L
 
-                        taskDao.insertPhoto(
-                            TaskPhotoEntity(
-                                id = id,
-                                taskId = taskId,
-                                dateString = dateString,
-                                photoUri = photoUri,
-                                authorUserId = authorUserId,
-                                authorName = authorName,
-                                timestamp = timestamp
+                            taskDao.insertPhoto(
+                                TaskPhotoEntity(
+                                    id = id,
+                                    taskId = taskId,
+                                    dateString = dateString,
+                                    photoUri = photoUri,
+                                    authorUserId = authorUserId,
+                                    authorName = authorName,
+                                    timestamp = timestamp
+                                )
                             )
-                        )
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error processing photos snapshot", e)
                     }
                 }
             }
         )
 
-        // 6. Users listener
+        // 6. Users listener with Deduplication & Cloud Pruning
         listeners.add(
             firestore.collection("users").addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -389,42 +439,69 @@ class FirestoreSyncManager(
                 }
                 if (snapshot == null) return@addSnapshotListener
                 scope.launch(Dispatchers.IO) {
-                    val cloudIds = snapshot.documents.mapNotNull { it.id.toLongOrNull() }.toSet()
-                    val localUsers = taskDao.getAllUsers().first()
-                    for (localUser in localUsers) {
-                        if (localUser.id !in cloudIds) {
-                            taskDao.deleteUser(localUser.id)
-                        }
-                    }
-                    for (doc in snapshot.documents) {
-                        val id = doc.id.toLongOrNull() ?: continue
-                        val name = doc.extractString("name")
-                        if (name.isBlank()) continue
-                        val initials = doc.extractString("initials", name.take(2))
-                        val role = doc.extractString("role", "STAFF")
-                        val pinHash = doc.extractString("pinHash")
-                        val pinSalt = doc.extractString("pinSalt")
-                        val active = doc.extractBoolean("active", true)
-                        val isDaniel = name.contains("DANIEL", ignoreCase = true)
-                        val rawMustChangePin = doc.extractBoolean("mustChangePin", false) ||
-                                doc.extractBoolean("isNewUser", false) ||
-                                pinHash.isBlank() ||
-                                (pinSalt.isBlank() && pinHash == "1234")
-                        val mustChangePin = if (isDaniel) false else rawMustChangePin
-                        val effectivePinHash = if (isDaniel) "cdc948c06c211d62f24a6a96703014c20c5b089da0700a41a64f781067285fb6" else pinHash
-                        val effectivePinSalt = if (isDaniel) "01d7f284aaadafdd172a984843708060" else pinSalt
-                        taskDao.insertUser(
-                            UserEntity(
-                                id = id,
-                                name = name,
-                                initials = initials,
-                                role = role,
-                                pinHash = effectivePinHash,
-                                pinSalt = effectivePinSalt,
-                                active = active,
-                                mustChangePin = mustChangePin
+                    try {
+                        val seenNames = mutableSetOf<String>()
+                        val validCloudIds = mutableSetOf<Long>()
+
+                        for (doc in snapshot.documents) {
+                            val name = doc.extractString("name").trim()
+                            if (name.isBlank()) continue
+                            val normName = name.uppercase()
+
+                            // Auto-prune duplicate user documents in Firestore
+                            if (normName in seenNames) {
+                                try {
+                                    doc.reference.delete().await()
+                                    Log.i(TAG, "Pruned duplicate user doc in cloud: ${doc.id} ($name)")
+                                } catch (_: Exception) {}
+                                continue
+                            }
+
+                            val id = doc.id.toLongOrNull() ?: continue
+                            seenNames.add(normName)
+                            validCloudIds.add(id)
+
+                            val initials = doc.extractString("initials", name.take(2))
+                            val role = doc.extractString("role", "STAFF")
+                            val pinHash = doc.extractString("pinHash")
+                            val pinSalt = doc.extractString("pinSalt")
+                            val active = doc.extractBoolean("active", true)
+                            val isDaniel = normName.contains("DANIEL")
+                            val rawMustChangePin = doc.extractBoolean("mustChangePin", false) ||
+                                    doc.extractBoolean("isNewUser", false) ||
+                                    pinHash.isBlank() ||
+                                    (pinSalt.isBlank() && pinHash == "1234")
+                            val mustChangePin = if (isDaniel) false else rawMustChangePin
+                            val effectivePinHash = if (isDaniel) "cdc948c06c211d62f24a6a96703014c20c5b089da0700a41a64f781067285fb6" else pinHash
+                            val effectivePinSalt = if (isDaniel) "01d7f284aaadafdd172a984843708060" else pinSalt
+
+                            taskDao.insertUser(
+                                UserEntity(
+                                    id = id,
+                                    name = name,
+                                    initials = initials,
+                                    role = role,
+                                    pinHash = effectivePinHash,
+                                    pinSalt = effectivePinSalt,
+                                    active = active,
+                                    mustChangePin = mustChangePin
+                                )
                             )
-                        )
+                        }
+
+                        // Remove local users not in cloud or duplicates
+                        val localUsers = taskDao.getAllUsers().first()
+                        val localSeenNames = mutableSetOf<String>()
+                        for (localUser in localUsers) {
+                            val localNorm = localUser.name.trim().uppercase()
+                            if (localUser.id !in validCloudIds || localNorm in localSeenNames) {
+                                taskDao.deleteUser(localUser.id)
+                            } else {
+                                localSeenNames.add(localNorm)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error processing users snapshot", e)
                     }
                 }
             }
@@ -439,12 +516,85 @@ class FirestoreSyncManager(
                 }
                 if (snapshot == null) return@addSnapshotListener
                 scope.launch(Dispatchers.IO) {
-                    for (doc in snapshot.documents) {
-                        val key = doc.extractString("key", doc.id)
-                        val value = doc.extractString("value")
-                        if (key.isNotBlank() && value.isNotBlank()) {
-                            taskDao.setConfig(StoreConfigEntity(key, value))
+                    try {
+                        for (doc in snapshot.documents) {
+                            val key = doc.extractString("key", doc.id)
+                            val value = doc.extractString("value")
+                            if (key.isNotBlank() && value.isNotBlank()) {
+                                taskDao.setConfig(StoreConfigEntity(key, value))
+                            }
                         }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error processing store config snapshot", e)
+                    }
+                }
+            }
+        )
+
+        // 8. Shift Handovers listener (Notes left for next shift)
+        listeners.add(
+            firestore.collection("shift_handovers").addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.w(TAG, "Shift handovers snapshot warning: ${error.message}")
+                    return@addSnapshotListener
+                }
+                if (snapshot == null) return@addSnapshotListener
+                scope.launch(Dispatchers.IO) {
+                    try {
+                        val cloudIds = snapshot.documents.map { it.id }.toSet()
+                        val localHandovers = taskDao.getAllShiftHandovers().first()
+                        for (local in localHandovers) {
+                            if (local.id !in cloudIds) {
+                                taskDao.deleteShiftHandover(local.id)
+                            }
+                        }
+                        for (doc in snapshot.documents) {
+                            val id = doc.id
+                            val dateString = doc.extractString("dateString")
+                            val targetDate = doc.extractString("targetDate", dateString)
+                            val shiftType = doc.extractString("shiftType", "MORNING_TO_EVENING")
+                            val category = doc.extractString("category", "STOCK_DELIVERY")
+                            val priority = doc.extractString("priority", "NORMAL")
+                            val message = doc.extractString("message")
+                            if (message.isBlank()) continue
+                            val authorUserId = doc.extractString("authorUserId")
+                            val authorName = doc.extractString("authorName", "Staff")
+                            val authorInitials = doc.extractString("authorInitials", "ST")
+                            val authorRole = doc.extractString("authorRole", "STAFF")
+                            val timestamp = when (val ts = doc.get("timestamp")) {
+                                is Number -> ts.toLong()
+                                is com.google.firebase.Timestamp -> ts.toDate().time
+                                else -> System.currentTimeMillis()
+                            }
+                            val ackList = doc.get("acknowledgedBy") as? List<*>
+                            val ackCsv = ackList?.mapNotNull { item ->
+                                when (item) {
+                                    is Map<*, *> -> item["userId"]?.toString()
+                                    is String -> item
+                                    else -> null
+                                }
+                            }?.joinToString(",") ?: ""
+
+                            taskDao.insertShiftHandover(
+                                ShiftHandoverEntity(
+                                    id = id,
+                                    dateString = dateString,
+                                    targetDate = targetDate,
+                                    shiftType = shiftType,
+                                    category = category,
+                                    priority = priority,
+                                    message = message,
+                                    authorUserId = authorUserId,
+                                    authorName = authorName,
+                                    authorInitials = authorInitials,
+                                    authorRole = authorRole,
+                                    timestamp = timestamp,
+                                    acknowledgedByCsv = ackCsv
+                                )
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error processing shift handovers snapshot", e)
                     }
                 }
             }
@@ -486,6 +636,73 @@ class FirestoreSyncManager(
                 _syncStatus.value = "Synced sign-off to Google Cloud"
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to sync completion to cloud", e)
+            }
+        }
+    }
+
+    fun deleteCompletionFromCloud(taskId: Long, dateString: String) {
+        scope.launch(Dispatchers.IO) {
+            try {
+                val docId = "${taskId}_${dateString}"
+                firestore.collection("task_completions").document(docId).delete().await()
+                _syncStatus.value = "Task unlocked in Google Cloud"
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to delete completion from cloud", e)
+            }
+        }
+    }
+
+    fun syncShiftHandover(handover: ShiftHandoverEntity) {
+        scope.launch(Dispatchers.IO) {
+            try {
+                val acks = if (handover.acknowledgedByCsv.isNotBlank()) {
+                    handover.acknowledgedByCsv.split(",").filter { it.isNotBlank() }.map { hashMapOf("userId" to it.trim()) }
+                } else {
+                    emptyList<Map<String, String>>()
+                }
+                val data = hashMapOf<String, Any>(
+                    "dateString" to handover.dateString,
+                    "targetDate" to handover.targetDate,
+                    "shiftType" to handover.shiftType,
+                    "category" to handover.category,
+                    "priority" to handover.priority,
+                    "message" to handover.message,
+                    "authorUserId" to handover.authorUserId,
+                    "authorName" to handover.authorName,
+                    "authorInitials" to handover.authorInitials,
+                    "authorRole" to handover.authorRole,
+                    "timestamp" to handover.timestamp,
+                    "acknowledgedBy" to acks
+                )
+                firestore.collection("shift_handovers").document(handover.id).set(data).await()
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to sync shift handover to cloud", e)
+            }
+        }
+    }
+
+    fun deleteShiftHandoverFromCloud(id: String) {
+        scope.launch(Dispatchers.IO) {
+            try {
+                firestore.collection("shift_handovers").document(id).delete().await()
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to delete shift handover from cloud", e)
+            }
+        }
+    }
+
+    fun acknowledgeShiftHandoverInCloud(handoverId: String, userId: String, userName: String) {
+        scope.launch(Dispatchers.IO) {
+            try {
+                val ackObj = hashMapOf<String, Any>(
+                    "userId" to userId,
+                    "userName" to userName,
+                    "timestamp" to System.currentTimeMillis()
+                )
+                firestore.collection("shift_handovers").document(handoverId)
+                    .update("acknowledgedBy", FieldValue.arrayUnion(ackObj)).await()
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to acknowledge shift handover in cloud", e)
             }
         }
     }

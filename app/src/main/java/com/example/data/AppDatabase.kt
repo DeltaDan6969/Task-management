@@ -17,9 +17,10 @@ import kotlinx.coroutines.launch
         TaskCompletionEntity::class,
         TaskNoteEntity::class,
         TaskPhotoEntity::class,
-        StoreConfigEntity::class
+        StoreConfigEntity::class,
+        ShiftHandoverEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -60,6 +61,29 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_7_8 = object : androidx.room.migration.Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `shift_handovers` (
+                        `id` TEXT NOT NULL,
+                        `dateString` TEXT NOT NULL,
+                        `targetDate` TEXT NOT NULL,
+                        `shiftType` TEXT NOT NULL,
+                        `category` TEXT NOT NULL,
+                        `priority` TEXT NOT NULL,
+                        `message` TEXT NOT NULL,
+                        `authorUserId` TEXT NOT NULL,
+                        `authorName` TEXT NOT NULL,
+                        `authorInitials` TEXT NOT NULL,
+                        `authorRole` TEXT NOT NULL,
+                        `timestamp` INTEGER NOT NULL,
+                        `acknowledgedByCsv` TEXT NOT NULL,
+                        PRIMARY KEY(`id`)
+                    )
+                """.trimIndent())
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -67,9 +91,9 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "task_tracker.db"
                 )
-                    .addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
+                    .addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
                     .fallbackToDestructiveMigration()
-                    .addCallback(DatabaseCallback())
+                    .addCallback(DatabaseCallback(context.applicationContext))
                     .build()
                 INSTANCE = instance
                 instance
@@ -77,12 +101,15 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-    private class DatabaseCallback : Callback() {
+    private class DatabaseCallback(private val appContext: Context) : Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
             CoroutineScope(Dispatchers.IO).launch {
-                INSTANCE?.let { database ->
-                    seedInitialData(database.taskDao())
+                try {
+                    val dao = getDatabase(appContext).taskDao()
+                    seedInitialData(dao)
+                } catch (e: Exception) {
+                    android.util.Log.e("AppDatabase", "Error seeding on create", e)
                 }
             }
         }
@@ -90,8 +117,36 @@ abstract class AppDatabase : RoomDatabase() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
             try {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `shift_handovers` (
+                        `id` TEXT NOT NULL,
+                        `dateString` TEXT NOT NULL,
+                        `targetDate` TEXT NOT NULL,
+                        `shiftType` TEXT NOT NULL,
+                        `category` TEXT NOT NULL,
+                        `priority` TEXT NOT NULL,
+                        `message` TEXT NOT NULL,
+                        `authorUserId` TEXT NOT NULL,
+                        `authorName` TEXT NOT NULL,
+                        `authorInitials` TEXT NOT NULL,
+                        `authorRole` TEXT NOT NULL,
+                        `timestamp` INTEGER NOT NULL,
+                        `acknowledgedByCsv` TEXT NOT NULL,
+                        PRIMARY KEY(`id`)
+                    )
+                """.trimIndent())
                 db.execSQL("UPDATE users SET pinHash = 'cdc948c06c211d62f24a6a96703014c20c5b089da0700a41a64f781067285fb6', pinSalt = '01d7f284aaadafdd172a984843708060', mustChangePin = 0 WHERE name LIKE '%DANIEL%'")
             } catch (_: Exception) {}
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val dao = getDatabase(appContext).taskDao()
+                    val seeded = dao.getConfigValue("initial_seed_completed")
+                    if (seeded != "true") {
+                        seedInitialData(dao)
+                    }
+                } catch (_: Exception) {}
+            }
         }
     }
 }

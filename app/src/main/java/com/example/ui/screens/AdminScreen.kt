@@ -1097,6 +1097,8 @@ fun LayoutTabContent(
     onDeleteCategory: (Long) -> Unit
 ) {
     var selectedDayFilter by remember { mutableStateOf("ALL") }
+    // All categories closed/minimized by default!
+    var expandedCategoryIds by remember { mutableStateOf(setOf<Long>()) }
     val daysList = listOf("ALL") + DaysOfWeek.ORDERED_DAYS + listOf(DaysOfWeek.ONE_TIME)
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -1124,6 +1126,24 @@ fun LayoutTabContent(
                 )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        expandedCategoryIds = if (expandedCategoryIds.size == categories.size) emptySet() else categories.map { it.id }.toSet()
+                    },
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    Icon(
+                        imageVector = if (expandedCategoryIds.size == categories.size) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = if (expandedCategoryIds.size == categories.size) "COLLAPSE ALL" else "EXPAND ALL",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 OutlinedButton(
                     onClick = onOpenAddCategory,
                     shape = RoundedCornerShape(4.dp)
@@ -1286,6 +1306,7 @@ fun LayoutTabContent(
                         else -> DaysOfWeek.runsOnDay(it.daysOfWeek, selectedDayFilter)
                     }
                 }
+                val isExpanded = category.id in expandedCategoryIds
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1296,11 +1317,21 @@ fun LayoutTabContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(RetailHeaderBlack)
+                            .clickable {
+                                expandedCategoryIds = if (isExpanded) expandedCategoryIds - category.id else expandedCategoryIds + category.id
+                            }
                             .padding(horizontal = 12.dp, vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                contentDescription = if (isExpanded) "Collapse" else "Expand",
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = category.name,
                                 fontSize = 12.sp,
@@ -1329,11 +1360,12 @@ fun LayoutTabContent(
                         }
                     }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(RetailSurface)
-                    ) {
+                    if (isExpanded) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(RetailSurface)
+                        ) {
                         if (catTasks.isEmpty()) {
                             Column(
                                 modifier = Modifier
@@ -1501,6 +1533,7 @@ fun LayoutTabContent(
         }
     }
 }
+    }
 }
 
 // --- BRANDING TAB CONTENT ---
@@ -1536,12 +1569,40 @@ fun BrandingTabContent(
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            Text(
-                text = "STORE BRANDING & IDENTIFIER",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Black,
-                color = RetailTextPrimary
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                modifier = Modifier.padding(bottom = 4.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .background(Color.White, RoundedCornerShape(8.dp))
+                        .border(1.dp, RetailBorder, RoundedCornerShape(8.dp))
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.ic_storefront),
+                        contentDescription = "Store Logo Icon",
+                        modifier = Modifier.size(44.dp)
+                    )
+                }
+                Column {
+                    Text(
+                        text = "STORE BRANDING & IDENTIFIER",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Black,
+                        color = RetailTextPrimary
+                    )
+                    Text(
+                        text = "Storefront icon & terminal branding configuration",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = RetailTextSecondary
+                    )
+                }
+            }
 
             OutlinedTextField(
                 value = storeName,
@@ -4086,6 +4147,72 @@ fun CompletionsTableContent(
                                                             )
                                                         }
                                                     }
+                                            }
+                                        }
+
+                                        // Integrated Audit Quality Quick-Check: Approve or Re-do micro-feedback
+                                        var auditFeedbackState by remember(taskId, photoDate) {
+                                            mutableStateOf<String?>(null)
+                                        }
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 4.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "AUDIT REVIEW:",
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Black,
+                                                color = RetailTextSecondary,
+                                                letterSpacing = 0.5.sp
+                                            )
+
+                                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                                Surface(
+                                                    onClick = {
+                                                        auditFeedbackState = if (auditFeedbackState == "APPROVED") null else "APPROVED"
+                                                    },
+                                                    shape = RoundedCornerShape(4.dp),
+                                                    color = if (auditFeedbackState == "APPROVED") RetailGreenDone else Color(0xFFE8F5E9),
+                                                    border = BorderStroke(1.dp, if (auditFeedbackState == "APPROVED") RetailGreenDone else Color(0xFFA5D6A7)),
+                                                    modifier = Modifier.testTag("audit_approve_${taskId}")
+                                                ) {
+                                                    Row(
+                                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        Text(
+                                                            text = "Approve ✅",
+                                                            fontSize = 11.sp,
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = if (auditFeedbackState == "APPROVED") Color.White else Color(0xFF2E7D32)
+                                                        )
+                                                    }
+                                                }
+
+                                                Surface(
+                                                    onClick = {
+                                                        auditFeedbackState = if (auditFeedbackState == "REDO") null else "REDO"
+                                                    },
+                                                    shape = RoundedCornerShape(4.dp),
+                                                    color = if (auditFeedbackState == "REDO") RetailOrange else Color(0xFFFFF3E0),
+                                                    border = BorderStroke(1.dp, if (auditFeedbackState == "REDO") RetailOrange else Color(0xFFFFB74D)),
+                                                    modifier = Modifier.testTag("audit_redo_${taskId}")
+                                                ) {
+                                                    Row(
+                                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        Text(
+                                                            text = "Re-do ⚠️",
+                                                            fontSize = 11.sp,
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = if (auditFeedbackState == "REDO") Color.White else Color(0xFFE65100)
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
@@ -4433,6 +4560,7 @@ fun CompletionsTableContent(
             onDismiss = { viewingBreakdownCompletion = null }
         )
     }
+}
 }
 
 @Composable

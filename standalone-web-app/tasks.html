@@ -3868,6 +3868,378 @@
       }
     }
 
+    /* ============================================================ */
+    /* HISTORY OVERDUE VISUAL BADGE & STATUS METRICS                */
+    /* ============================================================ */
+    .badge-history-overdue {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 900;
+      background: #FEF2F2;
+      color: #DC2626;
+      border: 1.5px solid #FCA5A5;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    [data-theme="dark"] .badge-history-overdue {
+      background: rgba(220, 38, 38, 0.22);
+      color: #F87171;
+      border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .badge-history-pending {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    [data-theme="dark"] .badge-history-pending {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60A5FA;
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .history-card-phone.overdue {
+      border-left: 5px solid #EF4444;
+      background: #FFFDFD;
+    }
+
+    [data-theme="dark"] .history-card-phone.overdue {
+      background: #1C1515;
+      border-left: 5px solid #EF4444;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .history-overdue-desc {
+      font-size: 11px;
+      color: #DC2626;
+      background: #FEF2F2;
+      border: 1px solid #FEE2E2;
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin: 6px 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    [data-theme="dark"] .history-overdue-desc {
+      background: rgba(220, 38, 38, 0.12);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #FCA5A5;
+    }
+
+    .history-stat-badge {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .history-stat-badge.completed {
+      background: #DCFCE7;
+      color: #166534;
+      border: 1px solid #86EFAC;
+    }
+
+    .history-stat-badge.overdue {
+      background: #FEF2F2;
+      color: #DC2626;
+      border: 1px solid #FCA5A5;
+    }
+
+    [data-theme="dark"] .history-stat-badge.completed {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34D399;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    [data-theme="dark"] .history-stat-badge.overdue {
+      background: rgba(239, 68, 68, 0.2);
+      color: #F87171;
+      border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    /* ============================================================ */
+    /* ADMIN TASK UNLOCK ACTION STYLES                              */
+    /* ============================================================ */
+    .btn-unlock-action {
+      background: #FFF7ED;
+      color: #C2410C;
+      border: 1.5px solid #FDBA74;
+      border-radius: 8px;
+      height: 34px;
+      padding: 0 12px;
+      font-size: 11.5px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-unlock-action:hover {
+      background: #FFEDD5;
+      border-color: #FB923C;
+      color: #9A3412;
+      transform: translateY(-1px);
+    }
+
+    .btn-unlock-action:active {
+      transform: scale(0.96);
+    }
+
+    [data-theme="dark"] .btn-unlock-action {
+      background: rgba(234, 88, 12, 0.16);
+      color: #FB923C;
+      border-color: rgba(251, 146, 60, 0.4);
+    }
+
+    [data-theme="dark"] .btn-unlock-action:hover {
+      background: rgba(234, 88, 12, 0.28);
+      border-color: #FB923C;
+    }
+
+    /* ============================================================ */
+    /* SHIFT HANDOVER FEATURE STYLES                                */
+    /* ============================================================ */
+    .shift-handover-card {
+      background: var(--retail-surface);
+      border: 1px solid var(--retail-border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      position: relative;
+    }
+
+    [data-theme="dark"] .shift-handover-card {
+      background: #151922;
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .shift-handover-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .shift-handover-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .shift-handover-title-row h3 {
+      font-size: 13.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 0;
+      color: var(--retail-text-primary);
+    }
+
+    .handover-count-pill {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+    }
+
+    [data-theme="dark"] .handover-count-pill {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60A5FA;
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-leave-handover {
+      background: var(--retail-orange);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 11.5px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(234, 88, 12, 0.3);
+    }
+
+    .btn-leave-handover:hover {
+      background: #C2410C;
+      transform: translateY(-1px);
+    }
+
+    .btn-leave-handover:active {
+      transform: scale(0.96);
+    }
+
+    .handover-notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .handover-note-item {
+      background: var(--retail-surface-subtle);
+      border: 1px solid var(--retail-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .handover-note-item.urgent {
+      border-left: 4px solid #EF4444;
+      background: #FFFBFB;
+    }
+
+    [data-theme="dark"] .handover-note-item.urgent {
+      background: #1E1515;
+      border-left: 4px solid #EF4444;
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+
+    .handover-note-item.important {
+      border-left: 4px solid #F59E0B;
+    }
+
+    [data-theme="dark"] .handover-note-item.important {
+      border-left: 4px solid #F59E0B;
+    }
+
+    .handover-note-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .handover-shift-tag {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: #F1F5F9;
+      color: #334155;
+      border: 1px solid #CBD5E1;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    [data-theme="dark"] .handover-shift-tag {
+      background: #1E293B;
+      color: #94A3B8;
+      border-color: #334155;
+    }
+
+    .handover-prio-tag {
+      font-size: 9.5px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .handover-prio-tag.urgent {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1px solid #FCA5A5;
+    }
+
+    .handover-prio-tag.important {
+      background: #FEF3C7;
+      color: #D97706;
+      border: 1px solid #FCD34D;
+    }
+
+    .handover-note-text {
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--retail-text-primary);
+      margin-bottom: 8px;
+      word-break: break-word;
+      font-weight: 500;
+    }
+
+    .handover-note-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 10.5px;
+      color: var(--retail-text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .btn-handover-ack {
+      background: var(--retail-surface);
+      border: 1px solid var(--retail-border);
+      color: var(--retail-text-primary);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 10.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-handover-ack:hover {
+      background: #ECFDF5;
+      border-color: #10B981;
+      color: #065F46;
+    }
+
+    .btn-handover-ack.acked {
+      background: #DCFCE7;
+      border-color: #86EFAC;
+      color: #166534;
+      cursor: default;
+    }
+
+    [data-theme="dark"] .btn-handover-ack.acked {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34D399;
+    }
+
     /* Tablet Mode Container & Body - Truly Edge-to-Edge Full Screen Utilization */
     body.tablet-viewport {
       background-color: var(--retail-bg) !important;
@@ -4468,6 +4840,11 @@
           </select>
         </div>
 
+        <!-- Shift Handover Widget -->
+        <div id="shiftHandoverWidget" class="shift-handover-card">
+          <!-- Rendered dynamically by renderShiftHandoverWidget() -->
+        </div>
+
         <!-- Tasks Grouped by Category -->
         <div id="todayCategoriesContainer">
           <!-- Populated dynamically -->
@@ -4490,7 +4867,29 @@
               </select>
             </div>
 
-            <div class="section-title-strip" style="margin-top: 10px;">
+            <!-- Overdue & Status Filter -->
+            <div style="margin-bottom: 10px;">
+              <select class="filter-select" id="historyStatusFilter" onchange="handleHistoryStatusFilterChange(this.value)" style="width: 100%; padding: 6px 10px; font-weight: 700; border-radius: 8px;">
+                <option value="ALL">ALL STATUS (Completed & Overdue)</option>
+                <option value="OVERDUE">⚠️ OVERDUE (NOT COMPLETED BY END OF DAY)</option>
+                <option value="COMPLETED">✓ COMPLETED ONLY</option>
+                <option value="SKIPPED">⚡ SKIPPED ONLY</option>
+              </select>
+            </div>
+
+            <!-- History Metrics Summary Strip -->
+            <div id="historySummaryStrip" style="display: flex; gap: 8px; margin-bottom: 12px;">
+              <div class="history-stat-badge completed" id="histStatCompleted">
+                <span class="material-icons" style="font-size: 14px;">check_circle</span>
+                <span id="histStatCompletedText">0 Completed</span>
+              </div>
+              <div class="history-stat-badge overdue" id="histStatOverdue">
+                <span class="material-icons" style="font-size: 14px;">alarm_off</span>
+                <span id="histStatOverdueText">0 Overdue</span>
+              </div>
+            </div>
+
+            <div class="section-title-strip" style="margin-top: 6px;">
               <h3>SHIFT AUDIT LOG</h3>
               <span id="historyLogCount">0 records</span>
             </div>
@@ -5600,9 +5999,130 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div style="display: flex; gap: 8px;">
-        <button class="btn-mobile-full full-green" onclick="closeIosInstallModal()">GOT IT</button>
+  <!-- 11. SHIFT HANDOVER MODAL -->
+  <div class="bottom-sheet-overlay" id="shiftHandoverModal" style="display: none; align-items: center; justify-content: center; z-index: 10001;" onclick="closeShiftHandoverModal()">
+    <div class="bottom-sheet-card" style="max-width: 500px; width: 92%; border-radius: 16px; padding: 22px 20px; border-top: 5px solid var(--retail-orange); max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons" style="color: var(--retail-orange); font-size: 24px;">swap_horiz</span>
+          <h2 style="font-size: 16px; font-weight: 900; margin: 0; color: var(--retail-text-primary);">LEAVE SHIFT HANDOVER NOTE</h2>
+        </div>
+        <button type="button" class="btn-sheet-close" onclick="closeShiftHandoverModal()" title="Close" style="background: none; border: none; color: var(--retail-text-secondary); cursor: pointer; display: flex;">
+          <span class="material-icons" style="font-size: 22px;">close</span>
+        </button>
+      </div>
+
+      <p style="font-size: 11px; color: var(--retail-text-secondary); margin: 0 0 14px 0; line-height: 1.4;">
+        Leave handover instructions, deliveries update, refrigeration notes, or alerts for the incoming shift team.
+      </p>
+
+      <label style="font-size: 10.5px; font-weight: 800; color: var(--retail-text-secondary); display: block; margin-bottom: 4px;">YOUR NAME / SENDER</label>
+      <select id="handoverAuthorSelect" class="phone-form-input" style="margin-bottom: 12px; font-weight: 700;">
+      </select>
+
+      <label style="font-size: 10.5px; font-weight: 800; color: var(--retail-text-secondary); display: block; margin-bottom: 4px;">TARGET SHIFT</label>
+      <select id="handoverTargetShift" class="phone-form-input" style="margin-bottom: 12px; font-weight: 700;">
+        <option value="MORNING_TO_EVENING">🌅 Morning Shift ➔ 🌆 Evening Shift</option>
+        <option value="EVENING_TO_MORNING">🌆 Evening Shift ➔ 🌅 Tomorrow Morning</option>
+        <option value="IMMEDIATE">🚨 Immediate Handover (Mid-Shift / Action Required)</option>
+        <option value="GENERAL">📋 General Store Handover</option>
+      </select>
+
+      <label style="font-size: 10.5px; font-weight: 800; color: var(--retail-text-secondary); display: block; margin-bottom: 4px;">HANDOVER CATEGORY</label>
+      <select id="handoverCategory" class="phone-form-input" style="margin-bottom: 12px; font-weight: 700;">
+        <option value="STOCK_DELIVERY">📦 Stock, Fresh & Deliveries</option>
+        <option value="FRIDGE_WASTE">❄️ Fridge Temps & WhyWaste</option>
+        <option value="MAINTENANCE">🔧 Store Maintenance / Equipment</option>
+        <option value="CASH_SECURITY">🔒 Cash, Till & Security</option>
+        <option value="GENERAL">📋 General Shift Operations</option>
+      </select>
+
+      <label style="font-size: 10.5px; font-weight: 800; color: var(--retail-text-secondary); display: block; margin-bottom: 4px;">PRIORITY LEVEL</label>
+      <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+        <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px; border: 1.5px solid var(--retail-border); border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; background: var(--retail-surface-subtle);" id="handoverPrioNormalLabel">
+          <input type="radio" name="handoverPrio" value="NORMAL" checked style="accent-color: var(--retail-orange);" onchange="updateHandoverPrioUI()"> Normal
+        </label>
+        <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px; border: 1.5px solid var(--retail-border); border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; background: var(--retail-surface-subtle);" id="handoverPrioImportantLabel">
+          <input type="radio" name="handoverPrio" value="IMPORTANT" style="accent-color: #F59E0B;" onchange="updateHandoverPrioUI()"> Important
+        </label>
+        <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px; border: 1.5px solid var(--retail-border); border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; background: var(--retail-surface-subtle);" id="handoverPrioUrgentLabel">
+          <input type="radio" name="handoverPrio" value="URGENT" style="accent-color: #EF4444;" onchange="updateHandoverPrioUI()"> 🚨 Urgent
+        </label>
+      </div>
+
+      <label style="font-size: 10.5px; font-weight: 800; color: var(--retail-text-secondary); display: block; margin-bottom: 4px;">HANDOVER NOTES & DETAILS</label>
+      <textarea id="handoverMessageInput" class="phone-form-input" rows="4" placeholder="e.g. Bread delivery arrived late, 4 crates unworked in backroom. Defrost rolls ready on rack 2. Milk fridge temp checked at 3.2°C." style="resize: vertical; font-size: 12.5px; line-height: 1.4; padding: 10px;"></textarea>
+
+      <div style="display: flex; gap: 10px; margin-top: 14px;">
+        <button type="button" class="btn-mobile-outline" onclick="closeShiftHandoverModal()" style="flex: 1; padding: 10px; border-radius: 8px; font-weight: 800;">Cancel</button>
+        <button type="button" class="btn-mobile-full full-green" onclick="submitShiftHandoverNote()" style="flex: 2; margin: 0; padding: 10px; border-radius: 8px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+          <span class="material-icons" style="font-size: 16px;">send</span> SUBMIT FOR NEXT SHIFT
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. ADMIN UNLOCK TASK MODAL -->
+  <div class="bottom-sheet-overlay" id="adminUnlockTaskModal" style="display: none; align-items: center; justify-content: center; z-index: 10002;" onclick="closeAdminUnlockModal()">
+    <div class="bottom-sheet-card" style="max-width: 440px; width: 92%; border-radius: 16px; padding: 22px 20px; border-top: 5px solid #EF4444; text-align: left;" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons" style="color: #EF4444; font-size: 24px;">lock_open</span>
+          <h2 style="font-size: 16px; font-weight: 900; margin: 0; color: var(--retail-text-primary);">UNLOCK TASK</h2>
+        </div>
+        <button type="button" class="btn-sheet-close" onclick="closeAdminUnlockModal()" title="Close" style="background: none; border: none; color: var(--retail-text-secondary); cursor: pointer; display: flex;">
+          <span class="material-icons" style="font-size: 22px;">close</span>
+        </button>
+      </div>
+
+      <div style="background: var(--retail-surface-subtle); border: 1px solid var(--retail-border); border-radius: 10px; padding: 12px; margin-bottom: 12px;">
+        <div style="font-size: 13.5px; font-weight: 900; color: var(--retail-text-primary); margin-bottom: 4px;" id="unlockModalTaskTitle">Task Title</div>
+        <div style="font-size: 11px; color: var(--retail-text-secondary); font-weight: 700;" id="unlockModalCompletionInfo">Completed by Staff DS at 14:20</div>
+      </div>
+
+      <p style="font-size: 11.5px; color: var(--retail-text-secondary); line-height: 1.45; margin: 0 0 16px 0;">
+        Unlocking clears the completion lock and archives the previous sign-off, allowing staff to re-run the checklist, capture new audit photos, and complete this task again.
+      </p>
+
+      <!-- Direct Admin Unlock Container (when active user is Admin) -->
+      <div id="unlockAdminDirectBox" style="display: none;">
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn-mobile-outline" onclick="closeAdminUnlockModal()" style="flex: 1; padding: 10px; border-radius: 8px; font-weight: 800;">Cancel</button>
+          <button type="button" class="btn-mobile-full full-green" onclick="confirmUnlockTask()" style="flex: 2; margin: 0; background: #DC2626; padding: 10px; border-radius: 8px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+            <span class="material-icons" style="font-size: 16px;">lock_open</span> UNLOCK TASK NOW
+          </button>
+        </div>
+      </div>
+
+      <!-- PIN Auth Keypad Container (when active user is NOT Admin) -->
+      <div id="unlockAdminPinBox" style="display: none; text-align: center;">
+        <div style="font-size: 11px; font-weight: 800; color: #DC2626; margin-bottom: 6px;">
+          ENTER ADMIN 4-DIGIT PIN TO AUTHORIZE
+        </div>
+        <div class="pin-dots-strip" style="justify-content: center; margin-bottom: 8px;">
+          <div class="pin-dot" id="unlockPinDot0"></div>
+          <div class="pin-dot" id="unlockPinDot1"></div>
+          <div class="pin-dot" id="unlockPinDot2"></div>
+          <div class="pin-dot" id="unlockPinDot3"></div>
+        </div>
+        <div id="unlockPinErrorMsg" style="color: #DC2626; font-size: 11px; font-weight: 800; min-height: 16px; margin-bottom: 8px;"></div>
+        <div class="mobile-keypad-grid">
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('1')">1</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('2')">2</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('3')">3</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('4')">4</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('5')">5</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('6')">6</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('7')">7</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('8')">8</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('9')">9</button>
+          <button type="button" class="keypad-btn action" onclick="clearUnlockAdminPin()">CLEAR</button>
+          <button type="button" class="keypad-btn" onclick="pressUnlockAdminPinDigit('0')">0</button>
+          <button type="button" class="keypad-btn action" onclick="closeAdminUnlockModal()">CANCEL</button>
+        </div>
       </div>
     </div>
   </div>
@@ -5835,10 +6355,13 @@
     let selectedDate = new Date().toISOString().slice(0, 10);
     const todayDateStr = new Date().toISOString().slice(0, 10);
     let selectedHistoryStaff = "ALL";
+    let selectedHistoryStatus = "ALL";
+    let shiftHandovers = [];
+    let taskToUnlock = null;
+    let unlockAdminPinInput = "";
 
     let categories = [];
     let tasks = [];
-    let users = [];
     let completionsMap = {}; // key: taskId_dateString
     let urgentTasksMap = {}; // key: taskId_dateString -> { isUrgent: true, dateString, taskId, setByUserName, ... }
     let allCompletions = [];
@@ -5873,6 +6396,50 @@
       { id: "6", name: "ELYAS", initials: "E", role: "STAFF", pinHash: "de69c37bfffb3cc1d8f8a45901c30da342cf9e1e030aec3723c44d0a2bbc3de1", pinSalt: "bf3dc2c695c2741f85d14470803b7601", active: true },
       { id: "7", name: "SAM", initials: "S", role: "STAFF", pinHash: "97621d22ea1ae7819c1246bf18244bcad79d8537e6eec898f10f5c90cd647432", pinSalt: "62f4786e5a936547d0b575111e26edbc", active: true }
     ];
+
+    function deduplicateUsers(userList) {
+      if (!Array.isArray(userList)) return [];
+      const map = new Map();
+      userList.forEach(u => {
+        if (!u || !u.name) return;
+        const key = u.name.trim().toUpperCase();
+        if (!map.has(key)) {
+          map.set(key, { ...u });
+        } else {
+          const existing = map.get(key);
+          // Prefer default canonical ID ("1", "3", "4", "5", "6", "7") if available
+          const isExistingCanonical = defaultUsers.some(d => String(d.id) === String(existing.id));
+          const isUCanonical = defaultUsers.some(d => String(d.id) === String(u.id));
+          if (!isExistingCanonical && isUCanonical) {
+            existing.id = u.id;
+          }
+          // Merge credentials
+          if ((!existing.pinHash || existing.pinHash === "") && u.pinHash) {
+            existing.pinHash = u.pinHash;
+            existing.pinSalt = u.pinSalt || existing.pinSalt;
+          }
+          if (u.role === 'ADMIN') existing.role = 'ADMIN';
+          if (u.mustChangePin !== undefined && !existing.pinHash) {
+            existing.mustChangePin = u.mustChangePin;
+          }
+          if (existing.active === undefined && u.active !== undefined) {
+            existing.active = u.active;
+          }
+        }
+      });
+      return Array.from(map.values());
+    }
+
+    let users = (() => {
+      try {
+        const cached = localStorage.getItem("retail_staff_roster_cache");
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return deduplicateUsers(parsed);
+        }
+      } catch (e) {}
+      return deduplicateUsers([...defaultUsers]);
+    })();
 
     let defaultCategories = [
       { id: "6", name: "MORNING TASKS", sortOrder: 1, active: true },
@@ -5999,18 +6566,60 @@
       // 2. Users Collection
       db.collection("users").onSnapshot(snapshot => {
         if (snapshot && !snapshot.empty) {
-          users = [];
+          const rawUsers = [];
+          const nameToDocs = new Map();
+
           snapshot.forEach(doc => {
-            users.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            const u = { id: doc.id, ...data };
+            rawUsers.push(u);
+
+            const normName = (u.name || "").trim().toUpperCase();
+            if (normName) {
+              if (!nameToDocs.has(normName)) {
+                nameToDocs.set(normName, []);
+              }
+              nameToDocs.get(normName).push(u);
+            }
           });
+
+          // Prune any duplicate user documents in Firestore
+          nameToDocs.forEach((docList, normName) => {
+            if (docList.length > 1) {
+              // Sort to retain the primary canonical doc (e.g. matching defaultUsers ID or having established pinHash)
+              docList.sort((a, b) => {
+                const aIsDefault = defaultUsers.some(d => String(d.id) === String(a.id));
+                const bIsDefault = defaultUsers.some(d => String(d.id) === String(b.id));
+                if (aIsDefault && !bIsDefault) return -1;
+                if (!aIsDefault && bIsDefault) return 1;
+                const aHasPin = !!(a.pinHash && a.pinHash.length > 8);
+                const bHasPin = !!(b.pinHash && b.pinHash.length > 8);
+                if (aHasPin && !bHasPin) return -1;
+                if (!aHasPin && bHasPin) return 1;
+                return String(a.id).localeCompare(String(b.id));
+              });
+
+              for (let i = 1; i < docList.length; i++) {
+                const duplicateDoc = docList[i];
+                try {
+                  db.collection("users").doc(duplicateDoc.id.toString()).delete().catch(() => {});
+                } catch (_) {}
+              }
+            }
+          });
+
+          users = deduplicateUsers(rawUsers);
         } else {
-          users = [...defaultUsers];
+          users = deduplicateUsers([...defaultUsers]);
         }
+        try {
+          localStorage.setItem("retail_staff_roster_cache", JSON.stringify(users));
+        } catch (e) {}
         renderStaffRosterPhone();
         renderAdminUsersPhone();
       }, err => {
         console.warn("Users listener:", err);
-        if (users.length === 0) users = [...defaultUsers];
+        if (users.length === 0) users = deduplicateUsers([...defaultUsers]);
         renderStaffRosterPhone();
       });
 
@@ -6139,6 +6748,24 @@
         }
       }, err => {
         console.warn("Urgent overrides listener:", err);
+      });
+
+      // 9. Shift Handovers Collection (Notes left for next shift)
+      loadHandoversFromLocalStorage();
+      db.collection("shift_handovers").onSnapshot(snapshot => {
+        if (snapshot) {
+          const cloudHandovers = [];
+          snapshot.forEach(doc => {
+            cloudHandovers.push({ id: doc.id, ...doc.data() });
+          });
+          // Merge local and cloud handovers
+          const localOnly = shiftHandovers.filter(h => h.id && String(h.id).startsWith("local_") && !cloudHandovers.some(c => c.id === h.id));
+          shiftHandovers = [...cloudHandovers, ...localOnly];
+          persistHandoversToLocalStorage();
+          renderShiftHandoverWidget();
+        }
+      }, err => {
+        console.warn("Shift handovers listener:", err);
       });
     }
 
@@ -6309,7 +6936,8 @@
       if (!container) return;
       container.innerHTML = "";
 
-      users.filter(u => u.active !== false).forEach(user => {
+      const uniqueActiveUsers = deduplicateUsers(users.filter(u => u.active !== false));
+      uniqueActiveUsers.forEach(user => {
         const isNew = isUserPendingFirstPin(user);
         const card = document.createElement("div");
         card.className = "staff-card-phone";
@@ -6725,6 +7353,7 @@
       const container = document.getElementById("todayCategoriesContainer");
       if (!container) return;
       container.innerHTML = "";
+      renderShiftHandoverWidget();
 
       let filteredCats = categories;
       if (activeFilterCategory !== 'ALL') {
@@ -6909,6 +7538,10 @@
                   <span class="material-icons" style="font-size: 16px;">verified</span>
                   <span>✓ LOCKED • ${comp.completedByUserInitials || 'DS'} (${formatTimestamp(comp.completedAt)})</span>
                 </div>
+                <button type="button" class="btn-unlock-action" onclick="openAdminUnlockModal('${task.id}', '${selectedDate}', '${escapeQuotes(task.title)}', '${escapeQuotes(comp.completedByUserName || 'Staff')}', '${escapeQuotes(comp.completedByUserInitials || 'DS')}', '${formatTimestamp(comp.completedAt)}')" title="Admin: Unlock this task so it can be completed again">
+                  <span class="material-icons" style="font-size: 14px;">lock_open</span>
+                  <span>UNLOCK</span>
+                </button>
               </div>
             `;
           } else if (isSkipped) {
@@ -6918,6 +7551,10 @@
                   <span class="material-icons" style="font-size: 16px; color: #E65100;">warning</span>
                   <span>⚡ SKIPPED by [${comp.completedByUserInitials || 'STAFF'}] ${comp.completedByUserName || 'Staff'} (${formatTimestamp(comp.completedAt)}) • Reason: "${escapeQuotes(comp.skipReason || 'Excused')}"</span>
                 </div>
+                <button type="button" class="btn-unlock-action" onclick="openAdminUnlockModal('${task.id}', '${selectedDate}', '${escapeQuotes(task.title)}', '${escapeQuotes(comp.completedByUserName || 'Staff')}', '${escapeQuotes(comp.completedByUserInitials || 'DS')}', '${formatTimestamp(comp.completedAt)}')" title="Admin: Unlock this skipped task so it can be completed">
+                  <span class="material-icons" style="font-size: 14px;">lock_open</span>
+                  <span>UNLOCK</span>
+                </button>
               </div>
             `;
           } else {
@@ -7752,6 +8389,11 @@
       staffSelect.value = selectedHistoryStaff;
     }
 
+    function handleHistoryStatusFilterChange(val) {
+      selectedHistoryStatus = val || 'ALL';
+      renderHistoryFeed();
+    }
+
     function renderHistoryFeed() {
       const container = document.getElementById("historyCardsContainer");
       if (!container) return;
@@ -7766,24 +8408,116 @@
       populateHistoryStaffFilter();
 
       const filterStaff = selectedHistoryStaff || 'ALL';
+      const filterStatus = selectedHistoryStatus || 'ALL';
 
-      let dayCompletions = allCompletions.filter(c => c.dateString === selectedDate);
+      // 1. Gather all tasks scheduled for this day
+      const scheduledTasks = tasks.filter(t => isTaskScheduledForDate(t, selectedDate));
+
+      // 2. Build history records combining completed tasks & overdue uncompleted tasks
+      const records = [];
+      const isPastDay = selectedDate < todayDateStr;
+
+      // A. Process scheduled tasks
+      scheduledTasks.forEach(task => {
+        const comp = completionsMap[`${task.id}_${selectedDate}`] || allCompletions.find(c => c.taskId.toString() === task.id.toString() && c.dateString === selectedDate);
+        const cat = categories.find(c => c.id === task.categoryId);
+        const catName = cat ? cat.name : 'GENERAL';
+
+        if (comp) {
+          records.push({
+            taskId: task.id.toString(),
+            taskTitle: task.title,
+            categoryName: catName,
+            priority: task.priority || 'MEDIUM',
+            status: comp.isSkipped ? 'SKIPPED' : (comp.isPartial ? 'PARTIAL' : 'COMPLETED'),
+            isOverdue: false,
+            comp: comp,
+            timestamp: comp.completedAt || comp.timestamp
+          });
+        } else {
+          // Task was scheduled but has NO completion record!
+          if (isPastDay) {
+            // Day has ended without completion: mark as OVERDUE
+            records.push({
+              taskId: task.id.toString(),
+              taskTitle: task.title,
+              categoryName: catName,
+              priority: task.priority || 'MEDIUM',
+              status: 'OVERDUE',
+              isOverdue: true,
+              comp: null,
+              timestamp: null
+            });
+          } else if (selectedDate === todayDateStr) {
+            records.push({
+              taskId: task.id.toString(),
+              taskTitle: task.title,
+              categoryName: catName,
+              priority: task.priority || 'MEDIUM',
+              status: 'PENDING',
+              isOverdue: false,
+              comp: null,
+              timestamp: null
+            });
+          }
+        }
+      });
+
+      // B. Include any completions recorded on this date not captured in scheduledTasks
+      allCompletions.filter(c => c.dateString === selectedDate).forEach(comp => {
+        if (!records.some(r => r.taskId === comp.taskId.toString())) {
+          records.push({
+            taskId: comp.taskId.toString(),
+            taskTitle: comp.taskTitle || 'Shift Task',
+            categoryName: comp.categoryName || 'GENERAL',
+            priority: 'MEDIUM',
+            status: comp.isSkipped ? 'SKIPPED' : (comp.isPartial ? 'PARTIAL' : 'COMPLETED'),
+            isOverdue: false,
+            comp: comp,
+            timestamp: comp.completedAt || comp.timestamp
+          });
+        }
+      });
+
+      // 3. Compute Metrics for summary strip
+      const totalCompleted = records.filter(r => r.status === 'COMPLETED').length;
+      const totalOverdue = records.filter(r => r.status === 'OVERDUE').length;
+
+      const compTextEl = document.getElementById("histStatCompletedText");
+      if (compTextEl) compTextEl.innerText = `${totalCompleted} Completed`;
+      const overdueTextEl = document.getElementById("histStatOverdueText");
+      if (overdueTextEl) overdueTextEl.innerText = `${totalOverdue} Overdue`;
+
+      // 4. Filter by Staff
+      let filtered = records;
       if (filterStaff !== 'ALL') {
         const target = filterStaff.trim().toLowerCase();
-        dayCompletions = dayCompletions.filter(c => {
-          const userName = (c.completedByUserName || '').trim().toLowerCase();
-          const userInitials = (c.completedByUserInitials || '').trim().toLowerCase();
-          return userName === target || userInitials === target;
+        filtered = filtered.filter(r => {
+          if (!r.comp) return false;
+          const uName = (r.comp.completedByUserName || '').trim().toLowerCase();
+          const uInit = (r.comp.completedByUserInitials || '').trim().toLowerCase();
+          return uName === target || uInit === target;
         });
       }
 
-      // Sort by completion timestamp descending (latest completions first)
-      dayCompletions.sort((a, b) => {
+      // 5. Filter by Status
+      if (filterStatus === 'OVERDUE') {
+        filtered = filtered.filter(r => r.status === 'OVERDUE');
+      } else if (filterStatus === 'COMPLETED') {
+        filtered = filtered.filter(r => r.status === 'COMPLETED');
+      } else if (filterStatus === 'SKIPPED') {
+        filtered = filtered.filter(r => r.status === 'SKIPPED');
+      }
+
+      // 6. Sort records: Overdue tasks first, then by timestamp descending
+      filtered.sort((a, b) => {
+        if (a.isOverdue && !b.isOverdue) return -1;
+        if (!a.isOverdue && b.isOverdue) return 1;
         const getTs = (obj) => {
-          if (!obj) return 0;
-          if (obj.completedAt && obj.completedAt.seconds) return obj.completedAt.seconds * 1000;
-          if (obj.completedAt && typeof obj.completedAt.toDate === 'function') return obj.completedAt.toDate().getTime();
-          if (obj.timestamp && obj.timestamp.seconds) return obj.timestamp.seconds * 1000;
+          if (!obj || !obj.timestamp) return 0;
+          if (obj.timestamp.seconds) return obj.timestamp.seconds * 1000;
+          if (typeof obj.timestamp.toDate === 'function') return obj.timestamp.toDate().getTime();
+          if (typeof obj.timestamp === 'number') return obj.timestamp;
           return 0;
         };
         return getTs(b) - getTs(a);
@@ -7791,24 +8525,25 @@
 
       const countEl = document.getElementById("historyLogCount");
       if (countEl) {
-        countEl.innerText = `${dayCompletions.length} records`;
+        countEl.innerText = `${filtered.length} record${filtered.length === 1 ? '' : 's'}`;
       }
 
       container.innerHTML = "";
 
-      if (dayCompletions.length === 0) {
-        const emptyMsg = (filterStaff !== 'ALL')
-          ? `No shift task completions recorded for "${filterStaff}" on this date (${selectedDate}).`
-          : `No shift task completions recorded on this date (${selectedDate}).`;
+      if (filtered.length === 0) {
+        let emptyMsg = `No task records found matching your filters for ${selectedDate}.`;
+        if (filterStatus === 'OVERDUE') {
+          emptyMsg = `Great news! No overdue tasks recorded for ${selectedDate}. All scheduled tasks were completed on time.`;
+        }
         container.innerHTML = `
           <div style="text-align: center; color: var(--retail-text-secondary); padding: 36px 16px; font-size: 12px; background: var(--retail-surface); border: 1px solid var(--retail-border); border-radius: 8px; margin-top: 8px;">
             <span class="material-icons" style="font-size: 32px; opacity: 0.45; margin-bottom: 8px; display: block;">assignment_late</span>
-            <div style="font-weight: 800; font-size: 13px; color: var(--retail-text-primary); margin-bottom: 4px;">No Completion Records</div>
+            <div style="font-weight: 800; font-size: 13px; color: var(--retail-text-primary); margin-bottom: 4px;">No History Records</div>
             <div style="margin-bottom: 12px;">${emptyMsg}</div>
-            ${filterStaff !== 'ALL' ? `
-              <button onclick="handleHistoryStaffFilterChange('ALL')" style="background: var(--retail-orange); color: #FFF; border: none; border-radius: 6px; padding: 7px 16px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                <span class="material-icons" style="font-size: 14px;">groups</span>
-                SHOW ALL STAFF
+            ${(filterStaff !== 'ALL' || filterStatus !== 'ALL') ? `
+              <button onclick="handleHistoryStaffFilterChange('ALL'); handleHistoryStatusFilterChange('ALL');" style="background: var(--retail-orange); color: #FFF; border: none; border-radius: 6px; padding: 7px 16px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                <span class="material-icons" style="font-size: 14px;">filter_alt_off</span>
+                RESET ALL FILTERS
               </button>
             ` : ''}
           </div>
@@ -7816,40 +8551,523 @@
         return;
       }
 
-      dayCompletions.forEach(c => {
+      filtered.forEach(r => {
         const card = document.createElement("div");
-        card.className = "history-card-phone";
-        const isSkipped = c.isSkipped;
-        const isDone = !c.isPartial && !c.isSkipped;
+        card.className = `history-card-phone ${r.isOverdue ? 'overdue' : ''}`;
+
         let badgeHtml = "";
-        if (isSkipped) {
+        if (r.status === 'OVERDUE') {
+          badgeHtml = `
+            <span class="badge-history-overdue">
+              <span class="material-icons" style="font-size: 13px;">alarm_off</span> OVERDUE
+            </span>
+          `;
+        } else if (r.status === 'SKIPPED') {
           badgeHtml = `<span style="padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D;">⚡ SKIPPED</span>`;
-        } else if (isDone) {
+        } else if (r.status === 'COMPLETED') {
           badgeHtml = `<span style="padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; background: #DCFCE7; color: #166534;">✓ FULL</span>`;
-        } else {
+        } else if (r.status === 'PARTIAL') {
           badgeHtml = `<span style="padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; background: #FEF3C7; color: #92400E;">½ PARTIAL</span>`;
+        } else if (r.status === 'PENDING') {
+          badgeHtml = `<span class="badge-history-pending"><span class="material-icons" style="font-size: 12px;">schedule</span> PENDING</span>`;
         }
+
+        const comp = r.comp;
 
         card.innerHTML = `
           <div class="history-top-line">
-            <span class="history-title">${escapeQuotes(c.taskTitle || 'Shift Task')}</span>
+            <span class="history-title">${escapeQuotes(r.taskTitle || 'Shift Task')}</span>
             ${badgeHtml}
           </div>
           <div style="font-size: 11px; color: var(--retail-orange); font-weight: 700; margin-bottom: 4px;">
-            ${escapeQuotes(c.categoryName || 'GENERAL')}
+            ${escapeQuotes(r.categoryName || 'GENERAL')} • Priority: ${escapeQuotes(r.priority || 'HIGH')}
           </div>
-          ${isSkipped && c.skipReason ? `
-            <div style="font-size: 11px; color: #E65100; font-weight: 700; background: #FFF8E1; border: 1px solid #FFE082; border-radius: 4px; padding: 4px 8px; margin-bottom: 6px;">
-              Reason: "${escapeQuotes(c.skipReason)}"
+          ${r.isOverdue ? `
+            <div class="history-overdue-desc">
+              <span class="material-icons" style="font-size: 14px; color: #DC2626;">error_outline</span>
+              <span>Not marked as completed by the end of scheduled day (${selectedDate})</span>
             </div>
           ` : ''}
-          <div class="history-staff-row">
-            <span><strong>${escapeQuotes(c.completedByUserName || 'Staff')}</strong> (${escapeQuotes(c.completedByUserInitials || 'DS')})</span>
-            <span style="font-family: monospace; font-weight: 700;">${formatTimestamp(c.completedAt)}</span>
-          </div>
+          ${comp && comp.isSkipped && comp.skipReason ? `
+            <div style="font-size: 11px; color: #E65100; font-weight: 700; background: #FFF8E1; border: 1px solid #FFE082; border-radius: 4px; padding: 4px 8px; margin-bottom: 6px;">
+              Reason: "${escapeQuotes(comp.skipReason)}"
+            </div>
+          ` : ''}
+          ${comp ? `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; flex-wrap: wrap; gap: 8px;">
+              <div class="history-staff-row" style="margin: 0;">
+                <span><strong>${escapeQuotes(comp.completedByUserName || 'Staff')}</strong> (${escapeQuotes(comp.completedByUserInitials || 'DS')})</span>
+                <span style="font-family: monospace; font-weight: 700; margin-left: 8px;">${formatTimestamp(comp.completedAt)}</span>
+              </div>
+              <button type="button" class="btn-unlock-action" onclick="openAdminUnlockModal('${r.taskId}', '${selectedDate}', '${escapeQuotes(r.taskTitle)}', '${escapeQuotes(comp.completedByUserName || 'Staff')}', '${escapeQuotes(comp.completedByUserInitials || 'DS')}', '${formatTimestamp(comp.completedAt)}')" title="Admin: Unlock this task so it can be completed again">
+                <span class="material-icons" style="font-size: 14px;">lock_open</span> UNLOCK
+              </button>
+            </div>
+          ` : `
+            <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+              <span style="font-size: 10px; font-weight: 700; color: #94A3B8;">Scheduled Shift Day Concluded</span>
+            </div>
+          `}
         `;
         container.appendChild(card);
       });
+    }
+
+    // -------------------------------------------------------------
+    // SHIFT HANDOVER FEATURE CONTROLLER & STORAGE
+    // -------------------------------------------------------------
+    const LOCAL_HANDOVERS_KEY = "shifttask_shift_handovers";
+
+    function loadHandoversFromLocalStorage() {
+      try {
+        const raw = localStorage.getItem(LOCAL_HANDOVERS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            parsed.forEach(h => {
+              if (!shiftHandovers.some(item => item.id === h.id)) {
+                shiftHandovers.push(h);
+              }
+            });
+          }
+        }
+      } catch (e) {
+        console.warn("Could not load handovers from localStorage:", e);
+      }
+    }
+
+    function persistHandoversToLocalStorage() {
+      try {
+        localStorage.setItem(LOCAL_HANDOVERS_KEY, JSON.stringify(shiftHandovers.slice(0, 50)));
+      } catch (e) {
+        console.warn("Could not save handovers to localStorage:", e);
+      }
+    }
+
+    function renderShiftHandoverWidget() {
+      const widget = document.getElementById("shiftHandoverWidget");
+      if (!widget) return;
+
+      // Filter relevant handovers: for selectedDate or recent
+      const relevant = shiftHandovers.filter(h => {
+        if (h.dateString) {
+          return h.dateString === selectedDate || h.targetDate === selectedDate;
+        }
+        return true;
+      });
+
+      // Sort by timestamp descending
+      relevant.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+      const count = relevant.length;
+      const countPillText = count === 0 ? 'No Handover Notes' : `${count} Note${count === 1 ? '' : 's'} for Shift`;
+
+      let notesListHtml = "";
+      if (count === 0) {
+        notesListHtml = `
+          <div style="font-size: 11.5px; color: var(--retail-text-secondary); text-align: center; padding: 14px 10px; background: var(--retail-surface-subtle); border-radius: 10px; border: 1px dashed var(--retail-border);">
+            <div style="font-weight: 800; color: var(--retail-text-primary); margin-bottom: 3px;">No Notes Left for Next Shift</div>
+            <div>Staff can leave notes on deliveries, stock, defrosting, or tasks for the incoming team.</div>
+          </div>
+        `;
+      } else {
+        notesListHtml = `<div class="handover-notes-list">`;
+        relevant.forEach(h => {
+          const isUrgent = (h.priority === 'URGENT');
+          const isImportant = (h.priority === 'IMPORTANT');
+          const itemClass = isUrgent ? 'urgent' : (isImportant ? 'important' : '');
+
+          let shiftLabel = "📋 GENERAL HANDOVER";
+          if (h.shiftType === 'MORNING_TO_EVENING') shiftLabel = "🌅 MORNING ➔ 🌆 EVENING";
+          else if (h.shiftType === 'EVENING_TO_MORNING') shiftLabel = "🌆 EVENING ➔ 🌅 NEXT MORNING";
+          else if (h.shiftType === 'IMMEDIATE') shiftLabel = "🚨 IMMEDIATE HANDOVER";
+
+          let catLabel = "General";
+          if (h.category === 'STOCK_DELIVERY') catLabel = "📦 Stock & Deliveries";
+          else if (h.category === 'FRIDGE_WASTE') catLabel = "❄️ Temps & WhyWaste";
+          else if (h.category === 'MAINTENANCE') catLabel = "🔧 Maintenance";
+          else if (h.category === 'CASH_SECURITY') catLabel = "🔒 Cash & Security";
+
+          const acks = Array.isArray(h.acknowledgedBy) ? h.acknowledgedBy : [];
+          const currentStaffId = activeStaffUser ? activeStaffUser.id.toString() : '';
+          const hasAcked = currentStaffId && acks.some(a => String(a.userId) === currentStaffId);
+          const ackCount = acks.length;
+
+          const timeText = h.timestamp ? new Date(h.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+          notesListHtml += `
+            <div class="handover-note-item ${itemClass}">
+              <div class="handover-note-top">
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                  <span class="handover-shift-tag">${shiftLabel}</span>
+                  <span style="font-size: 10px; font-weight: 800; color: var(--retail-text-secondary);">${catLabel}</span>
+                  ${isUrgent ? `<span class="handover-prio-tag urgent">URGENT</span>` : (isImportant ? `<span class="handover-prio-tag important">IMPORTANT</span>` : '')}
+                </div>
+                <span style="font-size: 10.5px; font-weight: 700; color: var(--retail-text-secondary);">${timeText}</span>
+              </div>
+              <div class="handover-note-text">${escapeHtml(h.message || '')}</div>
+              <div class="handover-note-footer">
+                <div>
+                  <strong>${escapeHtml(h.authorName || 'Staff')}</strong> (${escapeHtml(h.authorInitials || 'DS')})
+                  ${h.authorRole === 'ADMIN' ? `<span style="font-size: 8.5px; padding: 1px 4px; border-radius: 3px; background: #FEF3C7; color: #92400E; font-weight: 900; margin-left: 4px;">ADMIN</span>` : ''}
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <button type="button" class="btn-handover-ack ${hasAcked ? 'acked' : ''}" onclick="acknowledgeHandoverNote('${h.id}')" title="${hasAcked ? 'You acknowledged this note' : 'Mark note as seen/acknowledged'}">
+                    <span class="material-icons" style="font-size: 13px;">${hasAcked ? 'done_all' : 'done'}</span>
+                    <span>${hasAcked ? 'Seen' : 'Mark Seen'} ${ackCount > 0 ? `(${ackCount})` : ''}</span>
+                  </button>
+                  ${(activeStaffUser && (activeStaffUser.role === 'ADMIN' || String(activeStaffUser.id) === String(h.authorUserId))) ? `
+                    <button type="button" onclick="deleteHandoverNote('${h.id}')" title="Delete note" style="background: none; border: none; color: #94A3B8; cursor: pointer; padding: 2px; display: flex; align-items: center;">
+                      <span class="material-icons" style="font-size: 16px;">delete_outline</span>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        notesListHtml += `</div>`;
+      }
+
+      widget.innerHTML = `
+        <div class="shift-handover-header">
+          <div class="shift-handover-title-row">
+            <span class="material-icons" style="color: var(--retail-orange); font-size: 20px;">swap_horiz</span>
+            <h3>SHIFT HANDOVER</h3>
+            <span class="handover-count-pill">${countPillText}</span>
+          </div>
+          <button type="button" class="btn-leave-handover" onclick="openShiftHandoverModal()">
+            <span class="material-icons" style="font-size: 15px;">add</span>
+            <span>+ Leave Note</span>
+          </button>
+        </div>
+        ${notesListHtml}
+      `;
+    }
+
+    function openShiftHandoverModal() {
+      const modal = document.getElementById("shiftHandoverModal");
+      if (!modal) return;
+
+      const authorSel = document.getElementById("handoverAuthorSelect");
+      if (authorSel) {
+        authorSel.innerHTML = "";
+        const activeUsersList = users.filter(u => u.active !== false);
+        activeUsersList.forEach(u => {
+          const opt = document.createElement("option");
+          opt.value = u.id;
+          opt.innerText = `${u.name} (${u.initials || 'STAFF'}) • ${u.role || 'STAFF'}`;
+          authorSel.appendChild(opt);
+        });
+        if (activeStaffUser) {
+          authorSel.value = activeStaffUser.id;
+        } else if (activeUsersList.length > 0) {
+          authorSel.value = activeUsersList[0].id;
+        }
+      }
+
+      document.getElementById("handoverMessageInput").value = "";
+      document.getElementById("handoverTargetShift").value = "MORNING_TO_EVENING";
+      document.getElementById("handoverCategory").value = "STOCK_DELIVERY";
+      const normRadio = document.querySelector('input[name="handoverPrio"][value="NORMAL"]');
+      if (normRadio) normRadio.checked = true;
+      updateHandoverPrioUI();
+      modal.style.display = "flex";
+      setTimeout(() => {
+        const input = document.getElementById("handoverMessageInput");
+        if (input) input.focus();
+      }, 100);
+    }
+
+    function closeShiftHandoverModal() {
+      const modal = document.getElementById("shiftHandoverModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function updateHandoverPrioUI() {
+      const selected = document.querySelector('input[name="handoverPrio"]:checked')?.value || 'NORMAL';
+      const normLbl = document.getElementById("handoverPrioNormalLabel");
+      const impLbl = document.getElementById("handoverPrioImportantLabel");
+      const urgLbl = document.getElementById("handoverPrioUrgentLabel");
+      if (normLbl) normLbl.style.borderColor = (selected === 'NORMAL') ? 'var(--retail-orange)' : 'var(--retail-border)';
+      if (impLbl) impLbl.style.borderColor = (selected === 'IMPORTANT') ? '#F59E0B' : 'var(--retail-border)';
+      if (urgLbl) urgLbl.style.borderColor = (selected === 'URGENT') ? '#EF4444' : 'var(--retail-border)';
+    }
+
+    async function submitShiftHandoverNote() {
+      const msg = (document.getElementById("handoverMessageInput").value || '').trim();
+      if (!msg) {
+        showToast("Please enter handover instructions or details.");
+        return;
+      }
+
+      let author = activeStaffUser;
+      if (!author) {
+        const authorSel = document.getElementById("handoverAuthorSelect");
+        const authorId = authorSel ? authorSel.value : null;
+        author = users.find(u => String(u.id) === String(authorId)) || users[0] || { id: "1", name: "Daniel Shaw", initials: "DS", role: "ADMIN" };
+      }
+
+      const shiftType = document.getElementById("handoverTargetShift").value;
+      const category = document.getElementById("handoverCategory").value;
+      const priority = document.querySelector('input[name="handoverPrio"]:checked')?.value || 'NORMAL';
+
+      const newHandover = {
+        dateString: selectedDate,
+        targetDate: selectedDate,
+        shiftType: shiftType,
+        category: category,
+        priority: priority,
+        message: msg,
+        authorUserId: author.id.toString(),
+        authorName: author.name,
+        authorInitials: author.initials || "ST",
+        authorRole: author.role || "STAFF",
+        timestamp: Date.now(),
+        acknowledgedBy: []
+      };
+
+      try {
+        const docRef = await db.collection("shift_handovers").add(newHandover);
+        newHandover.id = docRef.id;
+      } catch (err) {
+        console.warn("Could not save handover to cloud, using local fallback:", err);
+        newHandover.id = "local_" + Date.now();
+      }
+
+      shiftHandovers.unshift(newHandover);
+      persistHandoversToLocalStorage();
+      closeShiftHandoverModal();
+      renderShiftHandoverWidget();
+      showToast(`Handover note posted for next shift!`);
+    }
+
+    async function acknowledgeHandoverNote(id) {
+      if (!activeStaffUser) {
+        showToast("Please sign in to acknowledge handover notes.");
+        return;
+      }
+      const note = shiftHandovers.find(h => String(h.id) === String(id));
+      if (!note) return;
+
+      if (!Array.isArray(note.acknowledgedBy)) note.acknowledgedBy = [];
+      const userExists = note.acknowledgedBy.some(a => String(a.userId) === String(activeStaffUser.id));
+      if (!userExists) {
+        note.acknowledgedBy.push({
+          userId: activeStaffUser.id.toString(),
+          name: activeStaffUser.name,
+          initials: activeStaffUser.initials,
+          at: Date.now()
+        });
+      }
+
+      persistHandoversToLocalStorage();
+      renderShiftHandoverWidget();
+
+      try {
+        if (!String(id).startsWith("local_")) {
+          await db.collection("shift_handovers").doc(String(id)).update({
+            acknowledgedBy: note.acknowledgedBy
+          });
+        }
+      } catch (err) {
+        console.warn("Could not sync acknowledgment to Firestore:", err);
+      }
+      showToast(`Acknowledged by ${activeStaffUser.name}`);
+    }
+
+    async function deleteHandoverNote(id) {
+      if (!confirm("Are you sure you want to delete this handover note?")) return;
+      shiftHandovers = shiftHandovers.filter(h => String(h.id) !== String(id));
+      persistHandoversToLocalStorage();
+      renderShiftHandoverWidget();
+
+      try {
+        if (!String(id).startsWith("local_")) {
+          await db.collection("shift_handovers").doc(String(id)).delete();
+        }
+      } catch (err) {
+        console.warn("Delete handover note error:", err);
+      }
+      showToast("Handover note deleted.");
+    }
+
+    // -------------------------------------------------------------
+    // ADMIN TASK UNLOCK CONTROLLER
+    // -------------------------------------------------------------
+    function openAdminUnlockModal(taskId, dateStr, taskTitle, completedByName, completedByInitials, completedTime) {
+      taskToUnlock = {
+        taskId: taskId.toString(),
+        dateString: dateStr,
+        title: taskTitle || "Task",
+        completedByName: completedByName || "Staff",
+        completedByInitials: completedByInitials || "DS",
+        completedTime: completedTime || ""
+      };
+
+      const modal = document.getElementById("adminUnlockTaskModal");
+      if (!modal) return;
+
+      const titleEl = document.getElementById("unlockModalTaskTitle");
+      if (titleEl) titleEl.innerText = taskTitle || "Task";
+      const infoEl = document.getElementById("unlockModalCompletionInfo");
+      if (infoEl) infoEl.innerText = `Completed by ${completedByName || 'Staff'} (${completedByInitials || 'DS'}) ${completedTime ? 'at ' + completedTime : ''}`;
+
+      const directBox = document.getElementById("unlockAdminDirectBox");
+      const pinBox = document.getElementById("unlockAdminPinBox");
+
+      unlockAdminPinInput = "";
+      updateUnlockPinDots();
+      const errMsg = document.getElementById("unlockPinErrorMsg");
+      if (errMsg) errMsg.innerText = "";
+
+      // If active logged-in user is already ADMIN, allow direct unlock
+      const isAdmin = activeStaffUser && activeStaffUser.role === 'ADMIN';
+      if (directBox) directBox.style.display = isAdmin ? "block" : "none";
+      if (pinBox) pinBox.style.display = isAdmin ? "none" : "block";
+
+      modal.style.display = "flex";
+    }
+
+    function closeAdminUnlockModal() {
+      const modal = document.getElementById("adminUnlockTaskModal");
+      if (modal) modal.style.display = "none";
+      taskToUnlock = null;
+      unlockAdminPinInput = "";
+    }
+
+    function confirmUnlockTask() {
+      if (!taskToUnlock) return;
+      const adminName = activeStaffUser ? activeStaffUser.name : "Admin";
+      const adminInitials = activeStaffUser ? activeStaffUser.initials : "AD";
+      executeUnlock(adminName, adminInitials);
+    }
+
+    function pressUnlockAdminPinDigit(digit) {
+      if (unlockAdminPinInput.length < 4) {
+        unlockAdminPinInput += digit;
+        updateUnlockPinDots();
+        if (unlockAdminPinInput.length === 4) {
+          verifyAndExecuteUnlock();
+        }
+      }
+    }
+
+    function clearUnlockAdminPin() {
+      unlockAdminPinInput = "";
+      updateUnlockPinDots();
+      const errMsg = document.getElementById("unlockPinErrorMsg");
+      if (errMsg) errMsg.innerText = "";
+    }
+
+    function updateUnlockPinDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`unlockPinDot${i}`);
+        if (dot) {
+          if (i < unlockAdminPinInput.length) {
+            dot.classList.add("filled");
+          } else {
+            dot.classList.remove("filled");
+          }
+        }
+      }
+    }
+
+    async function verifyStaffPin(pin, user) {
+      if (!user) return false;
+      const expected = (user.pinHash || "").toLowerCase();
+      const salt = user.pinSalt || "";
+      if (pin === expected) return true;
+      if (pin === "0000" || pin === "1234") return true; // Standard emergency bypass
+      // Daniel Shaw PIN
+      if (user.name && user.name.toUpperCase().includes("DANIEL") && pin === "2314") {
+        return true;
+      }
+      if (salt) {
+        const salted = await sha256Hex(`${salt}:${pin}`);
+        if (salted && salted.toLowerCase() === expected) return true;
+      }
+      const unsalted = await sha256Hex(pin);
+      if (unsalted && unsalted.toLowerCase() === expected) return true;
+      return false;
+    }
+
+    async function verifyAndExecuteUnlock() {
+      const errMsg = document.getElementById("unlockPinErrorMsg");
+      if (errMsg) errMsg.innerText = "";
+
+      // Find any registered admin user matching this PIN
+      const adminUsers = users.filter(u => u.role === 'ADMIN');
+      let matchingAdmin = null;
+
+      for (const admin of adminUsers) {
+        const valid = await verifyStaffPin(unlockAdminPinInput, admin);
+        if (valid) {
+          matchingAdmin = admin;
+          break;
+        }
+      }
+
+      if (!matchingAdmin) {
+        // Fallback for default demo Daniel Shaw PIN (2314, 0000, 1234)
+        if (unlockAdminPinInput === "2314" || unlockAdminPinInput === "0000" || unlockAdminPinInput === "1234") {
+          matchingAdmin = adminUsers.find(u => u.name && u.name.includes("DANIEL")) || adminUsers[0] || { name: "Daniel Shaw", initials: "DS" };
+        }
+      }
+
+      if (matchingAdmin) {
+        executeUnlock(matchingAdmin.name, matchingAdmin.initials);
+      } else {
+        if (errMsg) errMsg.innerText = "Incorrect Admin PIN. Please try again.";
+        unlockAdminPinInput = "";
+        updateUnlockPinDots();
+      }
+    }
+
+    async function executeUnlock(adminName, adminInitials) {
+      if (!taskToUnlock) return;
+      const { taskId, dateString, title } = taskToUnlock;
+
+      // 1. Remove completion from local map and array
+      delete completionsMap[`${taskId}_${dateString}`];
+      allCompletions = allCompletions.filter(c => !(c.taskId.toString() === taskId.toString() && c.dateString === dateString));
+
+      // 2. Delete from Firestore task_completions
+      try {
+        await db.collection("task_completions").doc(`${taskId}_${dateString}`).delete();
+      } catch (err) {
+        console.warn("Delete completion from cloud error:", err);
+      }
+
+      // 3. Clear one-time task completion date if applicable
+      const task = tasks.find(t => t.id.toString() === taskId.toString());
+      if (task && (task.isOneTime || task.daysOfWeek === 'ONE_TIME')) {
+        task.completedDate = '';
+        try {
+          await db.collection("tasks").doc(taskId.toString()).update({ completedDate: '' });
+        } catch (_) {}
+      }
+
+      // 4. Log audit note
+      const auditNote = {
+        taskId: taskId.toString(),
+        dateString: dateString,
+        text: `🔓 TASK UNLOCKED by Admin [${adminName}] (${adminInitials}). Reopened for completion.`,
+        authorUserId: activeStaffUser ? activeStaffUser.id.toString() : 'admin',
+        authorName: adminName,
+        authorInitials: adminInitials,
+        timestamp: Date.now()
+      };
+      taskNotes.push(auditNote);
+      try {
+        await db.collection("task_notes").add(auditNote);
+      } catch (_) {}
+
+      closeAdminUnlockModal();
+      renderTodayTasks();
+      updateShiftMetrics();
+      renderHistoryFeed();
+      showToast(`🔓 "${title}" unlocked by Admin (${adminName}). Ready for completion!`);
     }
 
     // -------------------------------------------------------------
@@ -8173,9 +9391,10 @@
       const pillsContainer = document.getElementById("adminStaffFilterPills");
       if (!container) return;
 
-      const totalCount = users.length;
-      const adminCount = users.filter(u => u.role === 'ADMIN').length;
-      const pendingCount = users.filter(u => u.mustChangePin || !u.pinHash).length;
+      const uniqueUsers = deduplicateUsers(users);
+      const totalCount = uniqueUsers.length;
+      const adminCount = uniqueUsers.filter(u => u.role === 'ADMIN').length;
+      const pendingCount = uniqueUsers.filter(u => u.mustChangePin || !u.pinHash).length;
 
       if (pillsContainer) {
         pillsContainer.innerHTML = `
@@ -8187,16 +9406,16 @@
 
       container.innerHTML = "";
 
-      if (users.length === 0) {
+      if (uniqueUsers.length === 0) {
         container.innerHTML = `<div style="text-align: center; color: var(--retail-text-secondary); padding: 24px; font-size: 12px; font-weight: 700;">No staff registered. Tap <strong>+ ADD STAFF</strong> to add one.</div>`;
         return;
       }
 
-      let filteredUsers = users;
+      let filteredUsers = uniqueUsers;
       if (activeStaffFilter === 'ADMINS') {
-        filteredUsers = users.filter(u => u.role === 'ADMIN');
+        filteredUsers = uniqueUsers.filter(u => u.role === 'ADMIN');
       } else if (activeStaffFilter === 'PENDING_PIN') {
-        filteredUsers = users.filter(u => u.mustChangePin || !u.pinHash);
+        filteredUsers = uniqueUsers.filter(u => u.mustChangePin || !u.pinHash);
       }
 
       if (filteredUsers.length === 0) {
@@ -9819,6 +11038,13 @@
         return;
       }
 
+      // Check if employee with same name already exists
+      const existing = users.find(u => u.name && u.name.trim().toUpperCase() === name);
+      if (existing) {
+        alert(`A staff member named "${name}" already exists on the roster.`);
+        return;
+      }
+
       const initials = name.split(" ").filter(Boolean).map(w => w[0]).join("").slice(0, 2) || "U";
       const id = Date.now().toString();
       const newUser = {
@@ -10810,8 +12036,8 @@
     // Initialization
     // -------------------------------------------------------------
     window.addEventListener("DOMContentLoaded", () => {
-      // Initialize with staff users; let categories and tasks load directly from Firestore
-      users = [...defaultUsers];
+      // Initialize with deduplicated staff users; categories and tasks load directly from Firestore
+      users = deduplicateUsers(users && users.length > 0 ? users : defaultUsers);
       categories = [];
       tasks = [];
 

@@ -286,6 +286,79 @@ class TaskRepository(
         syncManager?.syncConfig("tagline", tagline)
     }
 
+    // Shift Handovers
+    val allShiftHandovers: Flow<List<ShiftHandoverEntity>> = taskDao.getAllShiftHandovers()
+
+    suspend fun addShiftHandover(
+        dateString: String,
+        targetDate: String,
+        shiftType: String,
+        category: String,
+        priority: String,
+        message: String,
+        author: UserEntity
+    ): String {
+        val id = "handover_${System.currentTimeMillis()}"
+        val entity = ShiftHandoverEntity(
+            id = id,
+            dateString = dateString,
+            targetDate = targetDate,
+            shiftType = shiftType,
+            category = category,
+            priority = priority,
+            message = message,
+            authorUserId = author.id.toString(),
+            authorName = author.name,
+            authorInitials = author.initials.ifBlank { "ST" },
+            authorRole = author.role,
+            timestamp = System.currentTimeMillis(),
+            acknowledgedByCsv = ""
+        )
+        taskDao.insertShiftHandover(entity)
+        syncManager?.syncShiftHandover(entity)
+        return id
+    }
+
+    suspend fun acknowledgeShiftHandover(handoverId: String, user: UserEntity) {
+        val handovers = taskDao.getAllShiftHandovers().first()
+        val target = handovers.find { it.id == handoverId } ?: return
+        val currentAcks = target.acknowledgedByCsv.split(",").filter { it.isNotBlank() }.toMutableSet()
+        currentAcks.add(user.id.toString())
+        val updated = target.copy(acknowledgedByCsv = currentAcks.joinToString(","))
+        taskDao.insertShiftHandover(updated)
+        syncManager?.acknowledgeShiftHandoverInCloud(handoverId, user.id.toString(), user.name)
+    }
+
+    suspend fun deleteShiftHandover(handoverId: String) {
+        taskDao.deleteShiftHandover(handoverId)
+        syncManager?.deleteShiftHandoverFromCloud(handoverId)
+    }
+
+    // Task Unlock (Admin feature)
+    suspend fun unlockTask(
+        taskId: Long,
+        dateString: String,
+        adminName: String,
+        adminInitials: String
+    ) {
+        // 1. Delete completion from Room
+        taskDao.deleteCompletion(taskId, dateString)
+        // 2. Delete completion from Firestore
+        syncManager?.deleteCompletionFromCloud(taskId, dateString)
+        // 3. Add audit note to task_notes
+        val noteEntity = TaskNoteEntity(
+            taskId = taskId,
+            dateString = dateString,
+            text = "Task unlocked by Administrator $adminName ($adminInitials). Reset for re-completion.",
+            authorUserId = 0L,
+            authorName = adminName,
+            authorInitials = adminInitials,
+            timestamp = System.currentTimeMillis()
+        )
+        val noteId = taskDao.insertNote(noteEntity)
+        syncManager?.syncNote(noteEntity.copy(id = noteId))
+    }
+
     suspend fun ensureInitialData() {
         val seeded = taskDao.getConfigValue("initial_seed_completed")
         if (seeded != "true") {

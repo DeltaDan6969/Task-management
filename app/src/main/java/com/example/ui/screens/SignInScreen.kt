@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -54,6 +55,19 @@ fun SignInScreen(
     var selectedUserForPin by remember { mutableStateOf<UserEntity?>(null) }
     var pinErrorMessage by remember { mutableStateOf<String?>(null) }
 
+    // Deduplicate users by normalized uppercase name
+    val dedupedUsers = remember(users) {
+        val seen = mutableSetOf<String>()
+        users.filter { user ->
+            val norm = user.name.trim().uppercase()
+            if (norm in seen) false
+            else {
+                seen.add(norm)
+                true
+            }
+        }
+    }
+
     val todayDateFormatted = remember {
         val sdf = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
         sdf.format(Date()).uppercase()
@@ -69,7 +83,7 @@ fun SignInScreen(
         val isTablet = maxWidth >= 540.dp
 
         if (isTablet) {
-            // Tablet-first 2-Pane Kiosk Layout
+            // Tablet-first 2-Pane Kiosk Layout - using 100% of wide screen
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -79,7 +93,7 @@ fun SignInScreen(
                 // Left Panel: Store Branding, Date, Terminal Info
                 Card(
                     modifier = Modifier
-                        .widthIn(min = 280.dp, max = 340.dp)
+                        .weight(0.35f)
                         .fillMaxHeight(),
                     colors = CardDefaults.cardColors(containerColor = RetailHeaderBlack),
                     shape = RoundedCornerShape(12.dp),
@@ -320,7 +334,7 @@ fun SignInScreen(
                                 shape = RoundedCornerShape(4.dp)
                             ) {
                                 Text(
-                                    text = "${users.size} TEAM MEMBERS",
+                                    text = "${dedupedUsers.size} TEAM MEMBERS",
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
@@ -340,7 +354,7 @@ fun SignInScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(users) { user ->
+                            items(dedupedUsers) { user ->
                                 TabletUserCard(
                                     user = user,
                                     onClick = {
@@ -354,70 +368,60 @@ fun SignInScreen(
                 }
             }
         } else {
-            // Compact Phone Fallback
+            // Modern Phone Layout matching Web Terminal & IMG_3629
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = 20.dp)
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .background(RetailHeaderBlack, RoundedCornerShape(6.dp))
-                            .border(1.dp, RetailBorder, RoundedCornerShape(6.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_storefront),
-                            contentDescription = "Store Logo",
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(14.dp))
-                    Column {
-                        Text(
-                            text = storeName.ifBlank { "ONESTOP CANTERBURY" },
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Black,
-                            color = RetailTextPrimary,
-                            letterSpacing = 0.5.sp
-                        )
-                    }
-                }
-
+                // Header (No storefront logo icon at top per request)
+                Text(
+                    text = storeName.ifBlank { "ONESTOP CANTERBURY" },
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Black,
+                    color = RetailTextPrimary,
+                    letterSpacing = 0.5.sp
+                )
                 Text(
                     text = tagline.ifBlank { "SIGN IN TO START YOUR SHIFT" },
                     fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = RetailTextSecondary,
-                    letterSpacing = 1.sp,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
-                )
-
-                HorizontalDivider(
-                    color = RetailHeaderBlack,
-                    thickness = 1.5.dp,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                Text(
-                    text = "SELECT YOUR NAME",
-                    fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
-                    color = RetailTextSecondary,
+                    color = RetailOrange,
                     letterSpacing = 1.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(top = 2.dp, bottom = 12.dp)
                 )
 
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(1.dp)
+                // Subtitle Row: SELECT YOUR NAME & Tap to enter PIN
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(users) { user ->
+                    Text(
+                        text = "SELECT YOUR NAME",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Black,
+                        color = RetailTextSecondary,
+                        letterSpacing = 0.5.sp
+                    )
+                    Text(
+                        text = "Tap to enter PIN",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = RetailTextSecondary
+                    )
+                }
+
+                // Roster Cards List
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(dedupedUsers) { user ->
                         UserRowItem(
                             user = user,
                             onClick = {
@@ -425,7 +429,20 @@ fun SignInScreen(
                                 pinErrorMessage = null
                             }
                         )
-                        HorizontalDivider(color = RetailBorder, thickness = 1.dp)
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "4-Digit PIN Security • Salted Hashing • 5-min Auto-logout",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = RetailTextSecondary,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
                     }
                 }
             }
@@ -601,9 +618,42 @@ fun UserRowItem(
     user: UserEntity,
     onClick: () -> Unit
 ) {
+    val isAdmin = user.role == "ADMIN"
+    val avatarBg = remember(user.name, user.initials) {
+        when (user.initials.uppercase()) {
+            "MA" -> Color(0xFF064E3B)
+            "K" -> Color(0xFF1E1B4B)
+            "F" -> Color(0xFF0F766E)
+            "L" -> Color(0xFF831843)
+            "T" -> Color(0xFF1E293B)
+            "J" -> Color(0xFF1E293B)
+            "O" -> Color(0xFF18181B)
+            "E" -> Color(0xFF0F172A)
+            "S" -> Color(0xFF09090B)
+            else -> if (isAdmin) Color(0xFF9A3412) else Color(0xFF1E293B)
+        }
+    }
+    val avatarText = remember(user.name, user.initials) {
+        when (user.initials.uppercase()) {
+            "MA" -> Color(0xFF34D399)
+            "K" -> Color(0xFFC084FC)
+            "F" -> Color(0xFF2DD4BF)
+            "L" -> Color(0xFFF472B6)
+            "T" -> Color(0xFFFB7185)
+            "J" -> Color(0xFFF472B6)
+            "O" -> Color(0xFFEF4444)
+            "E" -> Color(0xFFFB923C)
+            "S" -> Color(0xFF60A5FA)
+            else -> Color.White
+        }
+    }
+
     Surface(
         onClick = onClick,
-        color = RetailBackground,
+        shape = RoundedCornerShape(12.dp),
+        color = RetailSurface,
+        border = BorderStroke(1.dp, RetailBorder),
+        shadowElevation = 0.5.dp,
         modifier = Modifier
             .fillMaxWidth()
             .testTag("user_item_${user.id}")
@@ -611,57 +661,65 @@ fun UserRowItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 14.dp, horizontal = 4.dp),
+                .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .size(44.dp)
-                    .background(
-                        if (user.role == "ADMIN") RetailOrange else RetailHeaderBlack,
-                        RoundedCornerShape(4.dp)
-                    ),
+                    .background(avatarBg, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = user.initials,
-                    color = Color.White,
+                    text = user.initials.ifBlank { user.name.take(1) },
+                    color = avatarText,
                     fontWeight = FontWeight.Black,
-                    fontSize = 16.sp
+                    fontSize = 15.sp
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(14.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = user.name,
-                    fontWeight = FontWeight.ExtraBold,
+                    text = user.name.uppercase(),
+                    fontWeight = FontWeight.Black,
                     fontSize = 15.sp,
                     color = RetailTextPrimary,
                     letterSpacing = 0.5.sp
                 )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "ID: #${user.id} • ${user.role}",
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = RetailTextSecondary,
-                        letterSpacing = 0.5.sp
-                    )
+                    // Role Badge
+                    Surface(
+                        color = if (isAdmin) Color(0xFFFEE2E2) else Color(0xFFEFF6FF),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            text = if (isAdmin) "ADMINISTRATOR" else "STAFF",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Black,
+                            color = if (isAdmin) Color(0xFFDC2626) else Color(0xFF2563EB),
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+
+                    // First-Time PIN Setup Badge
                     if (user.isPendingFirstPin) {
                         Spacer(modifier = Modifier.width(6.dp))
                         Surface(
-                            color = Color(0xFFF3E8FF),
+                            color = Color(0xFFFAF5FF),
                             shape = RoundedCornerShape(4.dp),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFD8B4FE))
+                            border = BorderStroke(1.dp, Color(0xFFE9D5FF))
                         ) {
                             Text(
                                 text = "★ CHOOSE PIN",
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Color(0xFF7E22CE),
-                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             )
                         }
                     }
@@ -671,8 +729,8 @@ fun UserRowItem(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = "Select User",
-                tint = RetailTextSecondary,
-                modifier = Modifier.size(20.dp)
+                tint = Color(0xFF94A3B8),
+                modifier = Modifier.size(18.dp)
             )
         }
     }

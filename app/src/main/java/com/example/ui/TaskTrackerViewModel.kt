@@ -162,6 +162,9 @@ class TaskTrackerViewModel(private val repository: TaskRepository) : ViewModel()
     val allPhotos: StateFlow<List<TaskPhotoEntity>> = repository.allPhotos
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val allShiftHandovers: StateFlow<List<ShiftHandoverEntity>> = repository.allShiftHandovers
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     // 7-day report calculations
     val reportStats: StateFlow<ReportStats> = combine(
         tasks,
@@ -545,6 +548,52 @@ class TaskTrackerViewModel(private val repository: TaskRepository) : ViewModel()
     fun deletePhoto(photoId: Long) {
         viewModelScope.launch {
             repository.deletePhoto(photoId)
+        }
+    }
+
+    // --- Shift Handover Operations ---
+    fun addShiftHandover(
+        targetDate: String,
+        shiftType: String,
+        category: String,
+        priority: String,
+        message: String,
+        author: UserEntity
+    ) {
+        viewModelScope.launch {
+            repository.addShiftHandover(
+                dateString = _selectedDate.value,
+                targetDate = targetDate,
+                shiftType = shiftType,
+                category = category,
+                priority = priority,
+                message = message.trim(),
+                author = author
+            )
+        }
+    }
+
+    fun acknowledgeShiftHandover(handoverId: String, user: UserEntity) {
+        viewModelScope.launch {
+            repository.acknowledgeShiftHandover(handoverId, user)
+        }
+    }
+
+    fun deleteShiftHandover(handoverId: String) {
+        viewModelScope.launch {
+            repository.deleteShiftHandover(handoverId)
+        }
+    }
+
+    // --- Admin Task Unlock ---
+    fun unlockTask(taskId: Long, dateString: String, adminUser: UserEntity) {
+        viewModelScope.launch {
+            repository.unlockTask(
+                taskId = taskId,
+                dateString = dateString,
+                adminName = adminUser.name,
+                adminInitials = adminUser.initials.ifBlank { "AD" }
+            )
         }
     }
 

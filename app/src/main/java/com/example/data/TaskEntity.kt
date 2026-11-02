@@ -2,6 +2,8 @@ package com.example.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object TaskPriority {
     const val LOW = "LOW"
@@ -108,6 +110,19 @@ object DaysOfWeek {
             .filter { fullDays.contains(it) }
             .map { SHORT_NAMES[it] ?: it.take(3) }
             .joinToString(", ")
+    }
+
+    fun getDayOfWeekName(dateString: String): String {
+        return try {
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateString)
+            if (date != null) {
+                SimpleDateFormat("EEEE", Locale.getDefault()).format(date).uppercase()
+            } else {
+                "MONDAY"
+            }
+        } catch (_: Exception) {
+            "MONDAY"
+        }
     }
 }
 

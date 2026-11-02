@@ -41,8 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.*
-import com.example.ui.components.NoteDialog
-import com.example.ui.components.PhotoDialog
+import com.example.ui.components.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -76,6 +75,9 @@ fun TodayScreen(
     notes: List<TaskNoteEntity>,
     photos: List<TaskPhotoEntity>,
     outstandingDaysMap: Map<Long, Int> = emptyMap(),
+    handovers: List<ShiftHandoverEntity> = emptyList(),
+    activeUsers: List<UserEntity> = emptyList(),
+    adminUsers: List<UserEntity> = emptyList(),
     onToggleTask: (TaskEntity, String) -> Unit,
     onAddNote: (taskId: Long, text: String) -> Unit,
     onDeleteNote: (noteId: Long) -> Unit,
@@ -89,6 +91,10 @@ fun TodayScreen(
     onSubmitSubTasksSignOff: ((TaskEntity, String, List<String>, List<String>, Boolean) -> Unit)? = null,
     onUpdateTask: ((TaskEntity) -> Unit)? = null,
     onSkipTask: ((TaskEntity, String, String) -> Unit)? = null,
+    onAddShiftHandover: ((targetDate: String, shiftType: String, category: String, priority: String, message: String, authorUser: UserEntity) -> Unit)? = null,
+    onAcknowledgeShiftHandover: ((String) -> Unit)? = null,
+    onDeleteShiftHandover: ((String) -> Unit)? = null,
+    onUnlockTask: ((task: TaskEntity, completion: TaskCompletionEntity, adminUser: UserEntity) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
@@ -97,6 +103,8 @@ fun TodayScreen(
     var editingTask by remember { mutableStateOf<TaskEntity?>(null) }
     var skippingTask by remember { mutableStateOf<Pair<TaskEntity, String>?>(null) }
     var showAddTaskDialog by remember { mutableStateOf(false) }
+    var showHandoverDialog by remember { mutableStateOf(false) }
+    var taskToUnlock by remember { mutableStateOf<Triple<TaskEntity, TaskCompletionEntity, String>?>(null) }
     var showAllDaysWeekly by remember { mutableStateOf(false) }
     var currentSortMode by remember { mutableStateOf(TaskSortMode.CATEGORY) }
     var currentPriorityFilter by remember { mutableStateOf(TaskPriorityFilter.ALL) }
@@ -674,6 +682,21 @@ fun TodayScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            // Shift Handover Noticeboard & Next Shift Notes
+            if (onAddShiftHandover != null) {
+                ShiftHandoverCard(
+                    handovers = handovers,
+                    currentUser = currentUser,
+                    selectedDate = selectedDate,
+                    onOpenLeaveNote = { showHandoverDialog = true },
+                    onAcknowledgeNote = { id -> onAcknowledgeShiftHandover?.invoke(id) },
+                    onDeleteNote = { id -> onDeleteShiftHandover?.invoke(id) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp)
+                )
+            }
+
             // Search input field above the task list that filters tasks by title in real-time
             OutlinedTextField(
                 value = searchQuery,
@@ -863,7 +886,8 @@ fun TodayScreen(
                                         onOpenNotes = { task -> activeNoteDialogTask = task },
                                         onOpenPhotos = { task -> activePhotoDialogTask = task },
                                         onEditTask = onEditTaskHandler,
-                                        onSkipTask = { task -> onOpenSkipHandler(task, category.name) }
+                                        onSkipTask = { task -> onOpenSkipHandler(task, category.name) },
+                                        onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, category.name) }
                                     )
                                 }
                             }
@@ -897,7 +921,8 @@ fun TodayScreen(
                                         onOpenNotes = { task -> activeNoteDialogTask = task },
                                         onOpenPhotos = { task -> activePhotoDialogTask = task },
                                         onEditTask = onEditTaskHandler,
-                                        onSkipTask = { task -> onOpenSkipHandler(task, category.name) }
+                                        onSkipTask = { task -> onOpenSkipHandler(task, category.name) },
+                                        onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, category.name) }
                                     )
                                 }
                             }
@@ -956,7 +981,8 @@ fun TodayScreen(
                                         onOpenNotes = { task -> activeNoteDialogTask = task },
                                         onOpenPhotos = { task -> activePhotoDialogTask = task },
                                         onEditTask = onEditTaskHandler,
-                                        onSkipTask = onOpenSkipHandler
+                                        onSkipTask = onOpenSkipHandler,
+                                        onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, "") }
                                     )
                                 }
                             }
@@ -991,7 +1017,8 @@ fun TodayScreen(
                                         onOpenNotes = { task -> activeNoteDialogTask = task },
                                         onOpenPhotos = { task -> activePhotoDialogTask = task },
                                         onEditTask = onEditTaskHandler,
-                                        onSkipTask = onOpenSkipHandler
+                                        onSkipTask = onOpenSkipHandler,
+                                        onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, "") }
                                     )
                                 }
                             }
@@ -1038,7 +1065,8 @@ fun TodayScreen(
                                             onOpenNotes = { task -> activeNoteDialogTask = task },
                                             onOpenPhotos = { task -> activePhotoDialogTask = task },
                                             onEditTask = onEditTaskHandler,
-                                            onSkipTask = onOpenSkipHandler
+                                            onSkipTask = onOpenSkipHandler,
+                                            onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, "") }
                                         )
                                     }
                                 }
@@ -1063,7 +1091,8 @@ fun TodayScreen(
                                             onOpenNotes = { task -> activeNoteDialogTask = task },
                                             onOpenPhotos = { task -> activePhotoDialogTask = task },
                                             onEditTask = onEditTaskHandler,
-                                            onSkipTask = onOpenSkipHandler
+                                            onSkipTask = onOpenSkipHandler,
+                                            onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, "") }
                                         )
                                     }
                                 }
@@ -1095,7 +1124,8 @@ fun TodayScreen(
                                             onOpenNotes = { task -> activeNoteDialogTask = task },
                                             onOpenPhotos = { task -> activePhotoDialogTask = task },
                                             onEditTask = onEditTaskHandler,
-                                            onSkipTask = onOpenSkipHandler
+                                            onSkipTask = onOpenSkipHandler,
+                                            onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, "") }
                                         )
                                     }
                                 }
@@ -1120,7 +1150,8 @@ fun TodayScreen(
                                             onOpenNotes = { task -> activeNoteDialogTask = task },
                                             onOpenPhotos = { task -> activePhotoDialogTask = task },
                                             onEditTask = onEditTaskHandler,
-                                            onSkipTask = onOpenSkipHandler
+                                            onSkipTask = onOpenSkipHandler,
+                                            onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, "") }
                                         )
                                     }
                                 }
@@ -1266,6 +1297,40 @@ fun TodayScreen(
                 }
             )
         }
+
+        // Shift Handover Creation Dialog
+        if (showHandoverDialog && onAddShiftHandover != null) {
+            ShiftHandoverDialog(
+                currentUser = currentUser,
+                activeUsers = activeUsers.ifEmpty { listOf(currentUser) },
+                selectedDate = selectedDate,
+                onDismiss = { showHandoverDialog = false },
+                onSubmit = { targetShift, category, priority, message, authorUser ->
+                    onAddShiftHandover(selectedDate, targetShift, category, priority, message, authorUser)
+                    showHandoverDialog = false
+                }
+            )
+        }
+
+        // Admin Task Unlock Dialog
+        taskToUnlock?.let { (task, completion, _) ->
+            val compTime = remember(completion.completedAt) {
+                SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(completion.completedAt))
+            }
+            AdminUnlockDialog(
+                taskTitle = task.title,
+                completedByName = completion.completedByUserName,
+                completedByInitials = completion.completedByUserInitials,
+                completedTime = compTime,
+                currentUser = currentUser,
+                adminUsers = adminUsers,
+                onDismiss = { taskToUnlock = null },
+                onConfirmUnlock = { adminUser ->
+                    onUnlockTask?.invoke(task, completion, adminUser)
+                    taskToUnlock = null
+                }
+            )
+        }
     }
 }
 
@@ -1286,7 +1351,8 @@ fun CategoryTaskCard(
     onOpenNotes: (TaskEntity) -> Unit,
     onOpenPhotos: (TaskEntity) -> Unit,
     onEditTask: ((TaskEntity) -> Unit)? = null,
-    onSkipTask: ((TaskEntity) -> Unit)? = null
+    onSkipTask: ((TaskEntity) -> Unit)? = null,
+    onUnlockTask: ((TaskEntity, TaskCompletionEntity) -> Unit)? = null
 ) {
     Column(
         modifier = Modifier
@@ -1353,7 +1419,8 @@ fun CategoryTaskCard(
                     onOpenNotes = { onOpenNotes(task) },
                     onOpenPhotos = { onOpenPhotos(task) },
                     onEditTask = if (onEditTask != null) { { onEditTask(task) } } else null,
-                    onSkipTask = if (onSkipTask != null) { { onSkipTask(task) } } else null
+                    onSkipTask = if (onSkipTask != null) { { onSkipTask(task) } } else null,
+                    onUnlockTask = if (onUnlockTask != null && completion != null) { { onUnlockTask(task, completion) } } else null
                 )
 
                 if (index < tasks.lastIndex) {
@@ -1383,7 +1450,8 @@ fun PriorityTierCard(
     onOpenNotes: (TaskEntity) -> Unit,
     onOpenPhotos: (TaskEntity) -> Unit,
     onEditTask: ((TaskEntity) -> Unit)? = null,
-    onSkipTask: ((TaskEntity, String) -> Unit)? = null
+    onSkipTask: ((TaskEntity, String) -> Unit)? = null,
+    onUnlockTask: ((TaskEntity, TaskCompletionEntity) -> Unit)? = null
 ) {
     Column(
         modifier = Modifier
@@ -1449,7 +1517,8 @@ fun PriorityTierCard(
                     onOpenNotes = { onOpenNotes(task) },
                     onOpenPhotos = { onOpenPhotos(task) },
                     onEditTask = if (onEditTask != null) { { onEditTask(task) } } else null,
-                    onSkipTask = if (onSkipTask != null) { { onSkipTask(task, catName) } } else null
+                    onSkipTask = if (onSkipTask != null) { { onSkipTask(task, catName) } } else null,
+                    onUnlockTask = if (onUnlockTask != null && completion != null) { { onUnlockTask(task, completion) } } else null
                 )
 
                 if (index < tasks.lastIndex) {
@@ -1477,7 +1546,8 @@ fun TaskItemCard(
     onOpenNotes: () -> Unit,
     onOpenPhotos: () -> Unit,
     onEditTask: (() -> Unit)? = null,
-    onSkipTask: (() -> Unit)? = null
+    onSkipTask: (() -> Unit)? = null,
+    onUnlockTask: (() -> Unit)? = null
 ) {
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
     val allSubTasks = remember(task.bulletPoints) { SubTaskUtils.parseSubTasks(task.bulletPoints) }
@@ -2206,6 +2276,35 @@ fun TaskItemCard(
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = RetailTextPrimary
+                            )
+                        }
+                    }
+                }
+
+                if (onUnlockTask != null && (isDone || isSkipped || isPartialDone)) {
+                    Surface(
+                        onClick = onUnlockTask,
+                        shape = RoundedCornerShape(4.dp),
+                        border = BorderStroke(1.dp, Color(0xFFD32F2F)),
+                        color = Color(0xFFFFEBEE),
+                        modifier = Modifier.testTag("unlock_task_btn_${task.id}")
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = "Unlock Task",
+                                modifier = Modifier.size(16.dp),
+                                tint = Color(0xFFD32F2F)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "UNLOCK",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFD32F2F)
                             )
                         }
                     }

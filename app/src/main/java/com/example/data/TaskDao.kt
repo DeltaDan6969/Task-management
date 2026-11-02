@@ -137,6 +137,22 @@ interface TaskDao {
     @Query("DELETE FROM task_photos")
     suspend fun deleteAllPhotos()
 
+    // --- Shift Handovers ---
+    @Query("SELECT * FROM shift_handovers ORDER BY timestamp DESC")
+    fun getAllShiftHandovers(): Flow<List<ShiftHandoverEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertShiftHandover(handover: ShiftHandoverEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertShiftHandovers(handovers: List<ShiftHandoverEntity>)
+
+    @Query("DELETE FROM shift_handovers WHERE id = :id")
+    suspend fun deleteShiftHandover(id: String)
+
+    @Query("DELETE FROM shift_handovers")
+    suspend fun deleteAllShiftHandovers()
+
     @Query("DELETE FROM users")
     suspend fun deleteAllUsers()
 }
