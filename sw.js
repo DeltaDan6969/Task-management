@@ -3,7 +3,7 @@
  * Enables PWA installation, offline shell caching, and Web Push / Lock Screen Notifications for iPhone (iOS 16.4+) & Android.
  */
 
-const CACHE_NAME = 'shifttask-cache-v1.6';
+const CACHE_NAME = 'shifttask-cache-v1.9';
 const ASSETS_TO_CACHE = [
   './',
   './tasks.html',
@@ -42,7 +42,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: Network first with cache fallback
+// Fetch: Network first with cache update and offline fallback
 self.addEventListener('fetch', (event) => {
   // Let Firebase / external API calls go directly to network
   if (event.request.url.includes('firestore') || 
@@ -52,7 +52,15 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    fetch(event.request).catch(() => {
+    fetch(event.request).then((response) => {
+      if (response && response.status === 200 && response.type === 'basic') {
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
+        });
+      }
+      return response;
+    }).catch(() => {
       return caches.match(event.request).then((res) => {
         if (res) return res;
         if (event.request.destination === 'document') {

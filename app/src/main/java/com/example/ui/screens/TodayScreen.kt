@@ -27,9 +27,13 @@ import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -110,6 +114,8 @@ fun TodayScreen(
     var currentPriorityFilter by remember { mutableStateOf(TaskPriorityFilter.ALL) }
     var selectedTaskIds by remember { mutableStateOf(setOf<Long>()) }
     var searchQuery by remember { mutableStateOf("") }
+    var showSortDropdown by remember { mutableStateOf(false) }
+    var showPriorityDropdown by remember { mutableStateOf(false) }
 
     // Clear task selection whenever date changes
     LaunchedEffect(selectedDate) {
@@ -173,9 +179,15 @@ fun TodayScreen(
 
     val totalTasks = scheduledTasks.size
     val scheduledTaskIds = remember(scheduledTasks) { scheduledTasks.map { it.id }.toSet() }
-    val completedCount = completions.count { it.taskId in scheduledTaskIds }
-    val progressFraction = if (totalTasks > 0) completedCount.toFloat() / totalTasks else 0f
-    val progressPercent = (progressFraction * 100).toInt()
+    val completedCount = remember(completions, scheduledTaskIds) {
+        completions.count { it.taskId in scheduledTaskIds }
+    }
+    val progressFraction = remember(completedCount, totalTasks) {
+        if (totalTasks > 0) completedCount.toFloat() / totalTasks else 0f
+    }
+    val progressPercent = remember(progressFraction) {
+        (progressFraction * 100).toInt()
+    }
 
     val overdueCount = remember(outstandingDaysMap, scheduledTaskIds) {
         scheduledTaskIds.count { (outstandingDaysMap[it] ?: 0) > 0 }
@@ -201,6 +213,12 @@ fun TodayScreen(
         categories.associateBy { it.id }
     }
 
+    // High-performance O(1) Lookup Maps for 60fps / 120fps fluid scrolling
+    val completionMap = remember(completions) { completions.associateBy { it.taskId } }
+    val notesMap = remember(notes) { notes.groupBy { it.taskId } }
+    val photosMap = remember(photos) { photos.groupBy { it.taskId } }
+    val categoryTasksMap = remember(filteredTasks) { filteredTasks.groupBy { it.categoryId } }
+
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
@@ -215,205 +233,182 @@ fun TodayScreen(
         ) {
             // Header Bar
             if (isTablet) {
-                // Tablet Dashboard Header
+                // High-Density Tablet Dashboard Header matching Mockup IMG_3681
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Date & Nav Buttons
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Column {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = dayOfWeekName,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = RetailTextPrimary,
-                                    letterSpacing = 0.5.sp
-                                )
-                                Spacer(modifier = Modifier.width(12.dp))
-                                IconButton(
-                                    onClick = onPreviousDate,
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                        .border(1.dp, RetailBorder, RoundedCornerShape(4.dp))
-                                ) {
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Previous Day",
-                                        tint = RetailTextPrimary,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(6.dp))
-                                IconButton(
-                                    onClick = onNextDate,
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                        .border(1.dp, RetailBorder, RoundedCornerShape(4.dp))
-                                ) {
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.ArrowForward,
-                                        contentDescription = "Next Day",
-                                        tint = RetailTextPrimary,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Surface(
-                                    onClick = onResetToToday,
-                                    color = RetailHeaderBlack,
-                                    shape = RoundedCornerShape(4.dp)
-                                ) {
-                                    Text(
-                                        text = "TODAY",
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.White,
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Button(
-                                    onClick = { showAddTaskDialog = true },
-                                    colors = ButtonDefaults.buttonColors(containerColor = RetailOrange),
-                                    shape = RoundedCornerShape(4.dp),
-                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
-                                ) {
-                                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(14.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = "+ EXTRA TASK (${DaysOfWeek.SHORT_NAMES[dayOfWeekName] ?: dayOfWeekName.take(3)})",
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-                            Text(
-                                text = selectedDate,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = RetailTextSecondary,
-                                modifier = Modifier.padding(top = 2.dp)
-                            )
-                        }
-                    }
-
-                    // Progress Overview Card
-                    Surface(
-                        color = RetailSurface,
-                        shape = RoundedCornerShape(8.dp),
-                        border = BorderStroke(1.dp, RetailBorder),
-                        modifier = Modifier.widthIn(min = 280.dp, max = 340.dp)
+                    // Left: Date, Arrows, Today pill, and Extra Task button
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                        Text(
+                            text = "$dayOfWeekName • $selectedDate",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Black,
+                            color = RetailTextPrimary,
+                            letterSpacing = 0.5.sp,
+                            maxLines = 1
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        // Segmented Arrow Navigation Pill [ ← | → ]
+                        Row(
+                            modifier = Modifier
+                                .border(1.dp, Color(0xFFCBD5E1), RoundedCornerShape(6.dp))
+                                .background(Color.White, RoundedCornerShape(6.dp)),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(width = 30.dp, height = 28.dp)
+                                    .clip(RoundedCornerShape(topStart = 6.dp, bottomStart = 6.dp))
+                                    .clickable(onClick = onPreviousDate),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = "$completedCount / $totalTasks SIGNED OFF",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = RetailTextPrimary
-                                )
-                                Text(
-                                    text = "$progressPercent%",
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = RetailOrange
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Previous Day",
+                                    tint = RetailTextPrimary,
+                                    modifier = Modifier.size(13.dp)
                                 )
                             }
-                            Spacer(modifier = Modifier.height(6.dp))
-                            LinearProgressIndicator(
-                                progress = { progressFraction.coerceIn(0f, 1f) },
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                color = RetailOrange,
-                                trackColor = RetailBorder
+                                    .width(1.dp)
+                                    .height(18.dp)
+                                    .background(Color(0xFFCBD5E1))
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(width = 30.dp, height = 28.dp)
+                                    .clip(RoundedCornerShape(topEnd = 6.dp, bottomEnd = 6.dp))
+                                    .clickable(onClick = onNextDate),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ArrowForward,
+                                    contentDescription = "Next Day",
+                                    tint = RetailTextPrimary,
+                                    modifier = Modifier.size(13.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Surface(
+                            onClick = onResetToToday,
+                            color = RetailHeaderBlack,
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text(
+                                text = "TODAY",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Button(
+                            onClick = { showAddTaskDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = RetailOrange),
+                            shape = RoundedCornerShape(6.dp),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                            modifier = Modifier.height(30.dp)
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(13.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "EXTRA TASK",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
 
-                    // Overdue Rollover Alert & User Badge
+                    // Right: Progress Overview Card & Overdue Rollover Alert (No redundant second avatar)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
+                        Surface(
+                            color = Color.White,
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                            modifier = Modifier.widthIn(min = 160.dp, max = 220.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "$completedCount / $totalTasks SIGNED OFF",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF334155)
+                                    )
+                                    Text(
+                                        text = "$progressPercent%",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = RetailOrange
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(4.dp))
+                                LinearProgressIndicator(
+                                    progress = { progressFraction.coerceIn(0f, 1f) },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(4.dp)
+                                        .clip(RoundedCornerShape(2.dp)),
+                                    color = RetailOrange,
+                                    trackColor = Color(0xFFE2E8F0)
+                                )
+                            }
+                        }
+
                         if (overdueCount > 0) {
                             Surface(
-                                color = RetailRedMissed.copy(alpha = 0.12f),
+                                color = Color(0xFFFEE2E2),
                                 shape = RoundedCornerShape(6.dp),
-                                border = BorderStroke(1.dp, RetailRedMissed.copy(alpha = 0.4f))
+                                border = BorderStroke(1.dp, Color(0xFFFCA5A5))
                             ) {
                                 Row(
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
                                         Icons.Default.Warning,
                                         contentDescription = null,
-                                        tint = RetailRedMissed,
-                                        modifier = Modifier.size(16.dp)
+                                        tint = Color(0xFFB91C1C),
+                                        modifier = Modifier.size(14.dp)
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
                                         text = "$overdueCount OVERDUE ROLLOVER",
-                                        fontSize = 11.sp,
+                                        fontSize = 10.sp,
                                         fontWeight = FontWeight.Black,
-                                        color = RetailRedMissed,
+                                        color = Color(0xFFB91C1C),
                                         letterSpacing = 0.5.sp
                                     )
                                 }
                             }
                         } else {
                             Surface(
-                                color = RetailGreenDone.copy(alpha = 0.12f),
+                                color = Color(0xFFDCFCE7),
                                 shape = RoundedCornerShape(6.dp),
-                                border = BorderStroke(1.dp, RetailGreenDone.copy(alpha = 0.3f))
+                                border = BorderStroke(1.dp, Color(0xFF86EFAC))
                             ) {
                                 Text(
                                     text = "✓ ALL UP TO DATE",
-                                    fontSize = 11.sp,
+                                    fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = RetailGreenDone,
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+                                    color = Color(0xFF15803D),
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                                 )
                             }
-                        }
-
-                        // User Initials Badge
-                        Box(
-                            modifier = Modifier
-                                .size(38.dp)
-                                .background(RetailOrange, RoundedCornerShape(6.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = currentUser.initials,
-                                color = Color.White,
-                                fontWeight = FontWeight.Black,
-                                fontSize = 15.sp
-                            )
-                        }
-
-                        IconButton(
-                            onClick = onSignOut,
-                            modifier = Modifier
-                                .size(38.dp)
-                                .border(1.dp, RetailBorder, RoundedCornerShape(6.dp))
-                                .testTag("signout_button")
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                                contentDescription = "Sign Out",
-                                tint = RetailTextPrimary,
-                                modifier = Modifier.size(18.dp)
-                            )
                         }
                     }
                 }
@@ -528,232 +523,309 @@ fun TodayScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            // Sort & Filter Toolbar
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = RetailSurfaceSubtle,
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, RetailBorder)
-            ) {
+            // Merged Toolbar: Search (left ~35%), Sort Dropdown, Priority Dropdown, Overdue Quick-Toggle (right)
+            if (isTablet) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
-                        .horizontalScroll(rememberScrollState()),
+                        .height(42.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    // Sort options
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = "SORT BY:",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Black,
-                            color = RetailTextSecondary,
-                            letterSpacing = 0.5.sp
-                        )
-
-                        TaskSortMode.values().forEach { mode ->
-                            val isSelected = currentSortMode == mode
-                            Surface(
-                                onClick = { currentSortMode = mode },
-                                shape = RoundedCornerShape(4.dp),
-                                color = if (isSelected) RetailHeaderBlack else RetailSurface,
-                                border = BorderStroke(1.dp, if (isSelected) RetailHeaderBlack else RetailBorder),
-                                modifier = Modifier.testTag("sort_mode_${mode.name}")
-                            ) {
-                                Text(
-                                    text = mode.label,
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isSelected) Color.White else RetailTextPrimary,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    Box(
+                    // Search input field with centered BasicTextField to prevent vertical clipping
+                    Surface(
                         modifier = Modifier
-                            .width(1.dp)
-                            .height(20.dp)
-                            .background(RetailBorder)
-                    )
-
-                    // Filter options
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            .weight(1.3f)
+                            .height(42.dp)
+                            .testTag("task_search_input"),
+                        shape = RoundedCornerShape(8.dp),
+                        color = RetailSurface,
+                        border = BorderStroke(1.dp, if (searchQuery.isNotEmpty()) RetailOrange else Color(0xFFCBD5E1))
                     ) {
-                        Text(
-                            text = "FILTER PRIORITY:",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Black,
-                            color = RetailTextSecondary,
-                            letterSpacing = 0.5.sp
-                        )
-
-                        TaskPriorityFilter.values().forEach { filter ->
-                            val isSelected = currentPriorityFilter == filter
-                            val activeColor = when (filter) {
-                                TaskPriorityFilter.HIGH -> RetailRedMissed
-                                TaskPriorityFilter.LOW -> RetailHeaderBlackLight
-                                TaskPriorityFilter.OUTSTANDING_ONLY -> RetailRedMissed
-                                else -> RetailOrange
-                            }
-                            Surface(
-                                onClick = { currentPriorityFilter = filter },
-                                shape = RoundedCornerShape(4.dp),
-                                color = if (isSelected) activeColor else RetailSurface,
-                                border = BorderStroke(1.dp, if (isSelected) activeColor else RetailBorder),
-                                modifier = Modifier.testTag("filter_priority_${filter.name}")
-                            ) {
-                                Text(
-                                    text = filter.label,
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isSelected) Color.White else RetailTextPrimary,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .width(1.dp)
-                            .height(20.dp)
-                            .background(RetailBorder)
-                    )
-
-                    // Day of Week Schedule View Toggle
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = "SCHEDULE:",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Black,
-                            color = RetailTextSecondary,
-                            letterSpacing = 0.5.sp
-                        )
-
-                        val dayShort = DaysOfWeek.SHORT_NAMES[dayOfWeekName] ?: dayOfWeekName.take(3)
-                        val dayTasksCount = tasks.count { DaysOfWeek.runsOnDay(it.daysOfWeek, dayOfWeekName) }
-
-                        Surface(
-                            onClick = { showAllDaysWeekly = false },
-                            shape = RoundedCornerShape(4.dp),
-                            color = if (!showAllDaysWeekly) RetailHeaderBlack else RetailSurface,
-                            border = BorderStroke(1.dp, if (!showAllDaysWeekly) RetailHeaderBlack else RetailBorder)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "$dayShort ONLY ($dayTasksCount)",
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = if (!showAllDaysWeekly) Color.White else RetailTextPrimary,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search tasks",
+                                tint = if (searchQuery.isNotEmpty()) RetailOrange else RetailTextSecondary,
+                                modifier = Modifier.size(18.dp)
                             )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier.weight(1f),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                if (searchQuery.isEmpty()) {
+                                    Text(
+                                        text = "Search tasks by title...",
+                                        fontSize = 12.sp,
+                                        color = RetailTextSecondary,
+                                        maxLines = 1
+                                    )
+                                }
+                                BasicTextField(
+                                    value = searchQuery,
+                                    onValueChange = { searchQuery = it },
+                                    singleLine = true,
+                                    textStyle = TextStyle(
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = RetailTextPrimary
+                                    ),
+                                    cursorBrush = SolidColor(RetailOrange),
+                                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                                    keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(
+                                    onClick = {
+                                        searchQuery = ""
+                                        focusManager.clearFocus()
+                                    },
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .testTag("clear_search_button")
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Clear search",
+                                        tint = RetailTextSecondary,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // Sort: Category ▾ Dropdown Pill
+                    Box {
+                        Surface(
+                            onClick = { showSortDropdown = true },
+                            shape = RoundedCornerShape(20.dp),
+                            color = Color.White,
+                            border = BorderStroke(1.dp, Color(0xFFCBD5E1)),
+                            modifier = Modifier.height(38.dp).testTag("sort_dropdown_button")
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                val sortLabel = when (currentSortMode) {
+                                    TaskSortMode.CATEGORY -> "Category"
+                                    TaskSortMode.PRIORITY_DESC -> "High → Low"
+                                    TaskSortMode.PRIORITY_ASC -> "Low → High"
+                                    TaskSortMode.OUTSTANDING -> "Outstanding"
+                                }
+                                Text(
+                                    text = "Sort: $sortLabel ▾",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = RetailTextPrimary
+                                )
+                            }
                         }
 
-                        Surface(
-                            onClick = { showAllDaysWeekly = true },
-                            shape = RoundedCornerShape(4.dp),
-                            color = if (showAllDaysWeekly) RetailHeaderBlack else RetailSurface,
-                            border = BorderStroke(1.dp, if (showAllDaysWeekly) RetailHeaderBlack else RetailBorder)
+                        DropdownMenu(
+                            expanded = showSortDropdown,
+                            onDismissRequest = { showSortDropdown = false }
                         ) {
-                            Text(
-                                text = "ALL WEEK (${tasks.size})",
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = if (showAllDaysWeekly) Color.White else RetailTextPrimary,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            TaskSortMode.values().forEach { mode ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = mode.label,
+                                            fontSize = 11.sp,
+                                            fontWeight = if (currentSortMode == mode) FontWeight.Black else FontWeight.Normal,
+                                            color = if (currentSortMode == mode) RetailOrange else RetailTextPrimary
+                                        )
+                                    },
+                                    onClick = {
+                                        currentSortMode = mode
+                                        showSortDropdown = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    // Priority: All ▾ Dropdown Pill
+                    Box {
+                        Surface(
+                            onClick = { showPriorityDropdown = true },
+                            shape = RoundedCornerShape(20.dp),
+                            color = Color.White,
+                            border = BorderStroke(1.dp, Color(0xFFCBD5E1)),
+                            modifier = Modifier.height(38.dp).testTag("priority_dropdown_button")
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                val prioLabel = when (currentPriorityFilter) {
+                                    TaskPriorityFilter.ALL -> "All"
+                                    TaskPriorityFilter.HIGH -> "High"
+                                    TaskPriorityFilter.MEDIUM -> "Medium"
+                                    TaskPriorityFilter.LOW -> "Low"
+                                    TaskPriorityFilter.OUTSTANDING_ONLY -> "Overdue"
+                                }
+                                Text(
+                                    text = "Priority: $prioLabel ▾",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = RetailTextPrimary
+                                )
+                            }
+                        }
+
+                        DropdownMenu(
+                            expanded = showPriorityDropdown,
+                            onDismissRequest = { showPriorityDropdown = false }
+                        ) {
+                            TaskPriorityFilter.values().forEach { filter ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = filter.label,
+                                            fontSize = 11.sp,
+                                            fontWeight = if (currentPriorityFilter == filter) FontWeight.Black else FontWeight.Normal,
+                                            color = if (currentPriorityFilter == filter) RetailOrange else RetailTextPrimary
+                                        )
+                                    },
+                                    onClick = {
+                                        currentPriorityFilter = filter
+                                        showPriorityDropdown = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Overdue Quick-Toggle Switch on the far right (matching Mockup IMG_3681)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Overdue ($overdueCount)",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (currentPriorityFilter == TaskPriorityFilter.OUTSTANDING_ONLY) Color(0xFFB91C1C) else RetailTextPrimary
+                        )
+                        Switch(
+                            checked = currentPriorityFilter == TaskPriorityFilter.OUTSTANDING_ONLY,
+                            onCheckedChange = { isChecked ->
+                                currentPriorityFilter = if (isChecked) TaskPriorityFilter.OUTSTANDING_ONLY else TaskPriorityFilter.ALL
+                            },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = Color.White,
+                                checkedTrackColor = RetailOrange,
+                                uncheckedThumbColor = Color.White,
+                                uncheckedTrackColor = Color(0xFFCBD5E1)
+                            ),
+                            modifier = Modifier.testTag("overdue_toggle_switch")
+                        )
+                    }
+                }
+            } else {
+                // Phone compact toolbar
+                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        modifier = Modifier.fillMaxWidth().testTag("task_search_input"),
+                        placeholder = { Text(text = "Search tasks by title...", fontSize = 12.sp, color = RetailTextSecondary) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search tasks", tint = RetailTextSecondary, modifier = Modifier.size(18.dp)) },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { searchQuery = ""; focusManager.clearFocus() }) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear search", tint = RetailTextSecondary, modifier = Modifier.size(16.dp))
+                                }
+                            }
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            // Sort pill
+                            Box {
+                                Surface(
+                                    onClick = { showSortDropdown = true },
+                                    shape = RoundedCornerShape(16.dp),
+                                    border = BorderStroke(1.dp, Color(0xFFCBD5E1))
+                                ) {
+                                    Text(
+                                        text = "Sort: ${currentSortMode.label} ▾",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                                    )
+                                }
+                                DropdownMenu(expanded = showSortDropdown, onDismissRequest = { showSortDropdown = false }) {
+                                    TaskSortMode.values().forEach { mode ->
+                                        DropdownMenuItem(
+                                            text = { Text(mode.label, fontSize = 11.sp) },
+                                            onClick = { currentSortMode = mode; showSortDropdown = false }
+                                        )
+                                    }
+                                }
+                            }
+                            // Priority pill
+                            Box {
+                                Surface(
+                                    onClick = { showPriorityDropdown = true },
+                                    shape = RoundedCornerShape(16.dp),
+                                    border = BorderStroke(1.dp, Color(0xFFCBD5E1))
+                                ) {
+                                    Text(
+                                        text = "Priority: ${currentPriorityFilter.label} ▾",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                                    )
+                                }
+                                DropdownMenu(expanded = showPriorityDropdown, onDismissRequest = { showPriorityDropdown = false }) {
+                                    TaskPriorityFilter.values().forEach { filter ->
+                                        DropdownMenuItem(
+                                            text = { Text(filter.label, fontSize = 11.sp) },
+                                            onClick = { currentPriorityFilter = filter; showPriorityDropdown = false }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Overdue ($overdueCount)", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Switch(
+                                checked = currentPriorityFilter == TaskPriorityFilter.OUTSTANDING_ONLY,
+                                onCheckedChange = { isChecked ->
+                                    currentPriorityFilter = if (isChecked) TaskPriorityFilter.OUTSTANDING_ONLY else TaskPriorityFilter.ALL
+                                }
                             )
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Shift Handover Noticeboard & Next Shift Notes
-            if (onAddShiftHandover != null) {
-                ShiftHandoverCard(
-                    handovers = handovers,
-                    currentUser = currentUser,
-                    selectedDate = selectedDate,
-                    onOpenLeaveNote = { showHandoverDialog = true },
-                    onAcknowledgeNote = { id -> onAcknowledgeShiftHandover?.invoke(id) },
-                    onDeleteNote = { id -> onDeleteShiftHandover?.invoke(id) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                )
-            }
-
-            // Search input field above the task list that filters tasks by title in real-time
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("task_search_input"),
-                placeholder = {
-                    Text(
-                        text = "Search tasks by title...",
-                        fontSize = 13.sp,
-                        color = RetailTextSecondary
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search tasks",
-                        tint = if (searchQuery.isNotEmpty()) RetailOrange else RetailTextSecondary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                trailingIcon = {
-                    if (searchQuery.isNotEmpty()) {
-                        IconButton(
-                            onClick = {
-                                searchQuery = ""
-                                focusManager.clearFocus()
-                            },
-                            modifier = Modifier.testTag("clear_search_button")
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Clear search",
-                                tint = RetailTextSecondary,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    }
-                },
-                singleLine = true,
-                shape = RoundedCornerShape(8.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = RetailSurface,
-                    unfocusedContainerColor = RetailSurface,
-                    focusedBorderColor = RetailOrange,
-                    unfocusedBorderColor = RetailBorder,
-                    cursorColor = RetailOrange,
-                    focusedTextColor = RetailTextPrimary,
-                    unfocusedTextColor = RetailTextPrimary
-                ),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() })
-            )
-
             if (searchQuery.isNotBlank()) {
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -850,24 +922,27 @@ fun TodayScreen(
             } else {
                 when (currentSortMode) {
                     TaskSortMode.CATEGORY -> {
-                        val activeCategories = categories.filter { category ->
-                            filteredTasks.any { it.categoryId == category.id }
+                        val activeCategories = remember(categories, categoryTasksMap) {
+                            categories.filter { categoryTasksMap[it.id]?.isNotEmpty() == true }
                         }
 
                         if (isTablet) {
-                            // Tablet 2-Column Responsive Grid
+                            // Tablet 2-Column Responsive Grid with stable keys
                             LazyVerticalGrid(
-                                columns = GridCells.Adaptive(minSize = 400.dp),
+                                columns = GridCells.Adaptive(minSize = 340.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(1f),
                                 verticalArrangement = Arrangement.spacedBy(16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                items(activeCategories) { category ->
-                                    val categoryTasks = filteredTasks.filter { it.categoryId == category.id }
-                                    val completedInCat = categoryTasks.count { task ->
-                                        completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
+                                items(activeCategories, key = { it.id }) { category ->
+                                    val categoryTasks = categoryTasksMap[category.id] ?: emptyList()
+                                    val completedInCat = remember(categoryTasks, completionMap) {
+                                        categoryTasks.count { task ->
+                                            val c = completionMap[task.id]
+                                            c != null && (!c.isPartial || c.isSkipped)
+                                        }
                                     }
 
                                     CategoryTaskCard(
@@ -875,9 +950,9 @@ fun TodayScreen(
                                         completedCount = completedInCat,
                                         totalCount = categoryTasks.size,
                                         tasks = categoryTasks,
-                                        completions = completions,
-                                        notes = notes,
-                                        photos = photos,
+                                        completionMap = completionMap,
+                                        notesMap = notesMap,
+                                        photosMap = photosMap,
                                         outstandingDaysMap = outstandingDaysMap,
                                         selectedTaskIds = selectedTaskIds,
                                         onSelectTask = onToggleSelectTask,
@@ -892,17 +967,20 @@ fun TodayScreen(
                                 }
                             }
                         } else {
-                            // Phone Single Column
+                            // Phone Single Column with stable keys
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(1f),
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                items(activeCategories) { category ->
-                                    val categoryTasks = filteredTasks.filter { it.categoryId == category.id }
-                                    val completedInCat = categoryTasks.count { task ->
-                                        completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
+                                items(activeCategories, key = { it.id }) { category ->
+                                    val categoryTasks = categoryTasksMap[category.id] ?: emptyList()
+                                    val completedInCat = remember(categoryTasks, completionMap) {
+                                        categoryTasks.count { task ->
+                                            val c = completionMap[task.id]
+                                            c != null && (!c.isPartial || c.isSkipped)
+                                        }
                                     }
 
                                     CategoryTaskCard(
@@ -910,9 +988,9 @@ fun TodayScreen(
                                         completedCount = completedInCat,
                                         totalCount = categoryTasks.size,
                                         tasks = categoryTasks,
-                                        completions = completions,
-                                        notes = notes,
-                                        photos = photos,
+                                        completionMap = completionMap,
+                                        notesMap = notesMap,
+                                        photosMap = photosMap,
                                         outstandingDaysMap = outstandingDaysMap,
                                         selectedTaskIds = selectedTaskIds,
                                         onSelectTask = onToggleSelectTask,
@@ -930,37 +1008,43 @@ fun TodayScreen(
                     }
 
                     TaskSortMode.PRIORITY_DESC, TaskSortMode.PRIORITY_ASC -> {
-                        val priorityTiers = if (currentSortMode == TaskSortMode.PRIORITY_DESC) {
-                            listOf(
-                                Triple(TaskPriority.HIGH, "HIGH PRIORITY TASKS", RetailRedMissed),
-                                Triple(TaskPriority.MEDIUM, "MEDIUM PRIORITY TASKS", RetailOrange),
-                                Triple(TaskPriority.LOW, "LOW PRIORITY TASKS", RetailHeaderBlackLight)
-                            )
-                        } else {
-                            listOf(
-                                Triple(TaskPriority.LOW, "LOW PRIORITY TASKS", RetailHeaderBlackLight),
-                                Triple(TaskPriority.MEDIUM, "MEDIUM PRIORITY TASKS", RetailOrange),
-                                Triple(TaskPriority.HIGH, "HIGH PRIORITY TASKS", RetailRedMissed)
-                            )
-                        }
-
-                        val activeTiers = priorityTiers.filter { (tierPriority, _, _) ->
-                            filteredTasks.any { it.priority.equals(tierPriority, ignoreCase = true) }
+                        val activeTiers = remember(currentSortMode, filteredTasks) {
+                            val priorityTiers = if (currentSortMode == TaskSortMode.PRIORITY_DESC) {
+                                listOf(
+                                    Triple(TaskPriority.HIGH, "HIGH PRIORITY TASKS", RetailRedMissed),
+                                    Triple(TaskPriority.MEDIUM, "MEDIUM PRIORITY TASKS", RetailOrange),
+                                    Triple(TaskPriority.LOW, "LOW PRIORITY TASKS", RetailHeaderBlackLight)
+                                )
+                            } else {
+                                listOf(
+                                    Triple(TaskPriority.LOW, "LOW PRIORITY TASKS", RetailHeaderBlackLight),
+                                    Triple(TaskPriority.MEDIUM, "MEDIUM PRIORITY TASKS", RetailOrange),
+                                    Triple(TaskPriority.HIGH, "HIGH PRIORITY TASKS", RetailRedMissed)
+                                )
+                            }
+                            priorityTiers.filter { (tierPriority, _, _) ->
+                                filteredTasks.any { it.priority.equals(tierPriority, ignoreCase = true) }
+                            }
                         }
 
                         if (isTablet) {
                             LazyVerticalGrid(
-                                columns = GridCells.Adaptive(minSize = 400.dp),
+                                columns = GridCells.Adaptive(minSize = 340.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(1f),
                                 verticalArrangement = Arrangement.spacedBy(16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                items(activeTiers) { (tierPriority, tierTitle, tierColor) ->
-                                    val tierTasks = filteredTasks.filter { it.priority.equals(tierPriority, ignoreCase = true) }
-                                    val completedInTier = tierTasks.count { task ->
-                                        completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
+                                items(activeTiers, key = { it.first }) { (tierPriority, tierTitle, tierColor) ->
+                                    val tierTasks = remember(filteredTasks, tierPriority) {
+                                        filteredTasks.filter { it.priority.equals(tierPriority, ignoreCase = true) }
+                                    }
+                                    val completedInTier = remember(tierTasks, completionMap) {
+                                        tierTasks.count { task ->
+                                            val c = completionMap[task.id]
+                                            c != null && (!c.isPartial || c.isSkipped)
+                                        }
                                     }
 
                                     PriorityTierCard(
@@ -970,9 +1054,9 @@ fun TodayScreen(
                                         totalCount = tierTasks.size,
                                         tasks = tierTasks,
                                         categoryMap = categoryMap,
-                                        completions = completions,
-                                        notes = notes,
-                                        photos = photos,
+                                        completionMap = completionMap,
+                                        notesMap = notesMap,
+                                        photosMap = photosMap,
                                         outstandingDaysMap = outstandingDaysMap,
                                         selectedTaskIds = selectedTaskIds,
                                         onSelectTask = onToggleSelectTask,
@@ -993,10 +1077,15 @@ fun TodayScreen(
                                     .weight(1f),
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                items(activeTiers) { (tierPriority, tierTitle, tierColor) ->
-                                    val tierTasks = filteredTasks.filter { it.priority.equals(tierPriority, ignoreCase = true) }
-                                    val completedInTier = tierTasks.count { task ->
-                                        completions.any { it.taskId == task.id && (!it.isPartial || it.isSkipped) }
+                                items(activeTiers, key = { it.first }) { (tierPriority, tierTitle, tierColor) ->
+                                    val tierTasks = remember(filteredTasks, tierPriority) {
+                                        filteredTasks.filter { it.priority.equals(tierPriority, ignoreCase = true) }
+                                    }
+                                    val completedInTier = remember(tierTasks, completionMap) {
+                                        tierTasks.count { task ->
+                                            val c = completionMap[task.id]
+                                            c != null && (!c.isPartial || c.isSkipped)
+                                        }
                                     }
 
                                     PriorityTierCard(
@@ -1006,9 +1095,9 @@ fun TodayScreen(
                                         totalCount = tierTasks.size,
                                         tasks = tierTasks,
                                         categoryMap = categoryMap,
-                                        completions = completions,
-                                        notes = notes,
-                                        photos = photos,
+                                        completionMap = completionMap,
+                                        notesMap = notesMap,
+                                        photosMap = photosMap,
                                         outstandingDaysMap = outstandingDaysMap,
                                         selectedTaskIds = selectedTaskIds,
                                         onSelectTask = onToggleSelectTask,
@@ -1033,12 +1122,16 @@ fun TodayScreen(
                             )
                         }
 
-                        val overdueTasks = sortedTasks.filter { (outstandingDaysMap[it.id] ?: 0) > 0 }
-                        val todayTasks = sortedTasks.filter { (outstandingDaysMap[it.id] ?: 0) == 0 }
+                        val overdueTasks = remember(sortedTasks, outstandingDaysMap) {
+                            sortedTasks.filter { (outstandingDaysMap[it.id] ?: 0) > 0 }
+                        }
+                        val todayTasks = remember(sortedTasks, outstandingDaysMap) {
+                            sortedTasks.filter { (outstandingDaysMap[it.id] ?: 0) == 0 }
+                        }
 
                         if (isTablet) {
                             LazyVerticalGrid(
-                                columns = GridCells.Adaptive(minSize = 400.dp),
+                                columns = GridCells.Adaptive(minSize = 340.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(1f),
@@ -1046,17 +1139,23 @@ fun TodayScreen(
                                 horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 if (overdueTasks.isNotEmpty()) {
-                                    item {
+                                    item(key = "overdue_tasks_section") {
+                                        val completedOverdue = remember(overdueTasks, completionMap) {
+                                            overdueTasks.count { t ->
+                                                val c = completionMap[t.id]
+                                                c != null && (!c.isPartial || c.isSkipped)
+                                            }
+                                        }
                                         PriorityTierCard(
                                             title = "⚡ OVERDUE & CONTINUED TASKS",
                                             bannerColor = RetailRedMissed,
-                                            completedCount = overdueTasks.count { t -> completions.any { it.taskId == t.id && (!it.isPartial || it.isSkipped) } },
+                                            completedCount = completedOverdue,
                                             totalCount = overdueTasks.size,
                                             tasks = overdueTasks,
                                             categoryMap = categoryMap,
-                                            completions = completions,
-                                            notes = notes,
-                                            photos = photos,
+                                            completionMap = completionMap,
+                                            notesMap = notesMap,
+                                            photosMap = photosMap,
                                             outstandingDaysMap = outstandingDaysMap,
                                             selectedTaskIds = selectedTaskIds,
                                             onSelectTask = onToggleSelectTask,
@@ -1072,17 +1171,23 @@ fun TodayScreen(
                                 }
 
                                 if (todayTasks.isNotEmpty()) {
-                                    item {
+                                    item(key = "today_tasks_section") {
+                                        val completedToday = remember(todayTasks, completionMap) {
+                                            todayTasks.count { t ->
+                                                val c = completionMap[t.id]
+                                                c != null && (!c.isPartial || c.isSkipped)
+                                            }
+                                        }
                                         PriorityTierCard(
                                             title = "SCHEDULED TODAY",
                                             bannerColor = RetailHeaderBlack,
-                                            completedCount = todayTasks.count { t -> completions.any { it.taskId == t.id && (!it.isPartial || it.isSkipped) } },
+                                            completedCount = completedToday,
                                             totalCount = todayTasks.size,
                                             tasks = todayTasks,
                                             categoryMap = categoryMap,
-                                            completions = completions,
-                                            notes = notes,
-                                            photos = photos,
+                                            completionMap = completionMap,
+                                            notesMap = notesMap,
+                                            photosMap = photosMap,
                                             outstandingDaysMap = outstandingDaysMap,
                                             selectedTaskIds = selectedTaskIds,
                                             onSelectTask = onToggleSelectTask,
@@ -1105,17 +1210,23 @@ fun TodayScreen(
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 if (overdueTasks.isNotEmpty()) {
-                                    item {
+                                    item(key = "overdue_tasks_section") {
+                                        val completedOverdue = remember(overdueTasks, completionMap) {
+                                            overdueTasks.count { t ->
+                                                val c = completionMap[t.id]
+                                                c != null && (!c.isPartial || c.isSkipped)
+                                            }
+                                        }
                                         PriorityTierCard(
                                             title = "⚡ OVERDUE & CONTINUED TASKS",
                                             bannerColor = RetailRedMissed,
-                                            completedCount = overdueTasks.count { t -> completions.any { it.taskId == t.id && (!it.isPartial || it.isSkipped) } },
+                                            completedCount = completedOverdue,
                                             totalCount = overdueTasks.size,
                                             tasks = overdueTasks,
                                             categoryMap = categoryMap,
-                                            completions = completions,
-                                            notes = notes,
-                                            photos = photos,
+                                            completionMap = completionMap,
+                                            notesMap = notesMap,
+                                            photosMap = photosMap,
                                             outstandingDaysMap = outstandingDaysMap,
                                             selectedTaskIds = selectedTaskIds,
                                             onSelectTask = onToggleSelectTask,
@@ -1131,17 +1242,55 @@ fun TodayScreen(
                                 }
 
                                 if (todayTasks.isNotEmpty()) {
-                                    item {
+                                    item(key = "today_tasks_section") {
+                                        val completedToday = remember(todayTasks, completionMap) {
+                                            todayTasks.count { t ->
+                                                val c = completionMap[t.id]
+                                                c != null && (!c.isPartial || c.isSkipped)
+                                            }
+                                        }
                                         PriorityTierCard(
                                             title = "SCHEDULED TODAY",
                                             bannerColor = RetailHeaderBlack,
-                                            completedCount = todayTasks.count { t -> completions.any { it.taskId == t.id && (!it.isPartial || it.isSkipped) } },
+                                            completedCount = completedToday,
                                             totalCount = todayTasks.size,
                                             tasks = todayTasks,
                                             categoryMap = categoryMap,
-                                            completions = completions,
-                                            notes = notes,
-                                            photos = photos,
+                                            completionMap = completionMap,
+                                            notesMap = notesMap,
+                                            photosMap = photosMap,
+                                            outstandingDaysMap = outstandingDaysMap,
+                                            selectedTaskIds = selectedTaskIds,
+                                            onSelectTask = onToggleSelectTask,
+                                            onSubmitSignOff = onSubmitSingleTask,
+                                            onSubmitSubTasksSignOff = onSubmitSubTasksHandler,
+                                            onOpenNotes = { task -> activeNoteDialogTask = task },
+                                            onOpenPhotos = { task -> activePhotoDialogTask = task },
+                                            onEditTask = onEditTaskHandler,
+                                            onSkipTask = onOpenSkipHandler,
+                                            onUnlockTask = { task, comp -> taskToUnlock = Triple(task, comp, "") }
+                                        )
+                                    }
+                                }
+
+                                if (todayTasks.isNotEmpty()) {
+                                    item(key = "today_tasks_section") {
+                                        val completedToday = remember(todayTasks, completionMap) {
+                                            todayTasks.count { t ->
+                                                val c = completionMap[t.id]
+                                                c != null && (!c.isPartial || c.isSkipped)
+                                            }
+                                        }
+                                        PriorityTierCard(
+                                            title = "SCHEDULED TODAY",
+                                            bannerColor = RetailHeaderBlack,
+                                            completedCount = completedToday,
+                                            totalCount = todayTasks.size,
+                                            tasks = todayTasks,
+                                            categoryMap = categoryMap,
+                                            completionMap = completionMap,
+                                            notesMap = notesMap,
+                                            photosMap = photosMap,
                                             outstandingDaysMap = outstandingDaysMap,
                                             selectedTaskIds = selectedTaskIds,
                                             onSelectTask = onToggleSelectTask,
@@ -1340,9 +1489,9 @@ fun CategoryTaskCard(
     completedCount: Int,
     totalCount: Int,
     tasks: List<TaskEntity>,
-    completions: List<TaskCompletionEntity>,
-    notes: List<TaskNoteEntity>,
-    photos: List<TaskPhotoEntity>,
+    completionMap: Map<Long, TaskCompletionEntity>,
+    notesMap: Map<Long, List<TaskNoteEntity>>,
+    photosMap: Map<Long, List<TaskPhotoEntity>>,
     outstandingDaysMap: Map<Long, Int>,
     selectedTaskIds: Set<Long> = emptySet(),
     onSelectTask: (TaskEntity) -> Unit = {},
@@ -1394,11 +1543,11 @@ fun CategoryTaskCard(
         // Tasks in Category
         Column(modifier = Modifier.fillMaxWidth()) {
             tasks.forEachIndexed { index, task ->
-                val completion = completions.find { it.taskId == task.id }
+                val completion = completionMap[task.id]
                 val isDone = completion != null && !completion.isPartial
                 val isSelected = task.id in selectedTaskIds
-                val taskNotes = notes.filter { it.taskId == task.id }
-                val taskPhotos = photos.filter { it.taskId == task.id }
+                val taskNotes = notesMap[task.id] ?: emptyList()
+                val taskPhotos = photosMap[task.id] ?: emptyList()
                 val outstandingDays = outstandingDaysMap[task.id] ?: 0
 
                 TaskItemCard(
@@ -1439,9 +1588,9 @@ fun PriorityTierCard(
     totalCount: Int,
     tasks: List<TaskEntity>,
     categoryMap: Map<Long, CategoryEntity>,
-    completions: List<TaskCompletionEntity>,
-    notes: List<TaskNoteEntity>,
-    photos: List<TaskPhotoEntity>,
+    completionMap: Map<Long, TaskCompletionEntity>,
+    notesMap: Map<Long, List<TaskNoteEntity>>,
+    photosMap: Map<Long, List<TaskPhotoEntity>>,
     outstandingDaysMap: Map<Long, Int>,
     selectedTaskIds: Set<Long> = emptySet(),
     onSelectTask: (TaskEntity) -> Unit = {},
@@ -1491,11 +1640,11 @@ fun PriorityTierCard(
 
         Column(modifier = Modifier.fillMaxWidth()) {
             tasks.forEachIndexed { index, task ->
-                val completion = completions.find { it.taskId == task.id }
+                val completion = completionMap[task.id]
                 val isDone = completion != null && !completion.isPartial
                 val isSelected = task.id in selectedTaskIds
-                val taskNotes = notes.filter { it.taskId == task.id }
-                val taskPhotos = photos.filter { it.taskId == task.id }
+                val taskNotes = notesMap[task.id] ?: emptyList()
+                val taskPhotos = photosMap[task.id] ?: emptyList()
                 val outstandingDays = outstandingDaysMap[task.id] ?: 0
                 val catName = categoryMap[task.categoryId]?.name ?: "TASK"
 
@@ -1551,264 +1700,243 @@ fun TaskItemCard(
 ) {
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
     val allSubTasks = remember(task.bulletPoints) { SubTaskUtils.parseSubTasks(task.bulletPoints) }
+    val subTaskChunks = remember(allSubTasks) { allSubTasks.chunked(2) }
     val isPartialDone = completion != null && completion.isPartial
     val isSkipped = completion != null && completion.isSkipped
     val isLocked = isDone || isSkipped
 
-    val previouslyCompletedSubTasks = remember(completion) {
+    val previouslyCompletedSubTasks = remember(completion?.completedSubTasksJson) {
         if (completion != null) SubTaskUtils.jsonToList(completion.completedSubTasksJson).toSet() else emptySet()
     }
     var tickedSubTasks by remember(task.id, completion?.completedSubTasksJson) {
         mutableStateOf(previouslyCompletedSubTasks)
     }
 
-    Row(
+    val clickableModifier = remember(isLocked) {
+        if (!isLocked) {
+            Modifier.clickable(onClick = onSelect)
+        } else {
+            Modifier
+        }
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .then(
-                if (!isLocked) {
-                    Modifier.clickable(onClick = onSelect)
-                } else {
-                    Modifier
-                }
-            )
+            .then(clickableModifier)
             .padding(14.dp)
-            .testTag("task_row_${task.id}"),
-        verticalAlignment = Alignment.Top
+            .testTag("task_row_${task.id}")
     ) {
-        // Large Checkbox Square
-        // If skipped: Amber with Warning icon, LOCKED
-        // If full done: Green with Checkmark, LOCKED
-        // If partial done: Orange with Checkmark (or lightning)
-        // If selected: Orange border with Checkmark pending submit
-        // If uncompleted: Black border empty square
-        Box(
-            modifier = Modifier
-                .padding(top = 2.dp)
-                .size(24.dp)
-                .border(
-                    width = 2.dp,
-                    color = when {
-                        isSkipped -> Color(0xFFE65100)
-                        isDone -> RetailGreenDone
-                        isPartialDone -> RetailOrange
-                        isSelected -> RetailOrange
-                        else -> RetailHeaderBlack
-                    },
-                    shape = RoundedCornerShape(3.dp)
-                )
-                .background(
-                    color = when {
-                        isSkipped -> Color(0xFFFFF3E0)
-                        isDone -> RetailGreenDone
-                        isPartialDone -> RetailOrange.copy(alpha = 0.2f)
-                        isSelected -> RetailOrange.copy(alpha = 0.2f)
-                        else -> Color.Transparent
-                    },
-                    shape = RoundedCornerShape(3.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            if (isSkipped) {
-                Icon(
-                    imageVector = Icons.Default.Warning,
-                    contentDescription = "Task Skipped",
-                    tint = Color(0xFFE65100),
-                    modifier = Modifier.size(16.dp)
-                )
-            } else if (isDone) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Completed and Locked",
-                    tint = Color.White,
-                    modifier = Modifier.size(18.dp)
-                )
-            } else if (isPartialDone) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Partially Completed",
-                    tint = RetailOrange,
-                    modifier = Modifier.size(16.dp)
-                )
-            } else if (isSelected) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Selected - Ready to Submit",
-                    tint = RetailOrange,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
+        // Line 1: Checkbox on left, Priority badge, Overdue badge, Category, and Task Title on far right (IMG_3681)
+        val (priorityBg, priorityFg, priorityText) = when (task.priority.uppercase()) {
+            TaskPriority.HIGH -> Triple(Color(0xFFFEE2E2), Color(0xFFB91C1C), "HIGH")
+            TaskPriority.LOW -> Triple(Color(0xFFF1F5F9), Color(0xFF475569), "LOW")
+            else -> Triple(Color(0xFFFFEDD5), Color(0xFFC2410C), "MED")
         }
 
-        Spacer(modifier = Modifier.width(14.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Checkbox Square (size 22.dp)
+            Box(
+                modifier = Modifier
+                    .size(22.dp)
+                    .border(
+                        width = 2.dp,
+                        color = when {
+                            isSkipped -> Color(0xFFE65100)
+                            isDone -> RetailGreenDone
+                            isPartialDone -> RetailOrange
+                            isSelected -> RetailOrange
+                            else -> Color(0xFF1E293B)
+                        },
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .background(
+                        color = when {
+                            isSkipped -> Color(0xFFFFF3E0)
+                            isDone -> RetailGreenDone
+                            isPartialDone -> RetailOrange.copy(alpha = 0.2f)
+                            isSelected -> RetailOrange.copy(alpha = 0.2f)
+                            else -> Color.White
+                        },
+                        shape = RoundedCornerShape(4.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isSkipped) {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = "Task Skipped",
+                        tint = Color(0xFFE65100),
+                        modifier = Modifier.size(14.dp)
+                    )
+                } else if (isDone) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Completed and Locked",
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp)
+                    )
+                } else if (isPartialDone || isSelected) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Selected",
+                        tint = RetailOrange,
+                        modifier = Modifier.size(14.dp)
+                    )
+                }
+            }
 
-        Column(modifier = Modifier.weight(1f)) {
-            // Priority badge and category tag
+            Spacer(modifier = Modifier.width(10.dp))
+
+            // Badges: Priority + Overdue/One-Time + Category
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.padding(bottom = 4.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                // Priority Badge (HIGH, MEDIUM, LOW)
-                val (priorityBg, priorityFg, priorityText) = when (task.priority.uppercase()) {
-                    TaskPriority.HIGH -> Triple(Color(0xFFFFEBEE), Color(0xFFC62828), "HIGH")
-                    TaskPriority.LOW -> Triple(Color(0xFFECEFF1), Color(0xFF455A64), "LOW")
-                    else -> Triple(Color(0xFFFFF3E0), Color(0xFFE65100), "MED")
-                }
-
+                // • HIGH / • MED / • LOW
                 Box(
                     modifier = Modifier
-                        .background(priorityBg, RoundedCornerShape(2.dp))
-                        .border(1.dp, priorityFg.copy(alpha = 0.35f), RoundedCornerShape(2.dp))
-                        .padding(horizontal = 6.dp, vertical = 1.dp)
+                        .background(priorityBg, RoundedCornerShape(12.dp))
+                        .border(1.dp, priorityFg.copy(alpha = 0.35f), RoundedCornerShape(12.dp))
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        text = "● $priorityText",
-                        fontSize = 9.sp,
+                        text = "• $priorityText",
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Black,
                         color = priorityFg,
                         letterSpacing = 0.5.sp
                     )
                 }
 
+                // 2d Overdue
+                if (outstandingDays > 0) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFFFFEDD5), RoundedCornerShape(12.dp))
+                            .border(1.dp, Color(0xFFFDBA74), RoundedCornerShape(12.dp))
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "${outstandingDays}d Overdue",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFC2410C)
+                        )
+                    }
+                } else if (task.isEffectivelyOneTime) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFFF3E8FF), RoundedCornerShape(12.dp))
+                            .border(1.dp, Color(0xFFD8B4FE), RoundedCornerShape(12.dp))
+                            .padding(horizontal = 7.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "★ One-Time",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF6B21A8)
+                        )
+                    }
+                }
+
                 if (showCategoryTag && categoryName.isNotBlank()) {
                     Box(
                         modifier = Modifier
-                            .background(RetailHeaderBlack, RoundedCornerShape(2.dp))
-                            .padding(horizontal = 6.dp, vertical = 1.dp)
+                            .background(RetailHeaderBlack, RoundedCornerShape(12.dp))
+                            .padding(horizontal = 7.dp, vertical = 2.dp)
                     ) {
                         Text(
                             text = categoryName,
                             fontSize = 9.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            letterSpacing = 0.5.sp
+                            color = Color.White
                         )
-                    }
-                }
-
-                if (task.isEffectivelyOneTime) {
-                    Box(
-                        modifier = Modifier
-                            .background(Color(0xFFF3E8FF), RoundedCornerShape(2.dp))
-                            .border(1.dp, Color(0xFFD8B4FE), RoundedCornerShape(2.dp))
-                            .padding(horizontal = 5.dp, vertical = 1.dp)
-                    ) {
-                        Text(
-                            text = if (outstandingDays > 0 && !isLocked) "★ ONE-TIME • ROLLED OVER" else "★ ONE-TIME",
-                            fontSize = 9.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF6B21A8)
-                        )
-                    }
-                } else {
-                    val dayDisplay = DaysOfWeek.formatDisplayDays(task.daysOfWeek)
-                    if (dayDisplay != "EVERY DAY") {
-                        Box(
-                            modifier = Modifier
-                                .background(Color(0xFFE8F5E9), RoundedCornerShape(2.dp))
-                                .border(1.dp, Color(0xFF81C784), RoundedCornerShape(2.dp))
-                                .padding(horizontal = 5.dp, vertical = 1.dp)
-                        ) {
-                            Text(
-                                text = "📅 $dayDisplay",
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF2E7D32)
-                            )
-                        }
                     }
                 }
             }
 
-            // Task Title
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Task Title on the far right (matching Mockup IMG_3681)
             Text(
                 text = task.title,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = if (isLocked) RetailTextSecondary else RetailTextPrimary,
-                letterSpacing = 0.5.sp
+                fontWeight = FontWeight.Black,
+                color = if (isLocked) RetailTextSecondary else Color(0xFF0F172A),
+                letterSpacing = 0.2.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        // Continued Rollover Banner if outstanding
+        if (!isLocked && outstandingDays > 0) {
+            Spacer(modifier = Modifier.height(6.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFFFEDD5), RoundedCornerShape(4.dp))
+                    .border(1.dp, Color(0xFFFDBA74), RoundedCornerShape(4.dp))
+                    .padding(horizontal = 8.dp, vertical = 3.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "⚡ CONTINUED • $outstandingDays ${if (outstandingDays == 1) "DAY" else "DAYS"} OUTSTANDING",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color(0xFFC2410C),
+                    letterSpacing = 0.5.sp
+                )
+            }
+        }
+
+        // Sub-Tasks Interactive 2-Column Grid (matching Mockup IMG_3681)
+        if (allSubTasks.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "SUB-TASKS (${tickedSubTasks.size}/${allSubTasks.size} COMPLETED):",
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Black,
+                color = if (isDone) RetailGreenCheck else Color(0xFF475569),
+                letterSpacing = 0.5.sp,
+                modifier = Modifier.padding(bottom = 4.dp)
             )
 
-            // Outstanding rollover status when not yet completed today
-            if (!isLocked) {
-                if (outstandingDays > 0) {
-                    Row(
-                        modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(RetailRedMissed.copy(alpha = 0.12f), RoundedCornerShape(2.dp))
-                                .border(1.dp, RetailRedMissed.copy(alpha = 0.4f), RoundedCornerShape(2.dp))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                text = "⚡ CONTINUED • $outstandingDays ${if (outstandingDays == 1) "DAY" else "DAYS"} OUTSTANDING",
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Black,
-                                color = RetailRedMissed,
-                                letterSpacing = 0.5.sp
-                            )
-                        }
-                    }
-                } else {
-                    Row(
-                        modifier = Modifier.padding(top = 3.dp, bottom = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(RetailOrange.copy(alpha = 0.1f), RoundedCornerShape(2.dp))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                text = "• SCHEDULED TODAY",
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = RetailOrange
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Sub-Tasks Interactive Checklist
-            if (allSubTasks.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = 6.dp, bottom = 6.dp)) {
-                    Text(
-                        text = "SUB-TASKS (${tickedSubTasks.size}/${allSubTasks.size} COMPLETED):",
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Black,
-                        color = if (isDone) RetailGreenCheck else RetailTextPrimary,
-                        letterSpacing = 0.5.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-
-                    allSubTasks.forEach { subTask ->
+            // Render in 2-column grid rows
+            subTaskChunks.forEach { pair ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    pair.forEach { subTask ->
                         val isTicked = subTask in tickedSubTasks
                         val isPreviouslyDone = subTask in previouslyCompletedSubTasks
 
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 3.dp)
-                                .clip(RoundedCornerShape(4.dp))
+                                .weight(1f)
+                                .clip(RoundedCornerShape(6.dp))
                                 .background(
                                     when {
-                                        isDone || isPreviouslyDone -> Color(0xFFE8F5E9)
-                                        isTicked -> RetailOrange.copy(alpha = 0.1f)
-                                        else -> RetailSurfaceSubtle
+                                        isDone || isPreviouslyDone -> Color(0xFFECFDF5)
+                                        isTicked -> Color(0xFFFFF7ED)
+                                        else -> Color(0xFFF8FAFC)
                                     }
                                 )
                                 .border(
                                     1.dp,
                                     when {
-                                        isDone || isPreviouslyDone -> Color(0xFFA5D6A7)
-                                        isTicked -> RetailOrange.copy(alpha = 0.5f)
-                                        else -> RetailBorder
+                                        isDone || isPreviouslyDone -> Color(0xFFA7F3D0)
+                                        isTicked -> Color(0xFFFED7AA)
+                                        else -> Color(0xFFE2E8F0)
                                     },
-                                    RoundedCornerShape(4.dp)
+                                    RoundedCornerShape(6.dp)
                                 )
                                 .then(
                                     if (!isLocked) {
@@ -1823,18 +1951,18 @@ fun TaskItemCard(
                                         Modifier
                                     }
                                 )
-                                .padding(horizontal = 10.dp, vertical = 7.dp),
+                                .padding(horizontal = 8.dp, vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(20.dp)
+                                    .size(18.dp)
                                     .border(
-                                        width = 2.dp,
+                                        width = 1.5.dp,
                                         color = when {
                                             isDone || isPreviouslyDone -> RetailGreenDone
                                             isTicked -> RetailOrange
-                                            else -> RetailTextSecondary
+                                            else -> Color(0xFF94A3B8)
                                         },
                                         shape = RoundedCornerShape(3.dp)
                                     )
@@ -1842,7 +1970,7 @@ fun TaskItemCard(
                                         color = when {
                                             isDone || isPreviouslyDone -> RetailGreenDone
                                             isTicked -> RetailOrange
-                                            else -> Color.Transparent
+                                            else -> Color.White
                                         },
                                         shape = RoundedCornerShape(3.dp)
                                     ),
@@ -1853,22 +1981,24 @@ fun TaskItemCard(
                                         imageVector = Icons.Default.Check,
                                         contentDescription = null,
                                         tint = Color.White,
-                                        modifier = Modifier.size(14.dp)
+                                        modifier = Modifier.size(12.dp)
                                     )
                                 }
                             }
 
-                            Spacer(modifier = Modifier.width(10.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
 
                             Text(
                                 text = subTask,
-                                fontSize = 12.sp,
+                                fontSize = 11.sp,
                                 fontWeight = if (isTicked || isDone) FontWeight.Bold else FontWeight.Normal,
                                 color = when {
                                     isDone || isPreviouslyDone -> Color(0xFF1B5E20)
                                     isTicked -> RetailOrange
                                     else -> RetailTextPrimary
                                 },
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f)
                             )
 
@@ -1878,14 +2008,21 @@ fun TaskItemCard(
                                         .background(Color(0xFFC8E6C9), RoundedCornerShape(2.dp))
                                         .padding(horizontal = 4.dp, vertical = 1.dp)
                                 ) {
-                                    Text("VERIFIED", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+                                    Text("VERIFIED", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
                                 }
                             }
                         }
                     }
 
-                    // Action buttons for sub-task submission when not fully locked
-                    if (!isLocked) {
+                    // Balance the row if odd number of subtasks
+                    if (pair.size == 1) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+
+            // Action buttons for sub-task submission when not fully locked
+            if (!isLocked) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -1975,8 +2112,7 @@ fun TaskItemCard(
                             }
                         }
                     }
-                }
-            } else if (task.bulletPoints.isNotBlank()) {
+                } else if (task.bulletPoints.isNotBlank()) {
                 val lines = task.bulletPoints.lines().filter { it.isNotBlank() }
                 Column(modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)) {
                     lines.forEach { line ->
@@ -2312,7 +2448,7 @@ fun TaskItemCard(
             }
         }
     }
-}
+
 
 @Composable
 fun SkipTaskDialog(

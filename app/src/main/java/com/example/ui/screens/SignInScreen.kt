@@ -55,7 +55,7 @@ fun SignInScreen(
     var selectedUserForPin by remember { mutableStateOf<UserEntity?>(null) }
     var pinErrorMessage by remember { mutableStateOf<String?>(null) }
 
-    // Deduplicate users by normalized uppercase name
+    // Deduplicate and separate into Admins and Staff, both alphabetically ordered
     val dedupedUsers = remember(users) {
         val seen = mutableSetOf<String>()
         users.filter { user ->
@@ -66,6 +66,18 @@ fun SignInScreen(
                 true
             }
         }
+    }
+
+    val adminUsers = remember(dedupedUsers) {
+        dedupedUsers
+            .filter { it.role.equals("ADMIN", ignoreCase = true) }
+            .sortedBy { it.name.trim().uppercase() }
+    }
+
+    val regularStaffUsers = remember(dedupedUsers) {
+        dedupedUsers
+            .filter { !it.role.equals("ADMIN", ignoreCase = true) }
+            .sortedBy { it.name.trim().uppercase() }
     }
 
     val todayDateFormatted = remember {
@@ -115,9 +127,11 @@ fun SignInScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.ic_storefront),
-                                    contentDescription = "Store Logo",
-                                    modifier = Modifier.size(38.dp)
+                                    painter = painterResource(id = R.drawable.web_logo),
+                                    contentDescription = "One Stop Store Logo",
+                                    modifier = Modifier
+                                        .size(42.dp)
+                                        .clip(RoundedCornerShape(6.dp))
                                 )
                             }
 
@@ -347,21 +361,52 @@ fun SignInScreen(
                         HorizontalDivider(color = RetailBorder, thickness = 1.dp)
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Grid of Staff Cards on Tablet
+                        // Grid of Staff Cards on Tablet: Admins at top in alphabetical order, followed by Regular Staff in alphabetical order
                         LazyVerticalGrid(
                             columns = GridCells.Adaptive(minSize = 200.dp),
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(dedupedUsers) { user ->
-                                TabletUserCard(
-                                    user = user,
-                                    onClick = {
-                                        selectedUserForPin = user
-                                        pinErrorMessage = null
+                            if (adminUsers.isNotEmpty()) {
+                                item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                                    RosterSectionHeader(
+                                        title = "ADMINISTRATORS",
+                                        count = adminUsers.size,
+                                        badgeColor = RetailOrange
+                                    )
+                                }
+                                items(adminUsers, key = { "tablet_admin_${it.id}" }) { user ->
+                                    TabletUserCard(
+                                        user = user,
+                                        onClick = {
+                                            selectedUserForPin = user
+                                            pinErrorMessage = null
+                                        }
+                                    )
+                                }
+                            }
+
+                            if (regularStaffUsers.isNotEmpty()) {
+                                item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                                    Column {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        RosterSectionHeader(
+                                            title = "STAFF MEMBERS",
+                                            count = regularStaffUsers.size,
+                                            badgeColor = Color(0xFF2563EB)
+                                        )
                                     }
-                                )
+                                }
+                                items(regularStaffUsers, key = { "tablet_staff_${it.id}" }) { user ->
+                                    TabletUserCard(
+                                        user = user,
+                                        onClick = {
+                                            selectedUserForPin = user
+                                            pinErrorMessage = null
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -414,21 +459,50 @@ fun SignInScreen(
                     )
                 }
 
-                // Roster Cards List
+                // Roster Cards List: Admins at top in alphabetical order, followed by Regular Staff in alphabetical order
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(dedupedUsers) { user ->
-                        UserRowItem(
-                            user = user,
-                            onClick = {
-                                selectedUserForPin = user
-                                pinErrorMessage = null
-                            }
-                        )
+                    if (adminUsers.isNotEmpty()) {
+                        item {
+                            RosterSectionHeader(
+                                title = "ADMINISTRATORS",
+                                count = adminUsers.size,
+                                badgeColor = RetailOrange
+                            )
+                        }
+                        items(adminUsers, key = { "phone_admin_${it.id}" }) { user ->
+                            UserRowItem(
+                                user = user,
+                                onClick = {
+                                    selectedUserForPin = user
+                                    pinErrorMessage = null
+                                }
+                            )
+                        }
+                    }
+
+                    if (regularStaffUsers.isNotEmpty()) {
+                        item {
+                            Spacer(modifier = Modifier.height(6.dp))
+                            RosterSectionHeader(
+                                title = "STAFF MEMBERS",
+                                count = regularStaffUsers.size,
+                                badgeColor = Color(0xFF2563EB)
+                            )
+                        }
+                        items(regularStaffUsers, key = { "phone_staff_${it.id}" }) { user ->
+                            UserRowItem(
+                                user = user,
+                                onClick = {
+                                    selectedUserForPin = user
+                                    pinErrorMessage = null
+                                }
+                            )
+                        }
                     }
 
                     item {
@@ -731,6 +805,53 @@ fun UserRowItem(
                 contentDescription = "Select User",
                 tint = Color(0xFF94A3B8),
                 modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun RosterSectionHeader(
+    title: String,
+    count: Int,
+    badgeColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(width = 4.dp, height = 16.dp)
+                    .background(badgeColor, RoundedCornerShape(2.dp))
+            )
+            Text(
+                text = title,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Black,
+                color = RetailTextPrimary,
+                letterSpacing = 0.8.sp
+            )
+        }
+        Surface(
+            color = badgeColor.copy(alpha = 0.12f),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                text = "$count ${if (count == 1) "MEMBER" else "MEMBERS"}",
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = badgeColor,
+                letterSpacing = 0.5.sp,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
             )
         }
     }

@@ -44,20 +44,21 @@ fun ShiftHandoverCard(
     }
 
     val count = relevant.size
-    val countPillText = if (count == 0) "No Handover Notes" else "$count Note${if (count == 1) "" else "s"} for Shift"
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
+    var isExpanded by remember { mutableStateOf(false) }
 
-    Card(
+    Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = RetailSurface),
-        border = BorderStroke(1.dp, RetailBorder),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        color = Color(0xFFF1F5F9),
+        border = BorderStroke(1.dp, Color(0xFFCBD5E1))
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            // Header Row
+        Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)) {
+            // Single-line compact banner row (Height ~44px)
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -68,78 +69,73 @@ fun ShiftHandoverCard(
                     Icon(
                         imageVector = Icons.Default.SwapHoriz,
                         contentDescription = null,
-                        tint = RetailOrange,
-                        modifier = Modifier.size(22.dp)
+                        tint = RetailTextPrimary,
+                        modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = "SHIFT HANDOVER",
-                        fontSize = 14.sp,
+                        text = "Shift Handover:",
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Black,
                         color = RetailTextPrimary,
-                        letterSpacing = 0.5.sp
+                        letterSpacing = 0.2.sp
                     )
-                    Surface(
-                        color = if (count > 0) RetailOrange.copy(alpha = 0.15f) else RetailSurfaceSubtle,
-                        shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(1.dp, if (count > 0) RetailOrange.copy(alpha = 0.3f) else RetailBorder)
-                    ) {
+                    if (count == 0) {
                         Text(
-                            text = countPillText,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Black,
-                            color = if (count > 0) RetailOrange else RetailTextSecondary,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                            text = "No active notes",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = RetailTextSecondary
                         )
+                    } else {
+                        Surface(
+                            onClick = { isExpanded = !isExpanded },
+                            color = RetailOrange.copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(10.dp),
+                            border = BorderStroke(1.dp, RetailOrange.copy(alpha = 0.35f))
+                        ) {
+                            Text(
+                                text = "$count active note${if (count == 1) "" else "s"} ${if (isExpanded) "▴" else "▾"}",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = RetailOrange,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                            )
+                        }
                     }
                 }
 
-                Button(
+                Surface(
                     onClick = onOpenLeaveNote,
-                    colors = ButtonDefaults.buttonColors(containerColor = RetailOrange),
                     shape = RoundedCornerShape(6.dp),
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                    color = Color.White,
+                    border = BorderStroke(1.dp, Color(0xFFCBD5E1)),
                     modifier = Modifier.height(32.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(14.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "+ Leave Note",
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = RetailTextPrimary
+                        )
+                        Text(
+                            text = "Leave Note",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = RetailTextPrimary
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            if (relevant.isEmpty()) {
-                Surface(
-                    color = RetailSurfaceSubtle,
-                    shape = RoundedCornerShape(6.dp),
-                    border = BorderStroke(1.dp, RetailBorder),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "No Notes Left for Next Shift",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Black,
-                            color = RetailTextPrimary
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "Staff can leave notes on deliveries, stock, defrosting, or tasks for the incoming team.",
-                            fontSize = 11.sp,
-                            color = RetailTextSecondary
-                        )
-                    }
-                }
-            } else {
+            if (count > 0 && isExpanded) {
+                Spacer(modifier = Modifier.height(10.dp))
+                HorizontalDivider(color = Color(0xFFCBD5E1), thickness = 1.dp)
+                Spacer(modifier = Modifier.height(10.dp))
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()

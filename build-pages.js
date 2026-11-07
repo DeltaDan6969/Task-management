@@ -15,7 +15,7 @@ const { execSync } = require('child_process');
 console.log('🚀 Starting GitHub Pages & Web Distribution Build...');
 
 const ROOT_DIR = __dirname;
-const WEB_HTML = path.join(ROOT_DIR, 'web', 'index.html');
+const TASKS_SRC = path.join(ROOT_DIR, 'tasks.html');
 const APK_SRC = path.join(ROOT_DIR, 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk');
 
 // 1. Ensure target directories exist
@@ -33,44 +33,34 @@ dirs.forEach(dir => {
   }
 });
 
-// 2. Read source HTML
-if (!fs.existsSync(WEB_HTML)) {
-  console.error(`❌ Source file missing: ${WEB_HTML}`);
+// 2. Read source HTML from tasks.html (Primary Shift Tasks Application)
+if (!fs.existsSync(TASKS_SRC)) {
+  console.error(`❌ Source file missing: ${TASKS_SRC}`);
   process.exit(1);
 }
-const htmlContent = fs.readFileSync(WEB_HTML, 'utf8');
+const htmlContent = fs.readFileSync(TASKS_SRC, 'utf8');
 
-// 3. Mirror HTML and 404 for SPA routing
+// 3. Mirror HTML across all root, web, docs, and standalone app entry points
 const htmlDestinations = [
   path.join(ROOT_DIR, 'index.html'),
+  path.join(ROOT_DIR, 'tasks.html'),
   path.join(ROOT_DIR, '404.html'),
+  path.join(ROOT_DIR, 'web', 'index.html'),
+  path.join(ROOT_DIR, 'web', 'tasks.html'),
   path.join(ROOT_DIR, 'web', '404.html'),
   path.join(ROOT_DIR, 'docs', 'index.html'),
+  path.join(ROOT_DIR, 'docs', 'tasks.html'),
   path.join(ROOT_DIR, 'docs', '404.html'),
   path.join(ROOT_DIR, 'standalone-web-app', 'index.html'),
+  path.join(ROOT_DIR, 'standalone-web-app', 'tasks.html'),
   path.join(ROOT_DIR, 'standalone-web-app', 'public', 'index.html'),
+  path.join(ROOT_DIR, 'standalone-web-app', 'public', 'tasks.html'),
 ];
 
 htmlDestinations.forEach(dest => {
   fs.writeFileSync(dest, htmlContent, 'utf8');
-  console.log(`✅ Synced HTML: ${path.relative(ROOT_DIR, dest)} (${htmlContent.length} bytes)`);
+  console.log(`✅ Synced App: ${path.relative(ROOT_DIR, dest)} (${htmlContent.length} bytes)`);
 });
-
-// 3b. Mirror tasks.html (Shift Task Manager web app)
-const TASKS_HTML = path.join(ROOT_DIR, 'web', 'tasks.html');
-if (fs.existsSync(TASKS_HTML)) {
-  const tasksContent = fs.readFileSync(TASKS_HTML, 'utf8');
-  const tasksDestinations = [
-    path.join(ROOT_DIR, 'tasks.html'),
-    path.join(ROOT_DIR, 'docs', 'tasks.html'),
-    path.join(ROOT_DIR, 'standalone-web-app', 'tasks.html'),
-    path.join(ROOT_DIR, 'standalone-web-app', 'public', 'tasks.html'),
-  ];
-  tasksDestinations.forEach(dest => {
-    fs.writeFileSync(dest, tasksContent, 'utf8');
-    console.log(`✅ Synced Task App: ${path.relative(ROOT_DIR, dest)} (${tasksContent.length} bytes)`);
-  });
-}
 
 // 3c. Mirror website.html (Store Website & Portal)
 const WEBSITE_HTML = path.join(ROOT_DIR, 'web', 'website.html');

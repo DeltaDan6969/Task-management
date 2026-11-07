@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.outlined.Archive
 import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.material.icons.outlined.Settings
@@ -50,6 +51,14 @@ fun BottomNavBar(
             selected = currentScreen == AppScreen.TODAY,
             onClick = { onScreenSelected(AppScreen.TODAY) },
             tag = "nav_today"
+        )
+
+        NavBarItem(
+            label = "HANDOVER",
+            icon = Icons.Default.SwapHoriz,
+            selected = currentScreen == AppScreen.HANDOVER,
+            onClick = { onScreenSelected(AppScreen.HANDOVER) },
+            tag = "nav_handover"
         )
 
         NavBarItem(

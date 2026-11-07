@@ -1583,9 +1583,11 @@ fun BrandingTabContent(
                     contentAlignment = Alignment.Center
                 ) {
                     androidx.compose.foundation.Image(
-                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.ic_storefront),
+                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.web_logo),
                         contentDescription = "Store Logo Icon",
-                        modifier = Modifier.size(44.dp)
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(RoundedCornerShape(6.dp))
                     )
                 }
                 Column {

@@ -430,6 +430,22 @@ private fun ActiveScreenContent(
                 }
             )
         }
+        AppScreen.HANDOVER -> {
+            HandoverScreen(
+                currentUser = activeUser,
+                handovers = allShiftHandovers,
+                users = users,
+                onAddShiftHandover = { targetDate, shiftType, category, priority, message, authorUser ->
+                    viewModel.addShiftHandover(targetDate, shiftType, category, priority, message, authorUser)
+                },
+                onAcknowledgeShiftHandover = { handoverId ->
+                    viewModel.acknowledgeShiftHandover(handoverId, activeUser)
+                },
+                onDeleteShiftHandover = { handoverId ->
+                    viewModel.deleteShiftHandover(handoverId)
+                }
+            )
+        }
         AppScreen.HISTORY -> {
             HistoryScreen(
                 allCompletions = allCompletions,

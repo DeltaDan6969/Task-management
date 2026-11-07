@@ -151,6 +151,12 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
     body {
       background-color: #0F1115;
       color: var(--retail-text-primary);
@@ -160,6 +166,9 @@
       align-items: flex-start;
       margin: 0;
       padding: 0;
+      overflow-y: scroll;
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Mobile Phone Shell Container */
@@ -698,32 +707,38 @@
 
     /* Fixed Mobile Bottom Navigation Bar (High-Contrast iOS Redesign) */
     nav.bottom-nav-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      margin: 0 auto;
-      width: 100%;
-      max-width: 440px;
-      height: calc(var(--app-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
-      min-height: calc(var(--app-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
-      background: #11141B; /* Solid high-contrast executive dark slate - never blends with white cards or light gray */
-      border-top: 2.5px solid var(--retail-orange); /* Vibrant Retail Orange top dividing accent line */
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-around;
-      z-index: 999;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45), 0 -1px 0 rgba(255, 255, 255, 0.08);
-      padding: 6px 8px env(safe-area-inset-bottom, 0px);
-      box-sizing: border-box;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      margin: 0 auto !important;
+      width: 100% !important;
+      max-width: 440px !important;
+      height: calc(var(--app-bottom-nav-height, 66px) + env(safe-area-inset-bottom, 0px)) !important;
+      min-height: calc(var(--app-bottom-nav-height, 66px) + env(safe-area-inset-bottom, 0px)) !important;
+      background: #11141B !important; /* Solid high-contrast executive dark slate - never blends with white cards or light gray */
+      border-top: 2.5px solid var(--retail-orange) !important; /* Vibrant Retail Orange top dividing accent line */
+      display: flex !important;
+      align-items: flex-start !important;
+      justify-content: space-around !important;
+      z-index: 99999 !important;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45), 0 -1px 0 rgba(255, 255, 255, 0.08) !important;
+      padding: 6px 8px calc(max(env(safe-area-inset-bottom, 0px), 12px) + 2px) 8px !important;
+      box-sizing: border-box !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      -webkit-transform: translate3d(0, 0, 0) !important;
+      transform: translate3d(0, 0, 0) !important;
+      will-change: transform !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
     }
 
     [data-theme="dark"] nav.bottom-nav-bar {
-      background: #080A0E;
-      border-top: 2.5px solid var(--retail-orange);
-      box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.7), 0 -1px 0 rgba(255, 255, 255, 0.12);
+      background: #080A0E !important;
+      border-top: 2.5px solid var(--retail-orange) !important;
+      box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.7), 0 -1px 0 rgba(255, 255, 255, 0.12) !important;
     }
 
     .bottom-nav-tab {
@@ -915,6 +930,75 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+    }
+
+    .roster-section-divider {
+      grid-column: 1 / -1 !important;
+      width: 100% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 12px 4px 6px 4px !important;
+      margin-top: 12px !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+
+    [data-theme="dark"] .roster-section-divider {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .roster-section-divider:first-child {
+      margin-top: 0;
+    }
+
+    .roster-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .roster-section-bar {
+      width: 4px;
+      height: 16px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .roster-section-bar.admin {
+      background: #E64A19;
+    }
+
+    .roster-section-bar.staff {
+      background: #2563EB;
+    }
+
+    .roster-section-text {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: #1E293B;
+    }
+
+    [data-theme="dark"] .roster-section-text {
+      color: #F8FAFC;
+    }
+
+    .roster-section-count {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .roster-section-count.admin {
+      background: rgba(230, 74, 25, 0.12);
+      color: #E64A19;
+    }
+
+    .roster-section-count.staff {
+      background: rgba(37, 99, 235, 0.12);
+      color: #2563EB;
     }
 
     .staff-card-phone {
@@ -2587,6 +2671,7 @@
     /* Category Section Header */
     .category-group-phone {
       margin-bottom: 18px;
+      contain: layout style;
     }
 
     .category-header-phone {
@@ -2607,7 +2692,7 @@
       color: #F8FAFC;
     }
 
-    /* Refined Task Card */
+    /* Refined Task Card with 60fps / 120fps GPU accelerated scrolling */
     .task-card-phone {
       background: #FFFFFF;
       border: 1px solid #E5E7EB;
@@ -2616,6 +2701,11 @@
       margin-bottom: 14px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
       position: relative;
+      content-visibility: auto;
+      contain-intrinsic-size: auto 175px;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      will-change: transform;
       transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
     }
 
@@ -3660,18 +3750,22 @@
 
     /* Mobile Bottom Sheets & Modals */
     .bottom-sheet-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(2px);
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      background: rgba(0, 0, 0, 0.72) !important;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       align-items: center;
-      z-index: 1000;
+      z-index: 100000 !important; /* Always sits ABOVE fixed bottom-nav-bar (z-index 99999) */
+      -webkit-transform: translate3d(0, 0, 0) !important;
+      transform: translate3d(0, 0, 0) !important;
+      overscroll-behavior: contain;
     }
 
     .bottom-sheet-card {
@@ -3681,11 +3775,23 @@
       color: var(--retail-text-primary);
       border-radius: 20px 20px 0 0;
       padding: 20px 16px;
-      padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-      max-height: 85vh;
+      padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 16px) + 24px) !important;
+      box-shadow: 0 -4px 30px rgba(0,0,0,0.5);
+      max-height: 88vh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      box-sizing: border-box;
       animation: slideUp 0.25s ease-out;
+    }
+
+    /* Automatically hide bottom menu bar when ANY modal or bottom sheet is open */
+    body:has(.bottom-sheet-overlay:not([style*="display: none"])) nav.bottom-nav-bar,
+    body.modal-open nav.bottom-nav-bar {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
     }
 
     @keyframes slideUp {
@@ -3760,9 +3866,12 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin: 14px 0;
-      max-height: 320px;
+      margin: 10px 0;
+      max-height: 52vh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      padding-right: 4px;
     }
 
     .checklist-row-phone {
@@ -4300,23 +4409,28 @@
     }
 
     /* Tablet Bottom Navigation Dock - Edge-to-Edge Spanning Across Screen */
-    #appShell.tablet-mode nav.bottom-nav-bar {
+    #appShell.tablet-mode nav.bottom-nav-bar,
+    #appShell.tablet-mode ~ nav.bottom-nav-bar,
+    body.tablet-viewport nav.bottom-nav-bar {
       width: 100% !important;
       max-width: 100% !important;
       left: 0 !important;
       right: 0 !important;
       bottom: 0 !important;
-      transform: none !important;
+      -webkit-transform: translate3d(0, 0, 0) !important;
+      transform: translate3d(0, 0, 0) !important;
       border-radius: 0 !important;
       margin: 0 !important;
-      padding: 8px 32px calc(env(safe-area-inset-bottom, 0px) + 8px) 32px !important;
+      padding: 8px 32px calc(max(env(safe-area-inset-bottom, 0px), 12px) + 8px) 32px !important;
       box-sizing: border-box !important;
-      display: flex !important;
       justify-content: space-around !important;
       box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.45) !important;
+      z-index: 99999 !important;
     }
 
-    #appShell.tablet-mode .bottom-nav-tab {
+    #appShell.tablet-mode .bottom-nav-tab,
+    #appShell.tablet-mode ~ nav.bottom-nav-bar .bottom-nav-tab,
+    body.tablet-viewport .bottom-nav-tab {
       height: 52px !important;
       flex: 1 !important;
       max-width: 260px !important;
@@ -4329,7 +4443,9 @@
       border-radius: 12px !important;
     }
 
-    #appShell.tablet-mode .bottom-nav-tab .material-icons {
+    #appShell.tablet-mode .bottom-nav-tab .material-icons,
+    #appShell.tablet-mode ~ nav.bottom-nav-bar .bottom-nav-tab .material-icons,
+    body.tablet-viewport .bottom-nav-tab .material-icons {
       font-size: 22px !important;
     }
 
@@ -5175,30 +5291,30 @@
 
     </main>
 
-    <!-- Mobile Fixed Bottom Navigation Bar -->
-    <nav class="bottom-nav-bar" id="mobileBottomNav" style="display: none;">
-      <div class="bottom-nav-tab active" id="tabNavToday" onclick="navigateToScreen('TODAY')">
-        <span class="material-icons">checklist</span>
-        <span>Today</span>
-      </div>
-      <div class="bottom-nav-tab" id="tabNavHistory" onclick="navigateToScreen('HISTORY')">
-        <span class="material-icons">history</span>
-        <span>History</span>
-      </div>
-      <div class="bottom-nav-tab" id="tabNavAlerts" onclick="openNotificationCenter()">
-        <span class="material-icons" style="position: relative;">
-          notifications
-          <span class="nav-notif-dot" id="navNotifDot" style="display: none;"></span>
-        </span>
-        <span>Alerts</span>
-      </div>
-      <div class="bottom-nav-tab" id="tabNavAdmin" onclick="handleAdminTabClick()" style="display: none;">
-        <span class="material-icons">admin_panel_settings</span>
-        <span>Admin</span>
-      </div>
-    </nav>
-
   </div> <!-- End #appShell -->
+
+  <!-- Mobile Fixed Bottom Navigation Bar (Top-level viewport fixed dock) -->
+  <nav class="bottom-nav-bar" id="mobileBottomNav" style="display: none;">
+    <div class="bottom-nav-tab active" id="tabNavToday" onclick="navigateToScreen('TODAY')">
+      <span class="material-icons">checklist</span>
+      <span>Today</span>
+    </div>
+    <div class="bottom-nav-tab" id="tabNavHistory" onclick="navigateToScreen('HISTORY')">
+      <span class="material-icons">history</span>
+      <span>History</span>
+    </div>
+    <div class="bottom-nav-tab" id="tabNavAlerts" onclick="openNotificationCenter()">
+      <span class="material-icons" style="position: relative;">
+        notifications
+        <span class="nav-notif-dot" id="navNotifDot" style="display: none;"></span>
+      </span>
+      <span>Alerts</span>
+    </div>
+    <div class="bottom-nav-tab" id="tabNavAdmin" onclick="handleAdminTabClick()" style="display: none;">
+      <span class="material-icons">admin_panel_settings</span>
+      <span>Admin</span>
+    </div>
+  </nav>
 
   <!-- ============================================== -->
   <!-- NOTIFICATION CENTER BOTTOM SHEET MODAL -->
@@ -5384,14 +5500,14 @@
 
   <!-- 2. SUBTASKS CHECKLIST SIGN-OFF BOTTOM SHEET -->
   <div class="bottom-sheet-overlay" id="subtasksModal" style="display: none;">
-    <div class="bottom-sheet-card">
+    <div class="bottom-sheet-card" style="max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0;">
       <div class="sheet-handle"></div>
-      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 0 4px;">
         <div>
-          <h3 id="subtasksModalTitle" style="font-size: 15px; font-weight: 900;">Task Checklist</h3>
-          <p id="subtasksModalCat" style="font-size: 10px; font-weight: 800; color: var(--retail-orange); text-transform: uppercase; margin-top: 2px;"></p>
+          <h3 id="subtasksModalTitle" style="font-size: 16px; font-weight: 900; margin: 0;">Task Checklist</h3>
+          <p id="subtasksModalCat" style="font-size: 11px; font-weight: 800; color: var(--retail-orange); text-transform: uppercase; margin-top: 2px;"></p>
         </div>
-        <span class="material-icons" style="cursor: pointer; color: var(--retail-text-secondary);" onclick="closeSubtasksModal()">close</span>
+        <span class="material-icons" style="cursor: pointer; color: var(--retail-text-secondary); font-size: 24px; padding: 4px;" onclick="closeSubtasksModal()">close</span>
       </div>
 
       <!-- Urgent For Today Toggle inside Modal -->
@@ -5406,24 +5522,26 @@
         </label>
       </div>
 
-      <div class="checklist-items-phone" id="subtasksChecklistContainer"></div>
+      <!-- Scrollable checklist items area -->
+      <div class="checklist-items-phone" id="subtasksChecklistContainer" style="flex: 1; min-height: 90px; max-height: 50vh; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; margin: 10px 0; padding-right: 4px;"></div>
 
-      <div style="display: flex; gap: 8px; margin-top: 14px;">
-        <button class="btn-mobile-full" onclick="submitSubtasksSignOff(true)" style="background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D;">
+      <!-- Pinned Action Buttons Dock at Bottom of Modal (Always accessible) -->
+      <div style="display: flex; gap: 8px; padding-top: 12px; padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 16px) + 16px); border-top: 1px solid var(--retail-border); background: var(--retail-surface); flex-shrink: 0; box-sizing: border-box;">
+        <button class="btn-mobile-full" onclick="submitSubtasksSignOff(true)" style="background: #FEF3C7; color: #92400E; border: 1.5px solid #FCD34D; font-weight: 800; min-height: 48px; border-radius: 10px;">
           SUBMIT PARTIAL
         </button>
-        <button class="btn-mobile-full full-green" onclick="submitSubtasksSignOff(false)">
-          <span class="material-icons" style="font-size: 16px;">done_all</span> SIGN OFF ALL
+        <button class="btn-mobile-full full-green" onclick="submitSubtasksSignOff(false)" style="font-weight: 800; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+          <span class="material-icons" style="font-size: 18px;">done_all</span> SIGN OFF ALL
         </button>
-        <button class="btn-mobile-full" onclick="openSkipFromSubtasks()" style="background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D; flex: 0.6; font-weight: 900;">
-          <span class="material-icons" style="font-size: 16px;">warning</span> SKIP
+        <button class="btn-mobile-full" onclick="openSkipFromSubtasks()" style="background: #FFF3E0; color: #E65100; border: 1.5px solid #FFB74D; flex: 0.7; font-weight: 900; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+          <span class="material-icons" style="font-size: 18px;">warning</span> SKIP
         </button>
       </div>
     </div>
   </div>
 
   <!-- 2B. SKIP TASK BOTTOM SHEET / MODAL -->
-  <div class="bottom-sheet-overlay" id="skipTaskModal" style="display: none; z-index: 1000;">
+  <div class="bottom-sheet-overlay" id="skipTaskModal" style="display: none;">
     <div class="bottom-sheet-card">
       <div class="sheet-handle"></div>
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
@@ -6394,7 +6512,11 @@
       { id: "4", name: "JAKE", initials: "J", role: "STAFF", pinHash: "eeb39b7b99a7d94bff00778e56d206554116eac22e9440537b77b624b04e0917", pinSalt: "1e4ed180c9aab56a82b4e07f3e23121e", active: true },
       { id: "5", name: "OMID", initials: "O", role: "ADMIN", pinHash: "e6b18127e3a0f4e96b6342049863cb6e56642025c77c6d57b79bb9b3ed93b0b8", pinSalt: "66f5d23977d697f35ea0b34304caa0db", active: true },
       { id: "6", name: "ELYAS", initials: "E", role: "STAFF", pinHash: "de69c37bfffb3cc1d8f8a45901c30da342cf9e1e030aec3723c44d0a2bbc3de1", pinSalt: "bf3dc2c695c2741f85d14470803b7601", active: true },
-      { id: "7", name: "SAM", initials: "S", role: "STAFF", pinHash: "97621d22ea1ae7819c1246bf18244bcad79d8537e6eec898f10f5c90cd647432", pinSalt: "62f4786e5a936547d0b575111e26edbc", active: true }
+      { id: "7", name: "SAM", initials: "S", role: "STAFF", pinHash: "97621d22ea1ae7819c1246bf18244bcad79d8537e6eec898f10f5c90cd647432", pinSalt: "62f4786e5a936547d0b575111e26edbc", active: true },
+      { id: "8", name: "KYLE", initials: "K", role: "STAFF", pinHash: "", pinSalt: "", active: true, mustChangePin: true },
+      { id: "9", name: "FREDDY", initials: "F", role: "STAFF", pinHash: "", pinSalt: "", active: true, mustChangePin: true },
+      { id: "10", name: "LUNA", initials: "L", role: "STAFF", pinHash: "", pinSalt: "", active: true, mustChangePin: true },
+      { id: "11", name: "TEST", initials: "T", role: "STAFF", pinHash: "", pinSalt: "", active: true, mustChangePin: true }
     ];
 
     function deduplicateUsers(userList) {
@@ -6407,7 +6529,7 @@
           map.set(key, { ...u });
         } else {
           const existing = map.get(key);
-          // Prefer default canonical ID ("1", "3", "4", "5", "6", "7") if available
+          // Prefer default canonical ID if available
           const isExistingCanonical = defaultUsers.some(d => String(d.id) === String(existing.id));
           const isUCanonical = defaultUsers.some(d => String(d.id) === String(u.id));
           if (!isExistingCanonical && isUCanonical) {
@@ -6435,7 +6557,7 @@
         const cached = localStorage.getItem("retail_staff_roster_cache");
         if (cached) {
           const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) return deduplicateUsers(parsed);
+          if (Array.isArray(parsed) && parsed.length > 0) return deduplicateUsers([...defaultUsers, ...parsed]);
         }
       } catch (e) {}
       return deduplicateUsers([...defaultUsers]);
@@ -6476,6 +6598,104 @@
       { id: "38", categoryId: "7", title: "Crisps Refill", bulletPoints: "Check All crates\nCondence crates\nMove boxes to crates\nFace after filling", priority: "HIGH", daysOfWeek: "TUESDAY,FRIDAY,SUNDAY", sortOrder: 10, active: true },
       { id: "33", categoryId: "9", title: "Behind counter tidy", bulletPoints: "De clutter floor\nTidy white counter", priority: "LOW", daysOfWeek: "ALL", sortOrder: 11, active: true }
     ];
+
+    // -------------------------------------------------------------
+    // Full Application State Persistence (Local Cache for Instant Reloads)
+    // -------------------------------------------------------------
+    function saveAppStateToLocalStorage() {
+      try {
+        if (categories && categories.length > 0) {
+          localStorage.setItem("retail_categories_cache", JSON.stringify(categories));
+        }
+        if (tasks && tasks.length > 0) {
+          localStorage.setItem("retail_tasks_cache", JSON.stringify(tasks));
+        }
+        if (completionsMap && Object.keys(completionsMap).length > 0) {
+          localStorage.setItem("retail_completions_cache", JSON.stringify(completionsMap));
+        }
+        if (allCompletions && allCompletions.length > 0) {
+          localStorage.setItem("retail_all_completions_cache", JSON.stringify(allCompletions));
+        }
+        if (taskNotes && taskNotes.length > 0) {
+          localStorage.setItem("retail_task_notes_cache", JSON.stringify(taskNotes));
+        }
+        if (urgentTasksMap && Object.keys(urgentTasksMap).length > 0) {
+          localStorage.setItem("retail_urgent_tasks_cache", JSON.stringify(urgentTasksMap));
+        }
+        if (storeConfig) {
+          localStorage.setItem("retail_store_config_cache", JSON.stringify(storeConfig));
+        }
+        if (users && users.length > 0) {
+          localStorage.setItem("retail_staff_roster_cache", JSON.stringify(users));
+        }
+      } catch (e) {
+        console.warn("Could not save app state to localStorage:", e);
+      }
+    }
+
+    function loadAppStateFromLocalStorage() {
+      try {
+        const cachedCats = localStorage.getItem("retail_categories_cache");
+        if (cachedCats) {
+          const parsed = JSON.parse(cachedCats);
+          if (Array.isArray(parsed) && parsed.length > 0) categories = parsed;
+        }
+        if (!categories || categories.length === 0) {
+          categories = [...defaultCategories];
+        }
+
+        const cachedTasks = localStorage.getItem("retail_tasks_cache");
+        if (cachedTasks) {
+          const parsed = JSON.parse(cachedTasks);
+          if (Array.isArray(parsed) && parsed.length > 0) tasks = parsed;
+        }
+        if (!tasks || tasks.length === 0) {
+          tasks = [...defaultTasks];
+        }
+
+        const cachedComps = localStorage.getItem("retail_completions_cache");
+        if (cachedComps) {
+          completionsMap = JSON.parse(cachedComps) || {};
+        }
+
+        const cachedAllComps = localStorage.getItem("retail_all_completions_cache");
+        if (cachedAllComps) {
+          allCompletions = JSON.parse(cachedAllComps) || [];
+        }
+
+        const cachedNotes = localStorage.getItem("retail_task_notes_cache");
+        if (cachedNotes) {
+          taskNotes = JSON.parse(cachedNotes) || [];
+        }
+
+        const cachedUrgent = localStorage.getItem("retail_urgent_tasks_cache");
+        if (cachedUrgent) {
+          urgentTasksMap = JSON.parse(cachedUrgent) || {};
+        }
+
+        const cachedConfig = localStorage.getItem("retail_store_config_cache");
+        if (cachedConfig) {
+          storeConfig = { ...storeConfig, ...JSON.parse(cachedConfig) };
+        }
+
+        const cachedUsers = localStorage.getItem("retail_staff_roster_cache");
+        if (cachedUsers) {
+          const parsed = JSON.parse(cachedUsers);
+          if (Array.isArray(parsed) && parsed.length > 0) users = deduplicateUsers([...defaultUsers, ...parsed]);
+        }
+        if (!users || users.length === 0) {
+          users = deduplicateUsers([...defaultUsers]);
+        }
+      } catch (e) {
+        console.warn("Could not load app state from localStorage:", e);
+        if (!categories || categories.length === 0) categories = [...defaultCategories];
+        if (!tasks || tasks.length === 0) tasks = [...defaultTasks];
+        if (!users || users.length === 0) users = deduplicateUsers([...defaultUsers]);
+      }
+    }
+
+    // Immediately load cached state on script execution to eliminate blank page on reload
+    loadAppStateFromLocalStorage();
 
     // -------------------------------------------------------------
     // Shift Clock
@@ -6608,9 +6828,25 @@
             }
           });
 
-          users = deduplicateUsers(rawUsers);
+          users = deduplicateUsers([...defaultUsers, ...rawUsers]);
+          // Sync any missing default staff account to Firestore so it is stored in cloud
+          defaultUsers.forEach(defU => {
+            const inCloud = rawUsers.some(r => (r.name || "").trim().toUpperCase() === defU.name.toUpperCase());
+            if (!inCloud) {
+              db.collection("users").doc(String(defU.id)).set({
+                ...defU,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true }).catch(() => {});
+            }
+          });
         } else {
           users = deduplicateUsers([...defaultUsers]);
+          defaultUsers.forEach(defU => {
+            db.collection("users").doc(String(defU.id)).set({
+              ...defU,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }).catch(() => {});
+          });
         }
         try {
           localStorage.setItem("retail_staff_roster_cache", JSON.stringify(users));
@@ -6632,6 +6868,7 @@
           });
           categories.sort((a,b) => (a.sortOrder || 0) - (b.sortOrder || 0));
         }
+        saveAppStateToLocalStorage();
         renderCategoryFilterChips();
         renderTodayTasks();
         renderAdminCategoriesPhone();
@@ -6657,6 +6894,7 @@
           knownTaskIds = new Set(tasks.map(t => t.id));
           isInitialTasksSnapshot = false;
           tasks.sort((a,b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+          saveAppStateToLocalStorage();
 
           // Trigger notifications for new tasks delivered from cloud
           if (!isFirst && newlyAddedTasks.length > 0) {
@@ -6684,6 +6922,7 @@
               completionsMap[`${comp.taskId}_${comp.dateString}`] = comp;
             }
           });
+          saveAppStateToLocalStorage();
           renderTodayTasks();
           renderHistoryFeed();
           updateShiftMetrics();
@@ -6697,6 +6936,7 @@
           snapshot.forEach(doc => {
             taskNotes.push({ id: doc.id, ...doc.data() });
           });
+          saveAppStateToLocalStorage();
           renderTodayTasks();
         }
       }, err => console.warn("Notes listener:", err));
@@ -6711,6 +6951,7 @@
           });
           loadPhotosFromLocalStorage();
           persistPhotosToLocalStorage();
+          saveAppStateToLocalStorage();
           renderTodayTasks();
           renderAdminPhotoGalleryPhone();
         }
@@ -6736,6 +6977,7 @@
             }
           });
           isInitialUrgentSnapshot = false;
+          saveAppStateToLocalStorage();
           renderTodayTasks();
 
           // Dispatch real-time alert if colleague flagged task urgent from another device
@@ -6762,6 +7004,7 @@
           const localOnly = shiftHandovers.filter(h => h.id && String(h.id).startsWith("local_") && !cloudHandovers.some(c => c.id === h.id));
           shiftHandovers = [...cloudHandovers, ...localOnly];
           persistHandoversToLocalStorage();
+          saveAppStateToLocalStorage();
           renderShiftHandoverWidget();
         }
       }, err => {
@@ -6769,54 +7012,239 @@
       });
     }
 
-    // Manual Full Cloud Sync
-    async function syncWithCloudNow() {
+    let isCloudSyncInProgress = false;
+
+    // Comprehensive Bi-Directional Cloud Synchronization
+    // Automatically invoked on page load, tab focus, network recovery, and periodic timer
+    async function syncWithCloudNow(options = {}) {
+      const silent = options && options.silent === true;
+      if (isCloudSyncInProgress) return;
+      isCloudSyncInProgress = true;
+
       const dot = document.getElementById("cloudDot");
-      dot.className = "status-dot syncing";
-      showToast("Syncing with Google Cloud...");
+      const statusText = document.getElementById("cloudStatusText");
+      if (dot) dot.className = "status-dot syncing";
+      if (!silent) showToast("Syncing with Google Cloud...");
 
       try {
-        for (const cat of categories) {
-          await db.collection("categories").doc(cat.id.toString()).set({
-            name: cat.name,
-            sortOrder: cat.sortOrder || 1,
-            active: cat.active !== false,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
+        if (!db) throw new Error("Firestore not initialized");
+
+        // 1. Fetch Store Config
+        try {
+          const cfgSnap = await db.collection("store_config").get();
+          if (cfgSnap && !cfgSnap.empty) {
+            cfgSnap.forEach(doc => {
+              const d = doc.data();
+              if (d && d.key && d.value) storeConfig[d.key] = d.value;
+            });
+            applyStoreBranding();
+          }
+        } catch (e) {
+          console.warn("Auto-sync store_config:", e);
         }
 
-        for (const t of tasks) {
-          await db.collection("tasks").doc(t.id.toString()).set({
-            categoryId: t.categoryId.toString(),
-            title: t.title,
-            bulletPoints: t.bulletPoints || "",
-            priority: t.priority || "MEDIUM",
-            daysOfWeek: t.daysOfWeek || "ALL",
-            sortOrder: t.sortOrder || 1,
-            active: t.active !== false,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
+        // 2. Fetch Users
+        try {
+          const usersSnap = await db.collection("users").get();
+          if (usersSnap && !usersSnap.empty) {
+            const rawUsers = [];
+            usersSnap.forEach(doc => rawUsers.push({ id: doc.id, ...doc.data() }));
+            users = deduplicateUsers([...defaultUsers, ...rawUsers]);
+          } else {
+            // Seed cloud users if empty
+            for (const u of defaultUsers) {
+              await db.collection("users").doc(String(u.id)).set({
+                ...u,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true }).catch(() => {});
+            }
+          }
+        } catch (e) {
+          console.warn("Auto-sync users:", e);
         }
 
-        for (const u of users) {
-          await db.collection("users").doc(u.id.toString()).set({
-            name: u.name,
-            initials: u.initials,
-            role: u.role || "STAFF",
-            pinHash: u.pinHash || "1234",
-            active: u.active !== false,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
+        // 3. Fetch Categories
+        try {
+          const catSnap = await db.collection("categories").get();
+          if (catSnap && !catSnap.empty) {
+            const cloudCats = [];
+            catSnap.forEach(doc => cloudCats.push({ id: doc.id, ...doc.data() }));
+            cloudCats.sort((a,b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+            categories = cloudCats;
+          } else {
+            // Seed cloud categories if empty
+            for (const c of defaultCategories) {
+              await db.collection("categories").doc(String(c.id)).set({
+                name: c.name,
+                sortOrder: c.sortOrder || 1,
+                active: c.active !== false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true }).catch(() => {});
+            }
+            if (!categories || categories.length === 0) categories = [...defaultCategories];
+          }
+        } catch (e) {
+          console.warn("Auto-sync categories:", e);
         }
 
-        dot.className = "status-dot";
-        showToast("✓ Live sync with Google Cloud complete!");
-      } catch(e) {
-        console.error("Manual sync:", e);
-        dot.className = "status-dot";
-        showToast("Sync complete.");
+        // 4. Fetch Tasks
+        try {
+          const tasksSnap = await db.collection("tasks").get();
+          if (tasksSnap && !tasksSnap.empty) {
+            const cloudTasks = [];
+            tasksSnap.forEach(doc => cloudTasks.push({ id: doc.id, ...doc.data() }));
+            cloudTasks.sort((a,b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+            tasks = cloudTasks;
+          } else {
+            // Seed cloud tasks if empty
+            for (const t of defaultTasks) {
+              await db.collection("tasks").doc(String(t.id)).set({
+                categoryId: String(t.categoryId),
+                title: t.title,
+                bulletPoints: t.bulletPoints || "",
+                priority: t.priority || "MEDIUM",
+                daysOfWeek: t.daysOfWeek || "ALL",
+                sortOrder: t.sortOrder || 1,
+                active: t.active !== false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true }).catch(() => {});
+            }
+            if (!tasks || tasks.length === 0) tasks = [...defaultTasks];
+          }
+        } catch (e) {
+          console.warn("Auto-sync tasks:", e);
+        }
+
+        // 5. Fetch Task Completions
+        try {
+          const compSnap = await db.collection("task_completions").get();
+          if (compSnap) {
+            const newCompMap = {};
+            const newAllComp = [];
+            compSnap.forEach(doc => {
+              const comp = { id: doc.id, ...doc.data() };
+              newAllComp.push(comp);
+              if (comp.taskId && comp.dateString) {
+                newCompMap[`${comp.taskId}_${comp.dateString}`] = comp;
+              }
+            });
+            completionsMap = newCompMap;
+            allCompletions = newAllComp;
+          }
+        } catch (e) {
+          console.warn("Auto-sync completions:", e);
+        }
+
+        // 6. Fetch Notes
+        try {
+          const notesSnap = await db.collection("task_notes").get();
+          if (notesSnap) {
+            const newNotes = [];
+            notesSnap.forEach(doc => newNotes.push({ id: doc.id, ...doc.data() }));
+            taskNotes = newNotes;
+          }
+        } catch (e) {
+          console.warn("Auto-sync notes:", e);
+        }
+
+        // 7. Fetch Photos
+        try {
+          const photosSnap = await db.collection("task_photos").get();
+          if (photosSnap) {
+            const newPhotos = [];
+            photosSnap.forEach(doc => newPhotos.push({ id: doc.id, ...doc.data() }));
+            taskPhotos = newPhotos;
+            loadPhotosFromLocalStorage();
+            persistPhotosToLocalStorage();
+          }
+        } catch (e) {
+          console.warn("Auto-sync photos:", e);
+        }
+
+        // 8. Fetch Urgent Overrides
+        try {
+          const urgSnap = await db.collection("task_urgent_overrides").get();
+          if (urgSnap) {
+            const newUrgMap = {};
+            urgSnap.forEach(doc => {
+              const data = doc.data();
+              if (data && data.isUrgent && data.taskId && data.dateString) {
+                newUrgMap[`${data.taskId}_${data.dateString}`] = { id: doc.id, ...data };
+              }
+            });
+            urgentTasksMap = newUrgMap;
+          }
+        } catch (e) {
+          console.warn("Auto-sync urgent overrides:", e);
+        }
+
+        // 9. Fetch Shift Handovers
+        try {
+          const handSnap = await db.collection("shift_handovers").get();
+          if (handSnap) {
+            const cloudHandovers = [];
+            handSnap.forEach(doc => cloudHandovers.push({ id: doc.id, ...doc.data() }));
+            const localOnly = shiftHandovers.filter(h => h.id && String(h.id).startsWith("local_") && !cloudHandovers.some(c => c.id === h.id));
+            shiftHandovers = [...cloudHandovers, ...localOnly];
+            persistHandoversToLocalStorage();
+          }
+        } catch (e) {
+          console.warn("Auto-sync handovers:", e);
+        }
+
+        // Save fresh state to localStorage
+        saveAppStateToLocalStorage();
+
+        // Re-render UI components
+        renderCategoryFilterChips();
+        renderTodayTasks();
+        renderStaffRosterPhone();
+        renderAdminUsersPhone();
+        renderAdminCategoriesPhone();
+        renderAdminTasksPhone();
+        renderHistoryFeed();
+        updateShiftMetrics();
+        renderShiftHandoverWidget();
+
+        if (dot) {
+          dot.className = "status-dot";
+          dot.style.background = "#4CAF50";
+        }
+        if (statusText) statusText.innerText = "CLOUD ON";
+        if (!silent) showToast("✓ Live sync with Google Cloud complete!");
+      } catch (e) {
+        console.error("Auto-sync error:", e);
+        if (dot) dot.className = "status-dot";
+        if (!silent) showToast("Sync finished.");
+      } finally {
+        isCloudSyncInProgress = false;
       }
     }
+
+    // Auto-Sync Event Triggers:
+    // 1. When switching back to the browser tab or unlocking the device
+    window.addEventListener("focus", () => {
+      syncWithCloudNow({ silent: true });
+    });
+
+    // 2. When tab visibility state changes back to visible
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        syncWithCloudNow({ silent: true });
+      }
+    });
+
+    // 3. When the network connection is restored
+    window.addEventListener("online", () => {
+      syncWithCloudNow({ silent: true });
+    });
+
+    // 4. Periodic background sync every 15 seconds to ensure always up-to-date
+    setInterval(() => {
+      if (document.visibilityState === "visible") {
+        syncWithCloudNow({ silent: true });
+      }
+    }, 15000);
 
     function applyStoreBranding() {
       const name = storeConfig.store_name || "ONESTOP CANTERBURY";
@@ -6861,11 +7289,11 @@
 
       if (screen === 'SIGN_IN') {
         document.getElementById("screenSignIn").style.display = "block";
-        navEl.style.display = "none";
-        userBar.style.display = "none";
+        if (navEl) navEl.style.setProperty("display", "none", "important");
+        if (userBar) userBar.style.setProperty("display", "none", "important");
       } else {
-        navEl.style.display = "flex";
-        userBar.style.display = "flex";
+        if (navEl) navEl.style.setProperty("display", "flex", "important");
+        if (userBar) userBar.style.setProperty("display", "flex", "important");
 
         if (screen === 'TODAY') {
           document.getElementById("screenToday").style.display = "block";
@@ -6937,7 +7365,16 @@
       container.innerHTML = "";
 
       const uniqueActiveUsers = deduplicateUsers(users.filter(u => u.active !== false));
-      uniqueActiveUsers.forEach(user => {
+
+      const admins = uniqueActiveUsers
+        .filter(u => (u.role || '').toUpperCase().includes('ADMIN'))
+        .sort((a, b) => (a.name || '').trim().localeCompare((b.name || '').trim(), undefined, { sensitivity: 'base' }));
+
+      const staff = uniqueActiveUsers
+        .filter(u => !(u.role || '').toUpperCase().includes('ADMIN'))
+        .sort((a, b) => (a.name || '').trim().localeCompare((b.name || '').trim(), undefined, { sensitivity: 'base' }));
+
+      function createCard(user) {
         const isNew = isUserPendingFirstPin(user);
         const card = document.createElement("div");
         card.className = "staff-card-phone";
@@ -6962,8 +7399,31 @@
           </div>
           <span class="material-icons staff-card-arrow">chevron_right</span>
         `;
-        container.appendChild(card);
-      });
+        return card;
+      }
+
+      function createHeader(title, count, badgeClass) {
+        const header = document.createElement("div");
+        header.className = "roster-section-divider";
+        header.innerHTML = `
+          <div class="roster-section-title">
+            <span class="roster-section-bar ${badgeClass}"></span>
+            <span class="roster-section-text">${title}</span>
+          </div>
+          <span class="roster-section-count ${badgeClass}">${count} ${count === 1 ? 'MEMBER' : 'MEMBERS'}</span>
+        `;
+        return header;
+      }
+
+      if (admins.length > 0) {
+        container.appendChild(createHeader("ADMINISTRATORS", admins.length, "admin"));
+        admins.forEach(user => container.appendChild(createCard(user)));
+      }
+
+      if (staff.length > 0) {
+        container.appendChild(createHeader("STAFF MEMBERS", staff.length, "staff"));
+        staff.forEach(user => container.appendChild(createCard(user)));
+      }
     }
 
     function openFirstLoginModalForUser(user) {
@@ -7041,6 +7501,10 @@
       }
 
       activeStaffUser = selectedRosterUser;
+      try {
+        sessionStorage.setItem("onestop_active_staff_user", JSON.stringify(activeStaffUser));
+        localStorage.setItem("onestop_active_staff_user", JSON.stringify(activeStaffUser));
+      } catch (_) {}
       document.getElementById("sessionUserAvatar").innerText = activeStaffUser.initials;
       document.getElementById("sessionUserName").innerText = activeStaffUser.name;
       document.getElementById("sessionUserRole").innerText = activeStaffUser.role;
@@ -7143,6 +7607,10 @@
 
       if (isValid) {
         activeStaffUser = selectedRosterUser;
+        try {
+          sessionStorage.setItem("onestop_active_staff_user", JSON.stringify(activeStaffUser));
+          localStorage.setItem("onestop_active_staff_user", JSON.stringify(activeStaffUser));
+        } catch (_) {}
         document.getElementById("sessionUserAvatar").innerText = activeStaffUser.initials;
         document.getElementById("sessionUserName").innerText = activeStaffUser.name;
         document.getElementById("sessionUserRole").innerText = activeStaffUser.role;
@@ -7159,6 +7627,10 @@
 
     function signOutStaff() {
       activeStaffUser = null;
+      try {
+        sessionStorage.removeItem("onestop_active_staff_user");
+        localStorage.removeItem("onestop_active_staff_user");
+      } catch (_) {}
       if (inactivityTimer) clearTimeout(inactivityTimer);
       navigateToScreen('SIGN_IN');
       showToast("Signed out successfully.");
@@ -7355,13 +7827,46 @@
       container.innerHTML = "";
       renderShiftHandoverWidget();
 
+      // Pre-index note and photo counts for O(1) instantaneous lookup
+      const taskNoteCountMap = {};
+      if (Array.isArray(taskNotes)) {
+        for (let i = 0; i < taskNotes.length; i++) {
+          const n = taskNotes[i];
+          if (n && n.dateString === selectedDate) {
+            taskNoteCountMap[n.taskId] = (taskNoteCountMap[n.taskId] || 0) + 1;
+          }
+        }
+      }
+      const taskPhotoCountMap = {};
+      if (Array.isArray(taskPhotos)) {
+        for (let i = 0; i < taskPhotos.length; i++) {
+          const p = taskPhotos[i];
+          if (p && p.dateString === selectedDate) {
+            taskPhotoCountMap[p.taskId] = (taskPhotoCountMap[p.taskId] || 0) + 1;
+          }
+        }
+      }
+
+      // Group scheduled tasks for selectedDate once to eliminate quadratic scanning
+      const tasksByCat = {};
+      for (let i = 0; i < tasks.length; i++) {
+        const t = tasks[i];
+        if (isTaskScheduledForDate(t, selectedDate)) {
+          if (!tasksByCat[t.categoryId]) tasksByCat[t.categoryId] = [];
+          tasksByCat[t.categoryId].push(t);
+        }
+      }
+
+      const fragment = document.createDocumentFragment();
+      let totalRenderedSections = 0;
+
       let filteredCats = categories;
       if (activeFilterCategory !== 'ALL') {
         filteredCats = categories.filter(c => c.id == activeFilterCategory);
       }
 
       filteredCats.forEach(cat => {
-        let catTasks = tasks.filter(t => t.categoryId == cat.id && isTaskScheduledForDate(t, selectedDate));
+        let catTasks = tasksByCat[cat.id] ? [...tasksByCat[cat.id]] : [];
 
         // Apply Priority Filter
         if (activeFilterPriority !== 'ALL') {
@@ -7573,8 +8078,8 @@
           }
 
           // 6. Secondary Actions Row (3-column grid)
-          const noteCount = taskNotes.filter(n => n.taskId == task.id && n.dateString == selectedDate).length;
-          const photoCount = taskPhotos.filter(p => p.taskId == task.id && p.dateString == selectedDate).length;
+          const noteCount = taskNoteCountMap[task.id] || 0;
+          const photoCount = taskPhotoCountMap[task.id] || 0;
 
           const secondaryActionRowHtml = `
             <div class="task-secondary-actions-row">
@@ -7605,10 +8110,11 @@
         });
 
         section.appendChild(tasksGrid);
-        container.appendChild(section);
+        fragment.appendChild(section);
+        totalRenderedSections++;
       });
 
-      if (container.children.length === 0) {
+      if (totalRenderedSections === 0) {
         const emptyDiv = document.createElement("div");
         emptyDiv.style.cssText = "background: var(--retail-surface); border: 1px solid var(--retail-border); border-radius: 8px; padding: 32px 16px; text-align: center; margin-top: 10px;";
         if (todaySearchQuery) {
@@ -7623,8 +8129,10 @@
             <div style="font-size: 12px; color: var(--retail-text-secondary);">Change your day/priority filter or add new tasks in Admin.</div>
           `;
         }
-        container.appendChild(emptyDiv);
+        fragment.appendChild(emptyDiv);
       }
+
+      container.appendChild(fragment);
     }
 
     function updateShiftMetrics() {
@@ -7802,6 +8310,7 @@
       });
 
       document.getElementById("subtasksModal").style.display = "flex";
+      document.body.classList.add("modal-open");
     }
 
     async function handleModalUrgentToggle(isChecked) {
@@ -7836,6 +8345,7 @@
 
     function closeSubtasksModal() {
       document.getElementById("subtasksModal").style.display = "none";
+      document.body.classList.remove("modal-open");
       activeModalTask = null;
       activeModalCompletedSubtasks = [];
     }
@@ -7901,6 +8411,7 @@
       document.getElementById("skipReasonError").style.display = "none";
       document.querySelectorAll(".skip-preset-chip").forEach(el => el.classList.remove("active"));
       document.getElementById("skipTaskModal").style.display = "flex";
+      document.body.classList.add("modal-open");
     }
 
     function openSkipFromSubtasks() {
@@ -7913,6 +8424,7 @@
 
     function closeSkipTaskModal() {
       document.getElementById("skipTaskModal").style.display = "none";
+      document.body.classList.remove("modal-open");
       activeSkipTask = null;
     }
 
@@ -8028,10 +8540,12 @@
       renderNotesList();
       document.getElementById("newNoteInput").value = "";
       document.getElementById("notesModal").style.display = "flex";
+      document.body.classList.add("modal-open");
     }
 
     function closeNotesModal() {
       document.getElementById("notesModal").style.display = "none";
+      document.body.classList.remove("modal-open");
       activeNoteTaskId = null;
     }
 
@@ -8171,10 +8685,12 @@
       cancelPendingPhoto();
       renderTaskPhotosList();
       document.getElementById("photosModal").style.display = "flex";
+      document.body.classList.add("modal-open");
     }
 
     function closePhotosModal() {
       document.getElementById("photosModal").style.display = "none";
+      document.body.classList.remove("modal-open");
       activePhotoTaskId = null;
       cancelPendingPhoto();
     }
@@ -8773,6 +9289,7 @@
       if (normRadio) normRadio.checked = true;
       updateHandoverPrioUI();
       modal.style.display = "flex";
+      document.body.classList.add("modal-open");
       setTimeout(() => {
         const input = document.getElementById("handoverMessageInput");
         if (input) input.focus();
@@ -8782,6 +9299,7 @@
     function closeShiftHandoverModal() {
       const modal = document.getElementById("shiftHandoverModal");
       if (modal) modal.style.display = "none";
+      document.body.classList.remove("modal-open");
     }
 
     function updateHandoverPrioUI() {
@@ -11396,6 +11914,7 @@
         navigator.serviceWorker.register('./sw.js')
           .then(reg => {
             swRegistration = reg;
+            reg.update().catch(() => {});
             console.log('ShiftTask ServiceWorker registered for notifications:', reg.scope);
           })
           .catch(err => {
@@ -11749,11 +12268,13 @@
       renderNotificationFeed();
 
       modal.style.display = "flex";
+      document.body.classList.add("modal-open");
     }
 
     function closeNotificationCenter() {
       const modal = document.getElementById("notificationCenterModal");
       if (modal) modal.style.display = "none";
+      document.body.classList.remove("modal-open");
     }
 
     function updateIphonePwaStatusUI() {
@@ -12035,27 +12556,62 @@
     // -------------------------------------------------------------
     // Initialization
     // -------------------------------------------------------------
-    window.addEventListener("DOMContentLoaded", () => {
-      // Initialize with deduplicated staff users; categories and tasks load directly from Firestore
-      users = deduplicateUsers(users && users.length > 0 ? users : defaultUsers);
-      categories = [];
-      tasks = [];
+    function initApp() {
+      // 1. Immediately load local cached state so UI is visible without delay
+      loadAppStateFromLocalStorage();
 
-      // Initialize Unified Phone & Tablet Layout
+      // 2. Initialize Unified Phone & Tablet Layout
       initLayoutMode();
 
+      // 2b. Restore active staff session if logged in
+      let sessionRestored = false;
+      try {
+        const savedSession = localStorage.getItem("onestop_active_staff_user") || sessionStorage.getItem("onestop_active_staff_user");
+        if (savedSession) {
+          const parsed = JSON.parse(savedSession);
+          if (parsed && parsed.name) {
+            activeStaffUser = parsed;
+            const avatar = document.getElementById("sessionUserAvatar");
+            const name = document.getElementById("sessionUserName");
+            const role = document.getElementById("sessionUserRole");
+            if (avatar) avatar.innerText = activeStaffUser.initials;
+            if (name) name.innerText = activeStaffUser.name;
+            if (role) role.innerText = activeStaffUser.role;
+            navigateToScreen('TODAY');
+            sessionRestored = true;
+          }
+        }
+      } catch (_) {}
+
+      if (!sessionRestored) {
+        navigateToScreen('SIGN_IN');
+      }
+
+      // 3. Render immediate UI from cache/defaults
       renderStaffRosterPhone();
       renderCategoryFilterChips();
       renderTodayTasks();
+      renderHistoryFeed();
+      updateShiftMetrics();
       applyStoreBranding();
       updateAdminPrivilegesUI();
 
-      // Initialize Notification Engine and PWA Service Worker
+      // 4. Initialize Notification Engine and PWA Service Worker
       initNotificationServiceWorker();
       loadSavedNotifications();
 
+      // 5. Start real-time Firestore listeners
       startRealtimeSync();
-    });
+
+      // 6. Actively query Firestore to pull latest data and refresh automatically on page reload
+      syncWithCloudNow({ silent: true });
+    }
+
+    if (document.readyState === "loading") {
+      window.addEventListener("DOMContentLoaded", initApp);
+    } else {
+      initApp();
+    }
   </script>
 </body>
 </html>

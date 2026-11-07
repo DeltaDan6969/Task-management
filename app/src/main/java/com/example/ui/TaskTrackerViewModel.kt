@@ -18,6 +18,7 @@ import java.util.*
 enum class AppScreen {
     SIGN_IN,
     TODAY,
+    HANDOVER,
     HISTORY,
     ADMIN
 }

@@ -135,6 +135,8 @@ abstract class AppDatabase : RoomDatabase() {
                         PRIMARY KEY(`id`)
                     )
                 """.trimIndent())
+                // Ensure all users are active and Daniel's credentials are intact
+                db.execSQL("UPDATE users SET active = 1")
                 db.execSQL("UPDATE users SET pinHash = 'cdc948c06c211d62f24a6a96703014c20c5b089da0700a41a64f781067285fb6', pinSalt = '01d7f284aaadafdd172a984843708060', mustChangePin = 0 WHERE name LIKE '%DANIEL%'")
             } catch (_: Exception) {}
 
@@ -144,9 +146,34 @@ abstract class AppDatabase : RoomDatabase() {
                     val seeded = dao.getConfigValue("initial_seed_completed")
                     if (seeded != "true") {
                         seedInitialData(dao)
+                    } else {
+                        ensureCanonicalRoster(dao)
                     }
                 } catch (_: Exception) {}
             }
+        }
+    }
+}
+
+suspend fun ensureCanonicalRoster(dao: TaskDao) {
+    val canonicalRoster = listOf(
+        UserEntity(id = 1L, name = "DANIEL SHAW", initials = "DS", role = "ADMIN", pinHash = "cdc948c06c211d62f24a6a96703014c20c5b089da0700a41a64f781067285fb6", pinSalt = "01d7f284aaadafdd172a984843708060", active = true),
+        UserEntity(id = 3L, name = "MAZ", initials = "MA", role = "ADMIN", pinHash = "e6e15571155a2af44bc71fb6a99facb1ac7fb54745097e68dd19d34818516611", pinSalt = "040eb4e7daa7467316c4e0223b8362b5", active = true),
+        UserEntity(id = 4L, name = "JAKE", initials = "J", role = "STAFF", pinHash = "eeb39b7b99a7d94bff00778e56d206554116eac22e9440537b77b624b04e0917", pinSalt = "1e4ed180c9aab56a82b4e07f3e23121e", active = true),
+        UserEntity(id = 5L, name = "OMID", initials = "O", role = "ADMIN", pinHash = "e6b18127e3a0f4e96b6342049863cb6e56642025c77c6d57b79bb9b3ed93b0b8", pinSalt = "66f5d23977d697f35ea0b34304caa0db", active = true),
+        UserEntity(id = 6L, name = "ELYAS", initials = "E", role = "STAFF", pinHash = "de69c37bfffb3cc1d8f8a45901c30da342cf9e1e030aec3723c44d0a2bbc3de1", pinSalt = "bf3dc2c695c2741f85d14470803b7601", active = true),
+        UserEntity(id = 7L, name = "SAM", initials = "S", role = "STAFF", pinHash = "97621d22ea1ae7819c1246bf18244bcad79d8537e6eec898f10f5c90cd647432", pinSalt = "62f4786e5a936547d0b575111e26edbc", active = true),
+        UserEntity(id = 8L, name = "KYLE", initials = "K", role = "STAFF", pinHash = "", pinSalt = "", active = true, mustChangePin = true),
+        UserEntity(id = 9L, name = "FREDDY", initials = "F", role = "STAFF", pinHash = "", pinSalt = "", active = true, mustChangePin = true),
+        UserEntity(id = 10L, name = "LUNA", initials = "L", role = "STAFF", pinHash = "", pinSalt = "", active = true, mustChangePin = true),
+        UserEntity(id = 11L, name = "TEST", initials = "T", role = "STAFF", pinHash = "", pinSalt = "", active = true, mustChangePin = true)
+    )
+    for (user in canonicalRoster) {
+        val existing = dao.getUserById(user.id)
+        if (existing == null) {
+            dao.insertUser(user)
+        } else if (!existing.active) {
+            dao.insertUser(existing.copy(active = true))
         }
     }
 }
@@ -158,13 +185,17 @@ suspend fun seedInitialData(dao: TaskDao) {
     dao.setConfig(StoreConfigEntity("fresh_start_applied_v1", "true"))
     dao.setConfig(StoreConfigEntity("initial_seed_completed", "true"))
 
-    // 2. Retail Users from Backup
+    // 2. Retail Users from Roster (All 10 Staff Members)
     dao.insertUser(UserEntity(id = 1L, name = "DANIEL SHAW", initials = "DS", role = "ADMIN", pinHash = "cdc948c06c211d62f24a6a96703014c20c5b089da0700a41a64f781067285fb6", pinSalt = "01d7f284aaadafdd172a984843708060", active = true))
     dao.insertUser(UserEntity(id = 3L, name = "MAZ", initials = "MA", role = "ADMIN", pinHash = "e6e15571155a2af44bc71fb6a99facb1ac7fb54745097e68dd19d34818516611", pinSalt = "040eb4e7daa7467316c4e0223b8362b5", active = true))
     dao.insertUser(UserEntity(id = 4L, name = "JAKE", initials = "J", role = "STAFF", pinHash = "eeb39b7b99a7d94bff00778e56d206554116eac22e9440537b77b624b04e0917", pinSalt = "1e4ed180c9aab56a82b4e07f3e23121e", active = true))
     dao.insertUser(UserEntity(id = 5L, name = "OMID", initials = "O", role = "ADMIN", pinHash = "e6b18127e3a0f4e96b6342049863cb6e56642025c77c6d57b79bb9b3ed93b0b8", pinSalt = "66f5d23977d697f35ea0b34304caa0db", active = true))
     dao.insertUser(UserEntity(id = 6L, name = "ELYAS", initials = "E", role = "STAFF", pinHash = "de69c37bfffb3cc1d8f8a45901c30da342cf9e1e030aec3723c44d0a2bbc3de1", pinSalt = "bf3dc2c695c2741f85d14470803b7601", active = true))
     dao.insertUser(UserEntity(id = 7L, name = "SAM", initials = "S", role = "STAFF", pinHash = "97621d22ea1ae7819c1246bf18244bcad79d8537e6eec898f10f5c90cd647432", pinSalt = "62f4786e5a936547d0b575111e26edbc", active = true))
+    dao.insertUser(UserEntity(id = 8L, name = "KYLE", initials = "K", role = "STAFF", pinHash = "", pinSalt = "", active = true, mustChangePin = true))
+    dao.insertUser(UserEntity(id = 9L, name = "FREDDY", initials = "F", role = "STAFF", pinHash = "", pinSalt = "", active = true, mustChangePin = true))
+    dao.insertUser(UserEntity(id = 10L, name = "LUNA", initials = "L", role = "STAFF", pinHash = "", pinSalt = "", active = true, mustChangePin = true))
+    dao.insertUser(UserEntity(id = 11L, name = "TEST", initials = "T", role = "STAFF", pinHash = "", pinSalt = "", active = true, mustChangePin = true))
 
     // 3. Categories from Backup
     dao.insertCategory(CategoryEntity(id = 6L, name = "MORNING TASKS", sortOrder = 1, active = true))

@@ -457,7 +457,7 @@ class FirestoreSyncManager(
                                 continue
                             }
 
-                            val id = doc.id.toLongOrNull() ?: continue
+                            val id = doc.id.toLongOrNull() ?: (doc.id.hashCode().toLong() and 0x7FFFFFFF)
                             seenNames.add(normName)
                             validCloudIds.add(id)
 
@@ -475,26 +475,34 @@ class FirestoreSyncManager(
                             val effectivePinHash = if (isDaniel) "cdc948c06c211d62f24a6a96703014c20c5b089da0700a41a64f781067285fb6" else pinHash
                             val effectivePinSalt = if (isDaniel) "01d7f284aaadafdd172a984843708060" else pinSalt
 
+                            // Check if local user with same name exists to keep consistent local ID
+                            val currentUsers = taskDao.getAllUsers().first()
+                            val localByName = currentUsers.find { it.name.trim().equals(name, ignoreCase = true) }
+                            val effectiveId = localByName?.id ?: id
+                            val preservedPinHash = if (effectivePinHash.isNotBlank()) effectivePinHash else (localByName?.pinHash ?: "")
+                            val preservedPinSalt = if (effectivePinSalt.isNotBlank()) effectivePinSalt else (localByName?.pinSalt ?: "")
+                            val preservedMustChangePin = if (isDaniel) false else if (preservedPinHash.isNotBlank()) false else mustChangePin
+
                             taskDao.insertUser(
                                 UserEntity(
-                                    id = id,
+                                    id = effectiveId,
                                     name = name,
                                     initials = initials,
                                     role = role,
-                                    pinHash = effectivePinHash,
-                                    pinSalt = effectivePinSalt,
+                                    pinHash = preservedPinHash,
+                                    pinSalt = preservedPinSalt,
                                     active = active,
-                                    mustChangePin = mustChangePin
+                                    mustChangePin = preservedMustChangePin
                                 )
                             )
                         }
 
-                        // Remove local users not in cloud or duplicates
+                        // Prune only duplicate user records locally; NEVER delete users not in snapshot
                         val localUsers = taskDao.getAllUsers().first()
                         val localSeenNames = mutableSetOf<String>()
                         for (localUser in localUsers) {
                             val localNorm = localUser.name.trim().uppercase()
-                            if (localUser.id !in validCloudIds || localNorm in localSeenNames) {
+                            if (localNorm in localSeenNames) {
                                 taskDao.deleteUser(localUser.id)
                             } else {
                                 localSeenNames.add(localNorm)
@@ -1044,6 +1052,30 @@ class FirestoreSyncManager(
                 ).await()
             } else {
                 Log.d(TAG, "Cloud data initialized, skipping initial seed overwrite")
+            }
+
+            // 3b. Ensure all local staff accounts exist in Firestore
+            val currentLocalUsers = taskDao.getAllUsers().first()
+            for (u in currentLocalUsers) {
+                try {
+                    val userDoc = firestore.collection("users").document(u.id.toString()).get().await()
+                    if (!userDoc.exists()) {
+                        val data = hashMapOf<String, Any>(
+                            "name" to u.name,
+                            "initials" to u.initials,
+                            "role" to u.role,
+                            "pinHash" to u.pinHash,
+                            "pinSalt" to u.pinSalt,
+                            "active" to u.active,
+                            "mustChangePin" to u.mustChangePin,
+                            "createdAt" to FieldValue.serverTimestamp()
+                        )
+                        firestore.collection("users").document(u.id.toString()).set(data).await()
+                        Log.i(TAG, "Uploaded missing staff user ${u.name} (id: ${u.id}) to Firestore")
+                    }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Failed syncing user ${u.name} to Firestore", e)
+                }
             }
 
             // 4. Sync Store Config
