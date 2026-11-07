@@ -3,9 +3,10 @@
  * Enables PWA installation, offline shell caching, and Web Push / Lock Screen Notifications for iPhone (iOS 16.4+) & Android.
  */
 
-const CACHE_NAME = 'shifttask-cache-v1.9';
+const CACHE_NAME = 'shifttask-cache-v2.1';
 const ASSETS_TO_CACHE = [
   './',
+  './firebase-config.js',
   './tasks.html',
   './index.html',
   './website.html',

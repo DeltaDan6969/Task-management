@@ -3903,6 +3903,72 @@
       color: var(--retail-text-secondary);
     }
 
+    .checklist-row-phone.locked {
+      background: #ECFDF5 !important;
+      border: 1.5px solid #10B981 !important;
+      cursor: default !important;
+      opacity: 0.96;
+    }
+
+    .checklist-row-phone.locked input[type="checkbox"] {
+      accent-color: #10B981 !important;
+      cursor: not-allowed !important;
+    }
+
+    .checklist-row-phone.locked span.subtask-title {
+      text-decoration: none !important;
+      font-weight: 800 !important;
+      color: #065F46 !important;
+    }
+
+    .subtask-locked-tag {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+
+    .partial-task-banner {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      color: #92400E;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.35;
+    }
+
+    [data-theme="dark"] .partial-task-banner {
+      background: #451A03;
+      border-color: #78350F;
+      color: #FDE68A;
+    }
+
+    [data-theme="dark"] .checklist-row-phone.locked {
+      background: #064E3B !important;
+      border-color: #059669 !important;
+    }
+
+    [data-theme="dark"] .subtask-locked-tag {
+      background: #065F46;
+      border-color: #047857;
+      color: #A7F3D0;
+    }
+
     /* Toast Notification */
     #mobileToast {
       position: fixed;
@@ -5522,18 +5588,21 @@
         </label>
       </div>
 
+      <!-- Locked Subtasks Notification Banner -->
+      <div id="subtasksLockedBanner" class="partial-task-banner" style="display: none; margin-top: 4px; margin-bottom: 8px;"></div>
+
       <!-- Scrollable checklist items area -->
-      <div class="checklist-items-phone" id="subtasksChecklistContainer" style="flex: 1; min-height: 90px; max-height: 50vh; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; margin: 10px 0; padding-right: 4px;"></div>
+      <div class="checklist-items-phone" id="subtasksChecklistContainer" style="flex: 1; min-height: 90px; max-height: 50vh; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; margin: 6px 0 10px 0; padding-right: 4px;"></div>
 
       <!-- Pinned Action Buttons Dock at Bottom of Modal (Always accessible) -->
       <div style="display: flex; gap: 8px; padding-top: 12px; padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 16px) + 16px); border-top: 1px solid var(--retail-border); background: var(--retail-surface); flex-shrink: 0; box-sizing: border-box;">
-        <button class="btn-mobile-full" onclick="submitSubtasksSignOff(true)" style="background: #FEF3C7; color: #92400E; border: 1.5px solid #FCD34D; font-weight: 800; min-height: 48px; border-radius: 10px;">
+        <button id="btnSubmitPartial" class="btn-mobile-full" onclick="submitSubtasksSignOff(true)" style="background: #FEF3C7; color: #92400E; border: 1.5px solid #FCD34D; font-weight: 800; min-height: 48px; border-radius: 10px;">
           SUBMIT PARTIAL
         </button>
-        <button class="btn-mobile-full full-green" onclick="submitSubtasksSignOff(false)" style="font-weight: 800; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+        <button id="btnSignOffAll" class="btn-mobile-full full-green" onclick="submitSubtasksSignOff(false)" style="font-weight: 800; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
           <span class="material-icons" style="font-size: 18px;">done_all</span> SIGN OFF ALL
         </button>
-        <button class="btn-mobile-full" onclick="openSkipFromSubtasks()" style="background: #FFF3E0; color: #E65100; border: 1.5px solid #FFB74D; flex: 0.7; font-weight: 900; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+        <button id="btnSkipSubtasks" class="btn-mobile-full" onclick="openSkipFromSubtasks()" style="background: #FFF3E0; color: #E65100; border: 1.5px solid #FFB74D; flex: 0.7; font-weight: 900; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
           <span class="material-icons" style="font-size: 18px;">warning</span> SKIP
         </button>
       </div>
@@ -6497,6 +6566,7 @@
     // Subtask modal state
     let activeModalTask = null;
     let activeModalCompletedSubtasks = [];
+    let activeModalLockedSubtasks = [];
 
     // Notes & Photos modal state
     let activeNoteTaskId = null;
@@ -8003,14 +8073,46 @@
             `;
           }
 
+          // 2.5 Partial Task Status Banner
+          let partialBannerHtml = "";
+          if (isPartial) {
+            const completedCount = comp.completedSubTasksCount || 1;
+            const remainingCount = Math.max(0, bullets.length - completedCount);
+            partialBannerHtml = `
+              <div class="partial-task-banner">
+                <span class="material-icons" style="font-size: 15px; color: #D97706; flex-shrink: 0;">lock_clock</span>
+                <div>
+                  <strong>PARTIALLY SIGNED OFF (${completedCount}/${bullets.length})</strong> by [${escapeHtml(comp.completedByUserInitials || 'DS')}] ${escapeHtml(comp.completedByUserName || 'Staff')}<br>
+                  <span style="font-size: 10px; color: #78350F;">${remainingCount} sub-task${remainingCount === 1 ? '' : 's'} remaining for another staff member</span>
+                </div>
+              </div>
+            `;
+          }
+
           // 3. Checklist Items Summary Box
           let checklistSummaryHtml = "";
           if (bullets.length > 0) {
-            checklistSummaryHtml = `
-              <div class="checklist-summary-box">
-                <strong>${bullets.length} Checklist Items:</strong> ${escapeHtml(bullets.slice(0, 3).join(' • '))}${bullets.length > 3 ? '...' : ''}
-              </div>
-            `;
+            let lockedList = [];
+            if (isPartial && comp && comp.completedSubTasksJson) {
+              try { lockedList = JSON.parse(comp.completedSubTasksJson) || []; } catch(_) {}
+            }
+            if (isPartial && lockedList.length > 0) {
+              const summaryItems = bullets.map(b => {
+                const isLocked = lockedList.includes(b);
+                return `<span style="${isLocked ? 'color: #059669; font-weight: 800;' : 'color: #475569;'}">${isLocked ? '✓ ' + escapeHtml(b) + ' (Locked)' : '○ ' + escapeHtml(b)}</span>`;
+              }).join(' • ');
+              checklistSummaryHtml = `
+                <div class="checklist-summary-box">
+                  <strong>${lockedList.length}/${bullets.length} Sub-Tasks Verified:</strong> ${summaryItems}
+                </div>
+              `;
+            } else {
+              checklistSummaryHtml = `
+                <div class="checklist-summary-box">
+                  <strong>${bullets.length} Checklist Items:</strong> ${escapeHtml(bullets.slice(0, 3).join(' • '))}${bullets.length > 3 ? '...' : ''}
+                </div>
+              `;
+            }
           }
 
           // 4. Urgent Toggle Container
@@ -8062,6 +8164,21 @@
                 </button>
               </div>
             `;
+          } else if (isPartial) {
+            const completedCount = comp.completedSubTasksCount || 1;
+            const remainingCount = Math.max(0, bullets.length - completedCount);
+            primaryActionRowHtml = `
+              <div class="task-primary-actions-row">
+                <button class="btn-main-checklist" onclick="openSubtasksModal('${task.id}', '${escapeQuotes(cat.name)}')">
+                  <span class="material-icons" style="font-size: 18px; color: #FFA000;">checklist</span>
+                  <span>SIGN OFF REMAINING (${remainingCount}/${bullets.length})</span>
+                </button>
+                <button class="btn-main-skip" onclick="openSkipTaskModal('${task.id}', '${escapeQuotes(task.title)}', '${escapeQuotes(cat.name)}')">
+                  <span class="material-icons" style="font-size: 17px; color: #64748B;">visibility_off</span>
+                  <span>Skip</span>
+                </button>
+              </div>
+            `;
           } else {
             primaryActionRowHtml = `
               <div class="task-primary-actions-row">
@@ -8101,6 +8218,7 @@
           taskCard.innerHTML = `
             ${titleHtml}
             ${badgesHtml}
+            ${partialBannerHtml}
             ${checklistSummaryHtml}
             ${urgentToggleHtml}
             ${primaryActionRowHtml}
@@ -8250,15 +8368,45 @@
       const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
       const comp = completionsMap[`${task.id}_${selectedDate}`];
 
-      activeModalCompletedSubtasks = [];
-      if (comp && comp.completedSubTasksJson) {
+      // If task was partially completed and not skipped, previously verified subtasks are locked
+      activeModalLockedSubtasks = [];
+      if (comp && comp.isPartial && !comp.isSkipped && comp.completedSubTasksJson) {
         try {
-          activeModalCompletedSubtasks = JSON.parse(comp.completedSubTasksJson);
+          const parsed = JSON.parse(comp.completedSubTasksJson);
+          if (Array.isArray(parsed)) {
+            activeModalLockedSubtasks = [...parsed];
+          }
         } catch(e) {}
       }
 
+      // Completed subtasks starts with all currently locked subtasks
+      activeModalCompletedSubtasks = [...activeModalLockedSubtasks];
+
       document.getElementById("subtasksModalTitle").innerText = task.title;
       document.getElementById("subtasksModalCat").innerText = categoryName;
+
+      // Locked banner inside modal
+      const lockedBanner = document.getElementById("subtasksLockedBanner");
+      if (lockedBanner) {
+        if (activeModalLockedSubtasks.length > 0) {
+          lockedBanner.style.display = "block";
+          const staffLabel = comp.completedByUserInitials ? `[${comp.completedByUserInitials}] ` : "";
+          const staffFull = comp.completedByUserName || "Staff Member";
+          const remainingCount = bullets.length - activeModalLockedSubtasks.length;
+          lockedBanner.innerHTML = `
+            <div style="display:flex; align-items:flex-start; gap:6px;">
+              <span class="material-icons" style="font-size:16px; color:#D97706; flex-shrink:0; margin-top:1px;">lock</span>
+              <div style="font-size:11px; line-height:1.4;">
+                <strong style="color:#B45309;">${activeModalLockedSubtasks.length} SUB-TASK${activeModalLockedSubtasks.length > 1 ? 'S' : ''} LOCKED</strong> • Verified by <strong>${staffLabel}${staffFull}</strong>.<br/>
+                <span style="color:#78350F;">${remainingCount} remaining sub-task${remainingCount > 1 ? 's' : ''} can now be signed off by another staff member.</span>
+              </div>
+            </div>
+          `;
+        } else {
+          lockedBanner.style.display = "none";
+          lockedBanner.innerHTML = "";
+        }
+      }
 
       // Synchronize Urgent Toggle inside modal
       const isRecurring = !task.isOneTime && task.daysOfWeek !== 'ONE_TIME';
@@ -8291,26 +8439,90 @@
       container.innerHTML = "";
 
       bullets.forEach((b, idx) => {
+        const isLocked = activeModalLockedSubtasks.includes(b);
         const isChecked = activeModalCompletedSubtasks.includes(b);
         const row = document.createElement("div");
-        row.className = `checklist-row-phone ${isChecked ? 'checked' : ''}`;
-        row.onclick = (e) => {
-          if (e.target.tagName !== 'INPUT') {
-            const chk = row.querySelector("input");
-            chk.checked = !chk.checked;
-          }
-          toggleSubtaskItem(b, row);
-        };
 
-        row.innerHTML = `
-          <input type="checkbox" id="chk_${idx}" ${isChecked ? 'checked' : ''}>
-          <span>${b}</span>
-        `;
+        if (isLocked) {
+          row.className = "checklist-row-phone checked locked";
+          const staffInitial = comp && comp.completedByUserInitials ? ` • ${comp.completedByUserInitials}` : "";
+          row.innerHTML = `
+            <input type="checkbox" id="chk_${idx}" checked disabled style="cursor:not-allowed;">
+            <div style="flex:1; display:flex; align-items:center; justify-content:space-between; gap:6px;">
+              <span style="color:var(--retail-text-secondary); text-decoration:line-through;">${b}</span>
+              <span class="subtask-locked-tag">
+                <span class="material-icons" style="font-size:11px;">lock</span> LOCKED${staffInitial}
+              </span>
+            </div>
+          `;
+          row.onclick = () => {
+            showToast(`Sub-task is locked: verified by ${comp && comp.completedByUserName ? comp.completedByUserName : 'another staff member'}.`);
+          };
+        } else {
+          row.className = `checklist-row-phone ${isChecked ? 'checked' : ''}`;
+          row.innerHTML = `
+            <input type="checkbox" id="chk_${idx}" ${isChecked ? 'checked' : ''}>
+            <span style="flex:1;">${b}</span>
+          `;
+          row.onclick = (e) => {
+            if (e.target.tagName !== 'INPUT') {
+              const chk = row.querySelector("input");
+              chk.checked = !chk.checked;
+            }
+            toggleSubtaskItem(b, row);
+          };
+        }
+
         container.appendChild(row);
       });
 
+      updateSubtasksModalButtons();
+
       document.getElementById("subtasksModal").style.display = "flex";
       document.body.classList.add("modal-open");
+    }
+
+    function updateSubtasksModalButtons() {
+      if (!activeModalTask) return;
+      const bullets = (activeModalTask.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
+      const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.includes(b));
+      const newlyTicked = activeModalCompletedSubtasks.filter(b => !activeModalLockedSubtasks.includes(b));
+      const hasLocked = activeModalLockedSubtasks.length > 0;
+
+      const btnPartial = document.getElementById("btnSubmitPartial");
+      const btnSignAll = document.getElementById("btnSignOffAll");
+
+      if (btnPartial) {
+        if (outstanding.length === 0) {
+          // All are completed, partial button not needed
+          btnPartial.style.display = "none";
+        } else {
+          btnPartial.style.display = "block";
+          if (hasLocked) {
+            btnPartial.innerText = newlyTicked.length > 0
+              ? `SUBMIT PARTIAL (${activeModalCompletedSubtasks.length}/${bullets.length})`
+              : "SUBMIT PARTIAL";
+            btnPartial.disabled = newlyTicked.length === 0;
+            btnPartial.style.opacity = newlyTicked.length === 0 ? "0.45" : "1";
+            btnPartial.style.cursor = newlyTicked.length === 0 ? "not-allowed" : "pointer";
+          } else {
+            btnPartial.innerText = activeModalCompletedSubtasks.length > 0
+              ? `SUBMIT PARTIAL (${activeModalCompletedSubtasks.length}/${bullets.length})`
+              : "SUBMIT PARTIAL";
+            btnPartial.disabled = activeModalCompletedSubtasks.length === 0;
+            btnPartial.style.opacity = activeModalCompletedSubtasks.length === 0 ? "0.45" : "1";
+            btnPartial.style.cursor = activeModalCompletedSubtasks.length === 0 ? "not-allowed" : "pointer";
+          }
+        }
+      }
+
+      if (btnSignAll) {
+        if (hasLocked) {
+          btnSignAll.innerHTML = `<span class="material-icons" style="font-size:18px;">done_all</span> COMPLETE REMAINING (${bullets.length}/${bullets.length})`;
+        } else {
+          btnSignAll.innerHTML = `<span class="material-icons" style="font-size:18px;">done_all</span> SIGN OFF ALL`;
+        }
+      }
     }
 
     async function handleModalUrgentToggle(isChecked) {
@@ -8333,6 +8545,11 @@
     }
 
     function toggleSubtaskItem(bullet, rowEl) {
+      // Guard against toggling already locked subtasks
+      if (activeModalLockedSubtasks.includes(bullet)) {
+        return;
+      }
+
       const chk = rowEl.querySelector("input");
       if (chk.checked) {
         if (!activeModalCompletedSubtasks.includes(bullet)) activeModalCompletedSubtasks.push(bullet);
@@ -8341,6 +8558,8 @@
         activeModalCompletedSubtasks = activeModalCompletedSubtasks.filter(x => x !== bullet);
         rowEl.classList.remove("checked");
       }
+
+      updateSubtasksModalButtons();
     }
 
     function closeSubtasksModal() {
@@ -8348,14 +8567,37 @@
       document.body.classList.remove("modal-open");
       activeModalTask = null;
       activeModalCompletedSubtasks = [];
+      activeModalLockedSubtasks = [];
     }
 
     async function submitSubtasksSignOff(isPartialRequested) {
-      if (!activeModalTask || !activeStaffUser) return;
+      if (!activeModalTask) return;
+      if (!activeStaffUser) {
+        showToast("Please switch to your staff profile before signing off.");
+        return;
+      }
+
       const task = activeModalTask;
       const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
+
+      // If user clicked "SIGN OFF ALL" / "COMPLETE REMAINING", mark all bullets as completed
+      if (!isPartialRequested) {
+        activeModalCompletedSubtasks = [...bullets];
+      }
+
       const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.includes(b));
-      const isPartial = isPartialRequested || outstanding.length > 0;
+      const newlyTicked = activeModalCompletedSubtasks.filter(b => !activeModalLockedSubtasks.includes(b));
+      const isPartial = outstanding.length > 0;
+
+      // Validation
+      if (activeModalCompletedSubtasks.length === 0) {
+        showToast("Please tick at least one sub-task before submitting.");
+        return;
+      }
+      if (activeModalLockedSubtasks.length > 0 && newlyTicked.length === 0 && isPartial) {
+        showToast("No new sub-tasks were selected to submit.");
+        return;
+      }
 
       const cat = categories.find(c => c.id == task.categoryId) || { name: "GENERAL" };
 
@@ -8384,16 +8626,28 @@
             await db.collection("tasks").doc(task.id.toString()).update({ completedDate: selectedDate });
           } catch (_) {}
         }
-        showToast(isPartial ? `Partial sign-off recorded` : `Full sign-off recorded!`);
+        completionsMap[`${task.id}_${selectedDate}`] = { ...compData, completedAt: Date.now() };
+
+        if (isPartial) {
+          showToast(`⚡ Partial sign-off submitted: ${activeModalCompletedSubtasks.length}/${bullets.length} sub-tasks locked.`);
+        } else {
+          if (activeModalLockedSubtasks.length > 0) {
+            showToast(`✓ All remaining sub-tasks completed and verified by ${activeStaffUser.name}!`);
+          } else {
+            showToast(`✓ Full task sign-off recorded by ${activeStaffUser.name}!`);
+          }
+        }
       } catch (e) {
+        console.warn("Firestore completion save error, using offline store:", e);
         completionsMap[`${task.id}_${selectedDate}`] = { ...compData, completedAt: Date.now() };
         if (!isPartial && (task.isOneTime || task.daysOfWeek === 'ONE_TIME')) {
           task.completedDate = selectedDate;
         }
-        renderTodayTasks();
-        updateShiftMetrics();
+        showToast(isPartial ? `✓ Saved locally: ${activeModalCompletedSubtasks.length}/${bullets.length} sub-tasks locked` : `✓ Saved locally: Full task completed`);
       }
 
+      renderTodayTasks();
+      updateShiftMetrics();
       closeSubtasksModal();
     }
 

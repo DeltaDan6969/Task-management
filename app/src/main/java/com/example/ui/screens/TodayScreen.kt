@@ -1939,7 +1939,7 @@ fun TaskItemCard(
                                     RoundedCornerShape(6.dp)
                                 )
                                 .then(
-                                    if (!isLocked) {
+                                    if (!isLocked && !isPreviouslyDone) {
                                         Modifier.clickable {
                                             tickedSubTasks = if (isTicked) {
                                                 tickedSubTasks - subTask
@@ -2008,7 +2008,16 @@ fun TaskItemCard(
                                         .background(Color(0xFFC8E6C9), RoundedCornerShape(2.dp))
                                         .padding(horizontal = 4.dp, vertical = 1.dp)
                                 ) {
-                                    Text("VERIFIED", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            imageVector = Icons.Default.Lock,
+                                            contentDescription = null,
+                                            tint = Color(0xFF2E7D32),
+                                            modifier = Modifier.size(9.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(2.dp))
+                                        Text("LOCKED", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+                                    }
                                 }
                             }
                         }
@@ -2031,6 +2040,7 @@ fun TaskItemCard(
                         ) {
                             val allTicked = tickedSubTasks.size == allSubTasks.size
                             val someTicked = tickedSubTasks.isNotEmpty() && !allTicked
+                            val newlyTicked = (tickedSubTasks - previouslyCompletedSubTasks).isNotEmpty()
 
                             if (allTicked) {
                                 Button(
@@ -2050,7 +2060,11 @@ fun TaskItemCard(
                                 ) {
                                     Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(16.dp))
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    Text("SUBMIT FULL COMPLETION (${allSubTasks.size}/${allSubTasks.size})", fontSize = 11.sp, fontWeight = FontWeight.Black)
+                                    Text(
+                                        text = if (isPartialDone) "COMPLETE REMAINING (${allSubTasks.size}/${allSubTasks.size})" else "SUBMIT FULL COMPLETION (${allSubTasks.size}/${allSubTasks.size})",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Black
+                                    )
                                 }
                             } else if (someTicked) {
                                 Button(
@@ -2063,6 +2077,7 @@ fun TaskItemCard(
                                             true
                                         )
                                     },
+                                    enabled = newlyTicked,
                                     modifier = Modifier
                                         .weight(1f)
                                         .height(38.dp)
@@ -2155,7 +2170,7 @@ fun TaskItemCard(
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
-                                text = "⚡ PARTIALLY SIGNED OFF (${completion.completedSubTasksCount}/${completion.totalSubTasksCount}) by [${completion.completedByUserInitials}] ${completion.completedByUserName} (ID #${completion.completedByUserId}) at ${timeFormat.format(Date(completion.completedAt))}",
+                                text = "⚡ PARTIALLY SIGNED OFF (${completion.completedSubTasksCount}/${completion.totalSubTasksCount}) by [${completion.completedByUserInitials}] ${completion.completedByUserName} at ${timeFormat.format(Date(completion.completedAt))} • ${completion.totalSubTasksCount - completion.completedSubTasksCount} SUB-TASKS REMAINING FOR ANOTHER STAFF MEMBER",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = RetailOrange

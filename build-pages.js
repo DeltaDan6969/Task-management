@@ -161,6 +161,7 @@ if (fs.existsSync(APK_SRC)) {
 
 // 5b. Sync PWA and Icon Assets
 const pwaFiles = [
+  'firebase-config.js',
   'sw.js',
   'manifest.json',
   'apple-touch-icon.png',
@@ -188,6 +189,8 @@ pwaFiles.forEach(file => {
 // 6. Package standalone-web-app.zip
 try {
   console.log('📦 Packaging standalone-web-app.zip...');
+  const standaloneZip = path.join(ROOT_DIR, 'standalone-web-app.zip');
+  if (fs.existsSync(standaloneZip)) fs.unlinkSync(standaloneZip);
   execSync('zip -q -r standalone-web-app.zip standalone-web-app', { cwd: ROOT_DIR });
   
   // Sync zip to docs and web
@@ -243,7 +246,9 @@ try {
     fs.cpSync(path.join(ROOT_DIR, 'data'), path.join(ionosDir, 'data'), { recursive: true });
   }
 
-  // Build the zip with files at the root of the archive
+  // Build the zip with files at the root of the archive (delete existing first to guarantee fresh archive)
+  const ionosZip = path.join(ROOT_DIR, 'ionos-onestop-website.zip');
+  if (fs.existsSync(ionosZip)) fs.unlinkSync(ionosZip);
   execSync('zip -q -r ../ionos-onestop-website.zip .', { cwd: ionosDir });
 
   // Mirror zip to docs/ and web/ for download links
