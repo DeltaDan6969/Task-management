@@ -161,7 +161,6 @@ if (fs.existsSync(APK_SRC)) {
 
 // 5b. Sync PWA and Icon Assets
 const pwaFiles = [
-  'firebase-config.js',
   'sw.js',
   'manifest.json',
   'apple-touch-icon.png',

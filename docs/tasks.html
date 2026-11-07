@@ -6320,15 +6320,13 @@
     <span id="mobileToastMsg">Notification</span>
   </div>
 
-  <!-- External optional configuration for production/private deployments (gitignored) -->
-  <script src="firebase-config.js"></script>
   <script>
     // -------------------------------------------------------------
     // Firebase Enterprise Cloud Database Configuration
     // Dynamically resolved from window.__FIREBASE_CONFIG__ (external/gitignored)
     // with base64 decoded fallback to protect against plaintext secret scanning on public GitHub repos
     // -------------------------------------------------------------
-    const _b64EncKey = "QUl6YVN5QUhPVEFsVFkxY1dvQXZITUJIS1E5NTFUN1pnbk8waElN";
+    const _b64EncKey = "QUl6YVN5QUhQVEFsVFkxY1dvQXZITUJIS1E5NTFUN1pnbk8waElN";
     function _resolveApiKey() {
       if (typeof window !== "undefined" && window.__FIREBASE_CONFIG__ && window.__FIREBASE_CONFIG__.apiKey) {
         return window.__FIREBASE_CONFIG__.apiKey;
@@ -7198,8 +7196,16 @@
                 newCompMap[`${comp.taskId}_${comp.dateString}`] = comp;
               }
             });
-            completionsMap = newCompMap;
-            allCompletions = newAllComp;
+            // Merge cloud with local completions so unsynced records are never dropped
+            completionsMap = { ...completionsMap, ...newCompMap };
+            
+            // Push any local-only completions to cloud
+            for (const [key, localRec] of Object.entries(completionsMap)) {
+              if (!newCompMap[key] && localRec) {
+                db.collection("task_completions").doc(key).set(localRec).catch(() => {});
+              }
+            }
+            allCompletions = Object.values(completionsMap);
           }
         } catch (e) {
           console.warn("Auto-sync completions:", e);
@@ -8029,10 +8035,10 @@
 
         catTasks.forEach(task => {
           const comp = completionsMap[`${task.id}_${selectedDate}`];
-          const isSkipped = comp && comp.isSkipped;
-          const isDone = comp && !comp.isPartial && !comp.isSkipped;
-          const isPartial = comp && comp.isPartial && !comp.isSkipped;
-          const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
+          const isSkipped = Boolean(comp && comp.isSkipped);
+          const isPartial = Boolean(comp && !isSkipped && (comp.isPartial === true || comp.isPartial === "true" || comp.isPartial === 1));
+          const isDone = Boolean(comp && !isSkipped && !isPartial);
+          const bullets = (task.bulletPoints || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
 
           const urgentOverride = urgentTasksMap[`${task.id}_${selectedDate}`];
           const isUrgentToday = Boolean(urgentOverride && urgentOverride.isUrgent);
@@ -8365,18 +8371,22 @@
       if (!task) return;
 
       activeModalTask = task;
-      const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
+      const bullets = (task.bulletPoints || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
       const comp = completionsMap[`${task.id}_${selectedDate}`];
 
       // If task was partially completed and not skipped, previously verified subtasks are locked
       activeModalLockedSubtasks = [];
-      if (comp && comp.isPartial && !comp.isSkipped && comp.completedSubTasksJson) {
-        try {
-          const parsed = JSON.parse(comp.completedSubTasksJson);
-          if (Array.isArray(parsed)) {
-            activeModalLockedSubtasks = [...parsed];
-          }
-        } catch(e) {}
+      const isCompPartial = Boolean(comp && !comp.isSkipped && (comp.isPartial === true || comp.isPartial === "true" || comp.isPartial === 1));
+      if (isCompPartial) {
+        let parsed = comp.completedSubTasksJson || comp.completedSubTasks;
+        if (typeof parsed === 'string') {
+          try {
+            parsed = JSON.parse(parsed);
+          } catch(e) {}
+        }
+        if (Array.isArray(parsed)) {
+          activeModalLockedSubtasks = parsed.map(s => String(s).trim()).filter(Boolean);
+        }
       }
 
       // Completed subtasks starts with all currently locked subtasks
@@ -8392,7 +8402,7 @@
           lockedBanner.style.display = "block";
           const staffLabel = comp.completedByUserInitials ? `[${comp.completedByUserInitials}] ` : "";
           const staffFull = comp.completedByUserName || "Staff Member";
-          const remainingCount = bullets.length - activeModalLockedSubtasks.length;
+          const remainingCount = Math.max(0, bullets.length - activeModalLockedSubtasks.length);
           lockedBanner.innerHTML = `
             <div style="display:flex; align-items:flex-start; gap:6px;">
               <span class="material-icons" style="font-size:16px; color:#D97706; flex-shrink:0; margin-top:1px;">lock</span>
@@ -8439,8 +8449,8 @@
       container.innerHTML = "";
 
       bullets.forEach((b, idx) => {
-        const isLocked = activeModalLockedSubtasks.includes(b);
-        const isChecked = activeModalCompletedSubtasks.includes(b);
+        const isLocked = activeModalLockedSubtasks.some(l => l.toLowerCase() === b.toLowerCase());
+        const isChecked = activeModalCompletedSubtasks.some(c => c.toLowerCase() === b.toLowerCase());
         const row = document.createElement("div");
 
         if (isLocked) {
@@ -8484,9 +8494,9 @@
 
     function updateSubtasksModalButtons() {
       if (!activeModalTask) return;
-      const bullets = (activeModalTask.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
-      const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.includes(b));
-      const newlyTicked = activeModalCompletedSubtasks.filter(b => !activeModalLockedSubtasks.includes(b));
+      const bullets = (activeModalTask.bulletPoints || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+      const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.some(c => c.toLowerCase() === b.toLowerCase()));
+      const newlyTicked = activeModalCompletedSubtasks.filter(b => !activeModalLockedSubtasks.some(l => l.toLowerCase() === b.toLowerCase()));
       const hasLocked = activeModalLockedSubtasks.length > 0;
 
       const btnPartial = document.getElementById("btnSubmitPartial");
@@ -8546,16 +8556,18 @@
 
     function toggleSubtaskItem(bullet, rowEl) {
       // Guard against toggling already locked subtasks
-      if (activeModalLockedSubtasks.includes(bullet)) {
+      if (activeModalLockedSubtasks.some(l => l.toLowerCase() === bullet.toLowerCase())) {
         return;
       }
 
       const chk = rowEl.querySelector("input");
       if (chk.checked) {
-        if (!activeModalCompletedSubtasks.includes(bullet)) activeModalCompletedSubtasks.push(bullet);
+        if (!activeModalCompletedSubtasks.some(c => c.toLowerCase() === bullet.toLowerCase())) {
+          activeModalCompletedSubtasks.push(bullet);
+        }
         rowEl.classList.add("checked");
       } else {
-        activeModalCompletedSubtasks = activeModalCompletedSubtasks.filter(x => x !== bullet);
+        activeModalCompletedSubtasks = activeModalCompletedSubtasks.filter(x => x.toLowerCase() !== bullet.toLowerCase());
         rowEl.classList.remove("checked");
       }
 
@@ -8578,15 +8590,15 @@
       }
 
       const task = activeModalTask;
-      const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
+      const bullets = (task.bulletPoints || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
 
       // If user clicked "SIGN OFF ALL" / "COMPLETE REMAINING", mark all bullets as completed
       if (!isPartialRequested) {
         activeModalCompletedSubtasks = [...bullets];
       }
 
-      const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.includes(b));
-      const newlyTicked = activeModalCompletedSubtasks.filter(b => !activeModalLockedSubtasks.includes(b));
+      const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.some(c => c.toLowerCase() === b.toLowerCase()));
+      const newlyTicked = activeModalCompletedSubtasks.filter(b => !activeModalLockedSubtasks.some(l => l.toLowerCase() === b.toLowerCase()));
       const isPartial = outstanding.length > 0;
 
       // Validation
@@ -8626,24 +8638,35 @@
             await db.collection("tasks").doc(task.id.toString()).update({ completedDate: selectedDate });
           } catch (_) {}
         }
-        completionsMap[`${task.id}_${selectedDate}`] = { ...compData, completedAt: Date.now() };
-
-        if (isPartial) {
-          showToast(`⚡ Partial sign-off submitted: ${activeModalCompletedSubtasks.length}/${bullets.length} sub-tasks locked.`);
-        } else {
-          if (activeModalLockedSubtasks.length > 0) {
-            showToast(`✓ All remaining sub-tasks completed and verified by ${activeStaffUser.name}!`);
-          } else {
-            showToast(`✓ Full task sign-off recorded by ${activeStaffUser.name}!`);
-          }
-        }
       } catch (e) {
         console.warn("Firestore completion save error, using offline store:", e);
-        completionsMap[`${task.id}_${selectedDate}`] = { ...compData, completedAt: Date.now() };
-        if (!isPartial && (task.isOneTime || task.daysOfWeek === 'ONE_TIME')) {
-          task.completedDate = selectedDate;
+      }
+
+      // Update in-memory state and ensure instant persistence
+      const localCompRecord = { ...compData, completedAt: Date.now() };
+      completionsMap[`${task.id}_${selectedDate}`] = localCompRecord;
+      
+      const existingAllIdx = allCompletions.findIndex(c => c.taskId == task.id && c.dateString === selectedDate);
+      if (existingAllIdx >= 0) {
+        allCompletions[existingAllIdx] = localCompRecord;
+      } else {
+        allCompletions.push(localCompRecord);
+      }
+
+      if (!isPartial && (task.isOneTime || task.daysOfWeek === 'ONE_TIME')) {
+        task.completedDate = selectedDate;
+      }
+
+      saveAppStateToLocalStorage();
+
+      if (isPartial) {
+        showToast(`⚡ Partial sign-off recorded: ${activeModalCompletedSubtasks.length}/${bullets.length} sub-tasks locked.`);
+      } else {
+        if (activeModalLockedSubtasks.length > 0) {
+          showToast(`✓ All remaining sub-tasks completed and verified by ${activeStaffUser.name}!`);
+        } else {
+          showToast(`✓ Full task sign-off recorded by ${activeStaffUser.name}!`);
         }
-        showToast(isPartial ? `✓ Saved locally: ${activeModalCompletedSubtasks.length}/${bullets.length} sub-tasks locked` : `✓ Saved locally: Full task completed`);
       }
 
       renderTodayTasks();

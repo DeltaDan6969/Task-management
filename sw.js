@@ -6,7 +6,6 @@
 const CACHE_NAME = 'shifttask-cache-v2.1';
 const ASSETS_TO_CACHE = [
   './',
-  './firebase-config.js',
   './tasks.html',
   './index.html',
   './website.html',
