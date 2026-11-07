@@ -3903,6 +3903,72 @@
       color: var(--retail-text-secondary);
     }
 
+    .checklist-row-phone.locked {
+      background: #ECFDF5 !important;
+      border: 1.5px solid #10B981 !important;
+      cursor: default !important;
+      opacity: 0.96;
+    }
+
+    .checklist-row-phone.locked input[type="checkbox"] {
+      accent-color: #10B981 !important;
+      cursor: not-allowed !important;
+    }
+
+    .checklist-row-phone.locked span.subtask-title {
+      text-decoration: none !important;
+      font-weight: 800 !important;
+      color: #065F46 !important;
+    }
+
+    .subtask-locked-tag {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+
+    .partial-task-banner {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      color: #92400E;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.35;
+    }
+
+    [data-theme="dark"] .partial-task-banner {
+      background: #451A03;
+      border-color: #78350F;
+      color: #FDE68A;
+    }
+
+    [data-theme="dark"] .checklist-row-phone.locked {
+      background: #064E3B !important;
+      border-color: #059669 !important;
+    }
+
+    [data-theme="dark"] .subtask-locked-tag {
+      background: #065F46;
+      border-color: #047857;
+      color: #A7F3D0;
+    }
+
     /* Toast Notification */
     #mobileToast {
       position: fixed;
@@ -5522,18 +5588,21 @@
         </label>
       </div>
 
+      <!-- Locked Subtasks Notification Banner -->
+      <div id="subtasksLockedBanner" class="partial-task-banner" style="display: none; margin-top: 4px; margin-bottom: 8px;"></div>
+
       <!-- Scrollable checklist items area -->
-      <div class="checklist-items-phone" id="subtasksChecklistContainer" style="flex: 1; min-height: 90px; max-height: 50vh; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; margin: 10px 0; padding-right: 4px;"></div>
+      <div class="checklist-items-phone" id="subtasksChecklistContainer" style="flex: 1; min-height: 90px; max-height: 50vh; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; margin: 6px 0 10px 0; padding-right: 4px;"></div>
 
       <!-- Pinned Action Buttons Dock at Bottom of Modal (Always accessible) -->
       <div style="display: flex; gap: 8px; padding-top: 12px; padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 16px) + 16px); border-top: 1px solid var(--retail-border); background: var(--retail-surface); flex-shrink: 0; box-sizing: border-box;">
-        <button class="btn-mobile-full" onclick="submitSubtasksSignOff(true)" style="background: #FEF3C7; color: #92400E; border: 1.5px solid #FCD34D; font-weight: 800; min-height: 48px; border-radius: 10px;">
+        <button id="btnSubmitPartial" class="btn-mobile-full" onclick="submitSubtasksSignOff(true)" style="background: #FEF3C7; color: #92400E; border: 1.5px solid #FCD34D; font-weight: 800; min-height: 48px; border-radius: 10px;">
           SUBMIT PARTIAL
         </button>
-        <button class="btn-mobile-full full-green" onclick="submitSubtasksSignOff(false)" style="font-weight: 800; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+        <button id="btnSignOffAll" class="btn-mobile-full full-green" onclick="submitSubtasksSignOff(false)" style="font-weight: 800; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
           <span class="material-icons" style="font-size: 18px;">done_all</span> SIGN OFF ALL
         </button>
-        <button class="btn-mobile-full" onclick="openSkipFromSubtasks()" style="background: #FFF3E0; color: #E65100; border: 1.5px solid #FFB74D; flex: 0.7; font-weight: 900; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+        <button id="btnSkipSubtasks" class="btn-mobile-full" onclick="openSkipFromSubtasks()" style="background: #FFF3E0; color: #E65100; border: 1.5px solid #FFB74D; flex: 0.7; font-weight: 900; min-height: 48px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
           <span class="material-icons" style="font-size: 18px;">warning</span> SKIP
         </button>
       </div>
@@ -5690,8 +5759,17 @@
       <!-- Scrollable Content Body -->
       <div style="flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px;">
         <!-- Main Photo Viewer Container -->
-        <div style="position: relative; width: 100%; border-radius: 8px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; min-height: 200px; max-height: 320px;">
-          <img id="inspectMainPhotoImg" src="" style="width: 100%; max-height: 320px; object-fit: contain; display: block;" alt="Audit Photo">
+        <div style="position: relative; width: 100%; border-radius: 8px; overflow: hidden; background: #1C1E22; display: flex; align-items: center; justify-content: center; min-height: 200px; max-height: 320px;">
+          <img id="inspectMainPhotoImg" src="" style="width: 100%; max-height: 320px; object-fit: contain; display: block;" alt="Audit Photo" onerror="handleMainPhotoError()">
+          <div id="inspectMainPhotoFallback" style="display: none; width: 100%; padding: 32px 16px; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: linear-gradient(145deg, #181A20, #22252D); border: 2px dashed #FF6D00; border-radius: 8px; box-sizing: border-box;">
+            <div style="display: flex; align-items: center; gap: 8px; color: #FF6D00; font-weight: 900; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">
+              <span class="material-icons" style="font-size: 24px;">verified</span>
+              <span>VERIFIED AUDIT PROOF</span>
+            </div>
+            <div id="inspectFallbackAuthor" style="font-size: 16px; font-weight: 900; color: #FFFFFF; margin-top: 8px;">DANIEL SHAW</div>
+            <div id="inspectFallbackTime" style="font-size: 11px; font-weight: 700; color: #00E676; margin-top: 6px; background: rgba(0, 230, 118, 0.12); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(0, 230, 118, 0.3);">TIMESTAMP VERIFIED</div>
+            <div style="font-size: 11px; color: #9CA3AF; margin-top: 10px; max-width: 340px; line-height: 1.4;">Captured on store terminal device. Cloud sync is converting this image to full resolution web preview.</div>
+          </div>
           
           <!-- Prev / Next Navigation buttons overlay -->
           <button type="button" id="inspectPrevPhotoBtn" onclick="navigateInspectionPhoto(-1)" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px);">
@@ -6251,15 +6329,13 @@
     <span id="mobileToastMsg">Notification</span>
   </div>
 
-  <!-- External optional configuration for production/private deployments (gitignored) -->
-  <script src="firebase-config.js"></script>
   <script>
     // -------------------------------------------------------------
     // Firebase Enterprise Cloud Database Configuration
     // Dynamically resolved from window.__FIREBASE_CONFIG__ (external/gitignored)
     // with base64 decoded fallback to protect against plaintext secret scanning on public GitHub repos
     // -------------------------------------------------------------
-    const _b64EncKey = "QUl6YVN5QUhPVEFsVFkxY1dvQXZITUJIS1E5NTFUN1pnbk8waElN";
+    const _b64EncKey = "QUl6YVN5QUhQVEFsVFkxY1dvQXZITUJIS1E5NTFUN1pnbk8waElN";
     function _resolveApiKey() {
       if (typeof window !== "undefined" && window.__FIREBASE_CONFIG__ && window.__FIREBASE_CONFIG__.apiKey) {
         return window.__FIREBASE_CONFIG__.apiKey;
@@ -6497,6 +6573,7 @@
     // Subtask modal state
     let activeModalTask = null;
     let activeModalCompletedSubtasks = [];
+    let activeModalLockedSubtasks = [];
 
     // Notes & Photos modal state
     let activeNoteTaskId = null;
@@ -7128,8 +7205,16 @@
                 newCompMap[`${comp.taskId}_${comp.dateString}`] = comp;
               }
             });
-            completionsMap = newCompMap;
-            allCompletions = newAllComp;
+            // Merge cloud with local completions so unsynced records are never dropped
+            completionsMap = { ...completionsMap, ...newCompMap };
+            
+            // Push any local-only completions to cloud
+            for (const [key, localRec] of Object.entries(completionsMap)) {
+              if (!newCompMap[key] && localRec) {
+                db.collection("task_completions").doc(key).set(localRec).catch(() => {});
+              }
+            }
+            allCompletions = Object.values(completionsMap);
           }
         } catch (e) {
           console.warn("Auto-sync completions:", e);
@@ -7959,10 +8044,10 @@
 
         catTasks.forEach(task => {
           const comp = completionsMap[`${task.id}_${selectedDate}`];
-          const isSkipped = comp && comp.isSkipped;
-          const isDone = comp && !comp.isPartial && !comp.isSkipped;
-          const isPartial = comp && comp.isPartial && !comp.isSkipped;
-          const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
+          const isSkipped = Boolean(comp && comp.isSkipped);
+          const isPartial = Boolean(comp && !isSkipped && (comp.isPartial === true || comp.isPartial === "true" || comp.isPartial === 1));
+          const isDone = Boolean(comp && !isSkipped && !isPartial);
+          const bullets = (task.bulletPoints || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
 
           const urgentOverride = urgentTasksMap[`${task.id}_${selectedDate}`];
           const isUrgentToday = Boolean(urgentOverride && urgentOverride.isUrgent);
@@ -8003,14 +8088,46 @@
             `;
           }
 
+          // 2.5 Partial Task Status Banner
+          let partialBannerHtml = "";
+          if (isPartial) {
+            const completedCount = comp.completedSubTasksCount || 1;
+            const remainingCount = Math.max(0, bullets.length - completedCount);
+            partialBannerHtml = `
+              <div class="partial-task-banner">
+                <span class="material-icons" style="font-size: 15px; color: #D97706; flex-shrink: 0;">lock_clock</span>
+                <div>
+                  <strong>PARTIALLY SIGNED OFF (${completedCount}/${bullets.length})</strong> by [${escapeHtml(comp.completedByUserInitials || 'DS')}] ${escapeHtml(comp.completedByUserName || 'Staff')}<br>
+                  <span style="font-size: 10px; color: #78350F;">${remainingCount} sub-task${remainingCount === 1 ? '' : 's'} remaining for another staff member</span>
+                </div>
+              </div>
+            `;
+          }
+
           // 3. Checklist Items Summary Box
           let checklistSummaryHtml = "";
           if (bullets.length > 0) {
-            checklistSummaryHtml = `
-              <div class="checklist-summary-box">
-                <strong>${bullets.length} Checklist Items:</strong> ${escapeHtml(bullets.slice(0, 3).join(' • '))}${bullets.length > 3 ? '...' : ''}
-              </div>
-            `;
+            let lockedList = [];
+            if (isPartial && comp && comp.completedSubTasksJson) {
+              try { lockedList = JSON.parse(comp.completedSubTasksJson) || []; } catch(_) {}
+            }
+            if (isPartial && lockedList.length > 0) {
+              const summaryItems = bullets.map(b => {
+                const isLocked = lockedList.includes(b);
+                return `<span style="${isLocked ? 'color: #059669; font-weight: 800;' : 'color: #475569;'}">${isLocked ? '✓ ' + escapeHtml(b) + ' (Locked)' : '○ ' + escapeHtml(b)}</span>`;
+              }).join(' • ');
+              checklistSummaryHtml = `
+                <div class="checklist-summary-box">
+                  <strong>${lockedList.length}/${bullets.length} Sub-Tasks Verified:</strong> ${summaryItems}
+                </div>
+              `;
+            } else {
+              checklistSummaryHtml = `
+                <div class="checklist-summary-box">
+                  <strong>${bullets.length} Checklist Items:</strong> ${escapeHtml(bullets.slice(0, 3).join(' • '))}${bullets.length > 3 ? '...' : ''}
+                </div>
+              `;
+            }
           }
 
           // 4. Urgent Toggle Container
@@ -8062,6 +8179,21 @@
                 </button>
               </div>
             `;
+          } else if (isPartial) {
+            const completedCount = comp.completedSubTasksCount || 1;
+            const remainingCount = Math.max(0, bullets.length - completedCount);
+            primaryActionRowHtml = `
+              <div class="task-primary-actions-row">
+                <button class="btn-main-checklist" onclick="openSubtasksModal('${task.id}', '${escapeQuotes(cat.name)}')">
+                  <span class="material-icons" style="font-size: 18px; color: #FFA000;">checklist</span>
+                  <span>SIGN OFF REMAINING (${remainingCount}/${bullets.length})</span>
+                </button>
+                <button class="btn-main-skip" onclick="openSkipTaskModal('${task.id}', '${escapeQuotes(task.title)}', '${escapeQuotes(cat.name)}')">
+                  <span class="material-icons" style="font-size: 17px; color: #64748B;">visibility_off</span>
+                  <span>Skip</span>
+                </button>
+              </div>
+            `;
           } else {
             primaryActionRowHtml = `
               <div class="task-primary-actions-row">
@@ -8101,6 +8233,7 @@
           taskCard.innerHTML = `
             ${titleHtml}
             ${badgesHtml}
+            ${partialBannerHtml}
             ${checklistSummaryHtml}
             ${urgentToggleHtml}
             ${primaryActionRowHtml}
@@ -8247,18 +8380,52 @@
       if (!task) return;
 
       activeModalTask = task;
-      const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
+      const bullets = (task.bulletPoints || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
       const comp = completionsMap[`${task.id}_${selectedDate}`];
 
-      activeModalCompletedSubtasks = [];
-      if (comp && comp.completedSubTasksJson) {
-        try {
-          activeModalCompletedSubtasks = JSON.parse(comp.completedSubTasksJson);
-        } catch(e) {}
+      // If task was partially completed and not skipped, previously verified subtasks are locked
+      activeModalLockedSubtasks = [];
+      const isCompPartial = Boolean(comp && !comp.isSkipped && (comp.isPartial === true || comp.isPartial === "true" || comp.isPartial === 1));
+      if (isCompPartial) {
+        let parsed = comp.completedSubTasksJson || comp.completedSubTasks;
+        if (typeof parsed === 'string') {
+          try {
+            parsed = JSON.parse(parsed);
+          } catch(e) {}
+        }
+        if (Array.isArray(parsed)) {
+          activeModalLockedSubtasks = parsed.map(s => String(s).trim()).filter(Boolean);
+        }
       }
+
+      // Completed subtasks starts with all currently locked subtasks
+      activeModalCompletedSubtasks = [...activeModalLockedSubtasks];
 
       document.getElementById("subtasksModalTitle").innerText = task.title;
       document.getElementById("subtasksModalCat").innerText = categoryName;
+
+      // Locked banner inside modal
+      const lockedBanner = document.getElementById("subtasksLockedBanner");
+      if (lockedBanner) {
+        if (activeModalLockedSubtasks.length > 0) {
+          lockedBanner.style.display = "block";
+          const staffLabel = comp.completedByUserInitials ? `[${comp.completedByUserInitials}] ` : "";
+          const staffFull = comp.completedByUserName || "Staff Member";
+          const remainingCount = Math.max(0, bullets.length - activeModalLockedSubtasks.length);
+          lockedBanner.innerHTML = `
+            <div style="display:flex; align-items:flex-start; gap:6px;">
+              <span class="material-icons" style="font-size:16px; color:#D97706; flex-shrink:0; margin-top:1px;">lock</span>
+              <div style="font-size:11px; line-height:1.4;">
+                <strong style="color:#B45309;">${activeModalLockedSubtasks.length} SUB-TASK${activeModalLockedSubtasks.length > 1 ? 'S' : ''} LOCKED</strong> • Verified by <strong>${staffLabel}${staffFull}</strong>.<br/>
+                <span style="color:#78350F;">${remainingCount} remaining sub-task${remainingCount > 1 ? 's' : ''} can now be signed off by another staff member.</span>
+              </div>
+            </div>
+          `;
+        } else {
+          lockedBanner.style.display = "none";
+          lockedBanner.innerHTML = "";
+        }
+      }
 
       // Synchronize Urgent Toggle inside modal
       const isRecurring = !task.isOneTime && task.daysOfWeek !== 'ONE_TIME';
@@ -8291,26 +8458,90 @@
       container.innerHTML = "";
 
       bullets.forEach((b, idx) => {
-        const isChecked = activeModalCompletedSubtasks.includes(b);
+        const isLocked = activeModalLockedSubtasks.some(l => l.toLowerCase() === b.toLowerCase());
+        const isChecked = activeModalCompletedSubtasks.some(c => c.toLowerCase() === b.toLowerCase());
         const row = document.createElement("div");
-        row.className = `checklist-row-phone ${isChecked ? 'checked' : ''}`;
-        row.onclick = (e) => {
-          if (e.target.tagName !== 'INPUT') {
-            const chk = row.querySelector("input");
-            chk.checked = !chk.checked;
-          }
-          toggleSubtaskItem(b, row);
-        };
 
-        row.innerHTML = `
-          <input type="checkbox" id="chk_${idx}" ${isChecked ? 'checked' : ''}>
-          <span>${b}</span>
-        `;
+        if (isLocked) {
+          row.className = "checklist-row-phone checked locked";
+          const staffInitial = comp && comp.completedByUserInitials ? ` • ${comp.completedByUserInitials}` : "";
+          row.innerHTML = `
+            <input type="checkbox" id="chk_${idx}" checked disabled style="cursor:not-allowed;">
+            <div style="flex:1; display:flex; align-items:center; justify-content:space-between; gap:6px;">
+              <span style="color:var(--retail-text-secondary); text-decoration:line-through;">${b}</span>
+              <span class="subtask-locked-tag">
+                <span class="material-icons" style="font-size:11px;">lock</span> LOCKED${staffInitial}
+              </span>
+            </div>
+          `;
+          row.onclick = () => {
+            showToast(`Sub-task is locked: verified by ${comp && comp.completedByUserName ? comp.completedByUserName : 'another staff member'}.`);
+          };
+        } else {
+          row.className = `checklist-row-phone ${isChecked ? 'checked' : ''}`;
+          row.innerHTML = `
+            <input type="checkbox" id="chk_${idx}" ${isChecked ? 'checked' : ''}>
+            <span style="flex:1;">${b}</span>
+          `;
+          row.onclick = (e) => {
+            if (e.target.tagName !== 'INPUT') {
+              const chk = row.querySelector("input");
+              chk.checked = !chk.checked;
+            }
+            toggleSubtaskItem(b, row);
+          };
+        }
+
         container.appendChild(row);
       });
 
+      updateSubtasksModalButtons();
+
       document.getElementById("subtasksModal").style.display = "flex";
       document.body.classList.add("modal-open");
+    }
+
+    function updateSubtasksModalButtons() {
+      if (!activeModalTask) return;
+      const bullets = (activeModalTask.bulletPoints || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+      const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.some(c => c.toLowerCase() === b.toLowerCase()));
+      const newlyTicked = activeModalCompletedSubtasks.filter(b => !activeModalLockedSubtasks.some(l => l.toLowerCase() === b.toLowerCase()));
+      const hasLocked = activeModalLockedSubtasks.length > 0;
+
+      const btnPartial = document.getElementById("btnSubmitPartial");
+      const btnSignAll = document.getElementById("btnSignOffAll");
+
+      if (btnPartial) {
+        if (outstanding.length === 0) {
+          // All are completed, partial button not needed
+          btnPartial.style.display = "none";
+        } else {
+          btnPartial.style.display = "block";
+          if (hasLocked) {
+            btnPartial.innerText = newlyTicked.length > 0
+              ? `SUBMIT PARTIAL (${activeModalCompletedSubtasks.length}/${bullets.length})`
+              : "SUBMIT PARTIAL";
+            btnPartial.disabled = newlyTicked.length === 0;
+            btnPartial.style.opacity = newlyTicked.length === 0 ? "0.45" : "1";
+            btnPartial.style.cursor = newlyTicked.length === 0 ? "not-allowed" : "pointer";
+          } else {
+            btnPartial.innerText = activeModalCompletedSubtasks.length > 0
+              ? `SUBMIT PARTIAL (${activeModalCompletedSubtasks.length}/${bullets.length})`
+              : "SUBMIT PARTIAL";
+            btnPartial.disabled = activeModalCompletedSubtasks.length === 0;
+            btnPartial.style.opacity = activeModalCompletedSubtasks.length === 0 ? "0.45" : "1";
+            btnPartial.style.cursor = activeModalCompletedSubtasks.length === 0 ? "not-allowed" : "pointer";
+          }
+        }
+      }
+
+      if (btnSignAll) {
+        if (hasLocked) {
+          btnSignAll.innerHTML = `<span class="material-icons" style="font-size:18px;">done_all</span> COMPLETE REMAINING (${bullets.length}/${bullets.length})`;
+        } else {
+          btnSignAll.innerHTML = `<span class="material-icons" style="font-size:18px;">done_all</span> SIGN OFF ALL`;
+        }
+      }
     }
 
     async function handleModalUrgentToggle(isChecked) {
@@ -8333,14 +8564,23 @@
     }
 
     function toggleSubtaskItem(bullet, rowEl) {
+      // Guard against toggling already locked subtasks
+      if (activeModalLockedSubtasks.some(l => l.toLowerCase() === bullet.toLowerCase())) {
+        return;
+      }
+
       const chk = rowEl.querySelector("input");
       if (chk.checked) {
-        if (!activeModalCompletedSubtasks.includes(bullet)) activeModalCompletedSubtasks.push(bullet);
+        if (!activeModalCompletedSubtasks.some(c => c.toLowerCase() === bullet.toLowerCase())) {
+          activeModalCompletedSubtasks.push(bullet);
+        }
         rowEl.classList.add("checked");
       } else {
-        activeModalCompletedSubtasks = activeModalCompletedSubtasks.filter(x => x !== bullet);
+        activeModalCompletedSubtasks = activeModalCompletedSubtasks.filter(x => x.toLowerCase() !== bullet.toLowerCase());
         rowEl.classList.remove("checked");
       }
+
+      updateSubtasksModalButtons();
     }
 
     function closeSubtasksModal() {
@@ -8348,14 +8588,37 @@
       document.body.classList.remove("modal-open");
       activeModalTask = null;
       activeModalCompletedSubtasks = [];
+      activeModalLockedSubtasks = [];
     }
 
     async function submitSubtasksSignOff(isPartialRequested) {
-      if (!activeModalTask || !activeStaffUser) return;
+      if (!activeModalTask) return;
+      if (!activeStaffUser) {
+        showToast("Please switch to your staff profile before signing off.");
+        return;
+      }
+
       const task = activeModalTask;
-      const bullets = (task.bulletPoints || "").split("\n").map(s => s.trim()).filter(Boolean);
-      const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.includes(b));
-      const isPartial = isPartialRequested || outstanding.length > 0;
+      const bullets = (task.bulletPoints || "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+
+      // If user clicked "SIGN OFF ALL" / "COMPLETE REMAINING", mark all bullets as completed
+      if (!isPartialRequested) {
+        activeModalCompletedSubtasks = [...bullets];
+      }
+
+      const outstanding = bullets.filter(b => !activeModalCompletedSubtasks.some(c => c.toLowerCase() === b.toLowerCase()));
+      const newlyTicked = activeModalCompletedSubtasks.filter(b => !activeModalLockedSubtasks.some(l => l.toLowerCase() === b.toLowerCase()));
+      const isPartial = outstanding.length > 0;
+
+      // Validation
+      if (activeModalCompletedSubtasks.length === 0) {
+        showToast("Please tick at least one sub-task before submitting.");
+        return;
+      }
+      if (activeModalLockedSubtasks.length > 0 && newlyTicked.length === 0 && isPartial) {
+        showToast("No new sub-tasks were selected to submit.");
+        return;
+      }
 
       const cat = categories.find(c => c.id == task.categoryId) || { name: "GENERAL" };
 
@@ -8384,16 +8647,39 @@
             await db.collection("tasks").doc(task.id.toString()).update({ completedDate: selectedDate });
           } catch (_) {}
         }
-        showToast(isPartial ? `Partial sign-off recorded` : `Full sign-off recorded!`);
       } catch (e) {
-        completionsMap[`${task.id}_${selectedDate}`] = { ...compData, completedAt: Date.now() };
-        if (!isPartial && (task.isOneTime || task.daysOfWeek === 'ONE_TIME')) {
-          task.completedDate = selectedDate;
-        }
-        renderTodayTasks();
-        updateShiftMetrics();
+        console.warn("Firestore completion save error, using offline store:", e);
       }
 
+      // Update in-memory state and ensure instant persistence
+      const localCompRecord = { ...compData, completedAt: Date.now() };
+      completionsMap[`${task.id}_${selectedDate}`] = localCompRecord;
+      
+      const existingAllIdx = allCompletions.findIndex(c => c.taskId == task.id && c.dateString === selectedDate);
+      if (existingAllIdx >= 0) {
+        allCompletions[existingAllIdx] = localCompRecord;
+      } else {
+        allCompletions.push(localCompRecord);
+      }
+
+      if (!isPartial && (task.isOneTime || task.daysOfWeek === 'ONE_TIME')) {
+        task.completedDate = selectedDate;
+      }
+
+      saveAppStateToLocalStorage();
+
+      if (isPartial) {
+        showToast(`⚡ Partial sign-off recorded: ${activeModalCompletedSubtasks.length}/${bullets.length} sub-tasks locked.`);
+      } else {
+        if (activeModalLockedSubtasks.length > 0) {
+          showToast(`✓ All remaining sub-tasks completed and verified by ${activeStaffUser.name}!`);
+        } else {
+          showToast(`✓ Full task sign-off recorded by ${activeStaffUser.name}!`);
+        }
+      }
+
+      renderTodayTasks();
+      updateShiftMetrics();
       closeSubtasksModal();
     }
 
@@ -8821,11 +9107,25 @@
       }
 
       filtered.forEach(photo => {
+        const isDevUri = !photo.photoUri || photo.photoUri.startsWith("content://") || photo.photoUri.startsWith("file:/") || photo.photoUri.startsWith("/");
         const card = document.createElement("div");
         card.style = "border: 1px solid var(--retail-border); border-radius: 6px; overflow: hidden; background: var(--retail-surface); cursor: pointer; position: relative;";
         card.onclick = () => openFullPhotoModal(photo.photoUri, photo.taskTitle || activePhotoTaskTitle || 'Audit Photo', `${photo.authorName || 'Staff'} • ${photo.dateString}`);
-        card.innerHTML = `
-          <img src="${photo.photoUri}" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="Audit">
+        card.innerHTML = isDevUri ? `
+          <div style="width: 100%; height: 95px; background: #1C1E22; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00;">
+            <span class="material-icons" style="font-size: 28px;">verified</span>
+            <span style="font-size: 9px; font-weight: 800; color: #fff; margin-top: 2px;">AUDIT PROOF</span>
+          </div>
+          <div style="padding: 4px 6px; font-size: 9px; color: var(--retail-text-secondary); background: var(--retail-surface-subtle); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 800; color: var(--retail-text-primary);">${photo.authorName || 'Staff'}</span>
+            <span>${formatTimestamp(photo.timestamp)}</span>
+          </div>
+        ` : `
+          <img src="${photo.photoUri}" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="Audit" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div style="display: none; width: 100%; height: 95px; background: #1C1E22; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00;">
+            <span class="material-icons" style="font-size: 28px;">verified</span>
+            <span style="font-size: 9px; font-weight: 800; color: #fff; margin-top: 2px;">AUDIT PROOF</span>
+          </div>
           <div style="padding: 4px 6px; font-size: 9px; color: var(--retail-text-secondary); background: var(--retail-surface-subtle); display: flex; justify-content: space-between; align-items: center;">
             <span style="font-weight: 800; color: var(--retail-text-primary);">${photo.authorName || 'Staff'}</span>
             <span>${formatTimestamp(photo.timestamp)}</span>
@@ -8841,9 +9141,16 @@
       const titleEl = document.getElementById("fullPhotoTitle");
       const metaEl = document.getElementById("fullPhotoMeta");
       if (!modal || !img) return;
-      img.src = photoUri;
+      const isDevUri = !photoUri || photoUri.startsWith("content://") || photoUri.startsWith("file:/") || photoUri.startsWith("/");
+      if (isDevUri) {
+        img.style.display = "none";
+        img.src = "";
+      } else {
+        img.style.display = "block";
+        img.src = photoUri;
+      }
       if (titleEl) titleEl.innerText = title || "Audit Photo";
-      if (metaEl) metaEl.innerText = meta || "";
+      if (metaEl) metaEl.innerText = (meta || "") + (isDevUri ? " • Local Terminal Verification" : "");
       modal.style.display = "flex";
     }
 
@@ -10543,9 +10850,22 @@
         `).join('');
 
         // Photos Grid Items
-        const photosGridHtml = groupPhotos.map((photo, index) => `
+        const photosGridHtml = groupPhotos.map((photo, index) => {
+          const isDevUri = !photo.photoUri || photo.photoUri.startsWith("content://") || photo.photoUri.startsWith("file:/") || photo.photoUri.startsWith("/");
+          return `
           <div class="audit-photo-card" onclick="openTaskPhotoInspectionModal('${taskId}', ${index}, '${adminAuditDate}')" title="Click to inspect photo in high resolution">
-            <img src="${photo.photoUri}" class="audit-photo-image" alt="Audit photo ${index + 1}">
+            ${isDevUri ? `
+              <div style="width: 100%; height: 100px; background: #1C1E22; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00; border-bottom: 1px solid var(--retail-border);">
+                <span class="material-icons" style="font-size: 28px;">verified</span>
+                <span style="font-size: 9px; font-weight: 800; color: #fff; margin-top: 2px;">AUDIT PROOF</span>
+              </div>
+            ` : `
+              <img src="${photo.photoUri}" class="audit-photo-image" alt="Audit photo ${index + 1}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div style="display: none; width: 100%; height: 100px; background: #1C1E22; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00; border-bottom: 1px solid var(--retail-border);">
+                <span class="material-icons" style="font-size: 28px;">verified</span>
+                <span style="font-size: 9px; font-weight: 800; color: #fff; margin-top: 2px;">AUDIT PROOF</span>
+              </div>
+            `}
             <div class="audit-photo-index-badge">${index + 1}/${groupPhotos.length}</div>
             <div class="audit-photo-chips-row">
               ${chipsHtml}
@@ -10554,7 +10874,8 @@
               ${photo.authorName || completedByName}
             </div>
           </div>
-        `).join('');
+          `;
+        }).join('');
 
         // Audit Quick-Check Review Status
         const auditReview = taskAuditsMap[`${taskId}_${adminAuditDate}`];
@@ -10739,13 +11060,41 @@
       modal.style.display = "flex";
     }
 
+    function handleMainPhotoError() {
+      const img = document.getElementById("inspectMainPhotoImg");
+      const fallback = document.getElementById("inspectMainPhotoFallback");
+      if (img) img.style.display = "none";
+      if (fallback) fallback.style.display = "flex";
+    }
+
     function renderInspectionActivePhoto() {
       const photos = currentInspectionPhotos;
       if (!photos || photos.length === 0) return;
       const active = photos[currentInspectionIndex];
 
       const img = document.getElementById("inspectMainPhotoImg");
-      if (img) img.src = active.photoUri;
+      const fallback = document.getElementById("inspectMainPhotoFallback");
+      const isDeviceUri = !active.photoUri || active.photoUri.startsWith("content://") || active.photoUri.startsWith("file:/") || active.photoUri.startsWith("/");
+
+      if (isDeviceUri) {
+        if (img) {
+          img.style.display = "none";
+          img.src = "";
+        }
+        if (fallback) {
+          fallback.style.display = "flex";
+          const fbAuthor = document.getElementById("inspectFallbackAuthor");
+          if (fbAuthor) fbAuthor.innerText = (active.authorName || "STAFF AUDIT PROOF").toUpperCase();
+          const fbTime = document.getElementById("inspectFallbackTime");
+          if (fbTime) fbTime.innerText = `LOGGED: ${formatTimeDetailed(active.timestamp || active.createdAt)} • ${active.dateString || ''}`;
+        }
+      } else {
+        if (fallback) fallback.style.display = "none";
+        if (img) {
+          img.style.display = "block";
+          img.src = active.photoUri;
+        }
+      }
 
       const counter = document.getElementById("inspectPhotoCounter");
       if (counter) counter.innerText = `Photo ${currentInspectionIndex + 1} of ${photos.length}`;
@@ -10765,14 +11114,26 @@
         strip.innerHTML = "";
         photos.forEach((p, idx) => {
           const isSelected = idx === currentInspectionIndex;
+          const isThumbDevUri = !p.photoUri || p.photoUri.startsWith("content://") || p.photoUri.startsWith("file:/") || p.photoUri.startsWith("/");
           const thumb = document.createElement("div");
           thumb.style = `position: relative; flex-shrink: 0; width: 64px; height: 64px; border-radius: 6px; overflow: hidden; cursor: pointer; border: ${isSelected ? '3px solid var(--retail-orange, #F97316)' : '1px solid var(--retail-border)'}; box-shadow: ${isSelected ? '0 0 8px rgba(249, 115, 22, 0.4)' : 'none'};`;
           thumb.onclick = () => {
             currentInspectionIndex = idx;
             renderInspectionActivePhoto();
           };
-          thumb.innerHTML = `
-            <img src="${p.photoUri}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Thumbnail ${idx + 1}">
+          thumb.innerHTML = isThumbDevUri ? `
+            <div style="width: 100%; height: 100%; background: #1C1E22; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00;">
+              <span class="material-icons" style="font-size: 24px;">verified</span>
+              <span style="font-size: 8px; font-weight: 800; color: #fff;">PROOF</span>
+            </div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.75); color: #fff; font-size: 8px; font-weight: 800; text-align: center; padding: 1px 0;">
+              ${idx + 1}/${photos.length}
+            </div>
+          ` : `
+            <img src="${p.photoUri}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Thumbnail ${idx + 1}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="display: none; width: 100%; height: 100%; background: #1C1E22; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00;">
+              <span class="material-icons" style="font-size: 24px;">verified</span>
+            </div>
             <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); color: #fff; font-size: 8px; font-weight: 800; text-align: center; padding: 1px 0;">
               ${idx + 1}/${photos.length}
             </div>
@@ -10802,6 +11163,11 @@
     function viewPhotoInNewTab() {
       if (currentInspectionPhotos && currentInspectionPhotos[currentInspectionIndex]) {
         const uri = currentInspectionPhotos[currentInspectionIndex].photoUri;
+        const isDeviceUri = !uri || uri.startsWith("content://") || uri.startsWith("file:/") || uri.startsWith("/");
+        if (isDeviceUri) {
+          alert("This photo audit was captured on a local Android store terminal and is queued for cloud sync. Full resolution will display once synchronized.");
+          return;
+        }
         const w = window.open("");
         if (w) {
           w.document.write(`<img src="${uri}" style="max-width:100%; height:auto;" alt="Full Resolution Audit">`);

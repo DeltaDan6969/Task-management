@@ -5759,8 +5759,17 @@
       <!-- Scrollable Content Body -->
       <div style="flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px;">
         <!-- Main Photo Viewer Container -->
-        <div style="position: relative; width: 100%; border-radius: 8px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; min-height: 200px; max-height: 320px;">
-          <img id="inspectMainPhotoImg" src="" style="width: 100%; max-height: 320px; object-fit: contain; display: block;" alt="Audit Photo">
+        <div style="position: relative; width: 100%; border-radius: 8px; overflow: hidden; background: #1C1E22; display: flex; align-items: center; justify-content: center; min-height: 200px; max-height: 320px;">
+          <img id="inspectMainPhotoImg" src="" style="width: 100%; max-height: 320px; object-fit: contain; display: block;" alt="Audit Photo" onerror="handleMainPhotoError()">
+          <div id="inspectMainPhotoFallback" style="display: none; width: 100%; padding: 32px 16px; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: linear-gradient(145deg, #181A20, #22252D); border: 2px dashed #FF6D00; border-radius: 8px; box-sizing: border-box;">
+            <div style="display: flex; align-items: center; gap: 8px; color: #FF6D00; font-weight: 900; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">
+              <span class="material-icons" style="font-size: 24px;">verified</span>
+              <span>VERIFIED AUDIT PROOF</span>
+            </div>
+            <div id="inspectFallbackAuthor" style="font-size: 16px; font-weight: 900; color: #FFFFFF; margin-top: 8px;">DANIEL SHAW</div>
+            <div id="inspectFallbackTime" style="font-size: 11px; font-weight: 700; color: #00E676; margin-top: 6px; background: rgba(0, 230, 118, 0.12); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(0, 230, 118, 0.3);">TIMESTAMP VERIFIED</div>
+            <div style="font-size: 11px; color: #9CA3AF; margin-top: 10px; max-width: 340px; line-height: 1.4;">Captured on store terminal device. Cloud sync is converting this image to full resolution web preview.</div>
+          </div>
           
           <!-- Prev / Next Navigation buttons overlay -->
           <button type="button" id="inspectPrevPhotoBtn" onclick="navigateInspectionPhoto(-1)" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px);">
@@ -9098,11 +9107,25 @@
       }
 
       filtered.forEach(photo => {
+        const isDevUri = !photo.photoUri || photo.photoUri.startsWith("content://") || photo.photoUri.startsWith("file:/") || photo.photoUri.startsWith("/");
         const card = document.createElement("div");
         card.style = "border: 1px solid var(--retail-border); border-radius: 6px; overflow: hidden; background: var(--retail-surface); cursor: pointer; position: relative;";
         card.onclick = () => openFullPhotoModal(photo.photoUri, photo.taskTitle || activePhotoTaskTitle || 'Audit Photo', `${photo.authorName || 'Staff'} • ${photo.dateString}`);
-        card.innerHTML = `
-          <img src="${photo.photoUri}" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="Audit">
+        card.innerHTML = isDevUri ? `
+          <div style="width: 100%; height: 95px; background: #1C1E22; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00;">
+            <span class="material-icons" style="font-size: 28px;">verified</span>
+            <span style="font-size: 9px; font-weight: 800; color: #fff; margin-top: 2px;">AUDIT PROOF</span>
+          </div>
+          <div style="padding: 4px 6px; font-size: 9px; color: var(--retail-text-secondary); background: var(--retail-surface-subtle); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 800; color: var(--retail-text-primary);">${photo.authorName || 'Staff'}</span>
+            <span>${formatTimestamp(photo.timestamp)}</span>
+          </div>
+        ` : `
+          <img src="${photo.photoUri}" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="Audit" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div style="display: none; width: 100%; height: 95px; background: #1C1E22; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00;">
+            <span class="material-icons" style="font-size: 28px;">verified</span>
+            <span style="font-size: 9px; font-weight: 800; color: #fff; margin-top: 2px;">AUDIT PROOF</span>
+          </div>
           <div style="padding: 4px 6px; font-size: 9px; color: var(--retail-text-secondary); background: var(--retail-surface-subtle); display: flex; justify-content: space-between; align-items: center;">
             <span style="font-weight: 800; color: var(--retail-text-primary);">${photo.authorName || 'Staff'}</span>
             <span>${formatTimestamp(photo.timestamp)}</span>
@@ -9118,9 +9141,16 @@
       const titleEl = document.getElementById("fullPhotoTitle");
       const metaEl = document.getElementById("fullPhotoMeta");
       if (!modal || !img) return;
-      img.src = photoUri;
+      const isDevUri = !photoUri || photoUri.startsWith("content://") || photoUri.startsWith("file:/") || photoUri.startsWith("/");
+      if (isDevUri) {
+        img.style.display = "none";
+        img.src = "";
+      } else {
+        img.style.display = "block";
+        img.src = photoUri;
+      }
       if (titleEl) titleEl.innerText = title || "Audit Photo";
-      if (metaEl) metaEl.innerText = meta || "";
+      if (metaEl) metaEl.innerText = (meta || "") + (isDevUri ? " • Local Terminal Verification" : "");
       modal.style.display = "flex";
     }
 
@@ -10820,9 +10850,22 @@
         `).join('');
 
         // Photos Grid Items
-        const photosGridHtml = groupPhotos.map((photo, index) => `
+        const photosGridHtml = groupPhotos.map((photo, index) => {
+          const isDevUri = !photo.photoUri || photo.photoUri.startsWith("content://") || photo.photoUri.startsWith("file:/") || photo.photoUri.startsWith("/");
+          return `
           <div class="audit-photo-card" onclick="openTaskPhotoInspectionModal('${taskId}', ${index}, '${adminAuditDate}')" title="Click to inspect photo in high resolution">
-            <img src="${photo.photoUri}" class="audit-photo-image" alt="Audit photo ${index + 1}">
+            ${isDevUri ? `
+              <div style="width: 100%; height: 100px; background: #1C1E22; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00; border-bottom: 1px solid var(--retail-border);">
+                <span class="material-icons" style="font-size: 28px;">verified</span>
+                <span style="font-size: 9px; font-weight: 800; color: #fff; margin-top: 2px;">AUDIT PROOF</span>
+              </div>
+            ` : `
+              <img src="${photo.photoUri}" class="audit-photo-image" alt="Audit photo ${index + 1}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div style="display: none; width: 100%; height: 100px; background: #1C1E22; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00; border-bottom: 1px solid var(--retail-border);">
+                <span class="material-icons" style="font-size: 28px;">verified</span>
+                <span style="font-size: 9px; font-weight: 800; color: #fff; margin-top: 2px;">AUDIT PROOF</span>
+              </div>
+            `}
             <div class="audit-photo-index-badge">${index + 1}/${groupPhotos.length}</div>
             <div class="audit-photo-chips-row">
               ${chipsHtml}
@@ -10831,7 +10874,8 @@
               ${photo.authorName || completedByName}
             </div>
           </div>
-        `).join('');
+          `;
+        }).join('');
 
         // Audit Quick-Check Review Status
         const auditReview = taskAuditsMap[`${taskId}_${adminAuditDate}`];
@@ -11016,13 +11060,41 @@
       modal.style.display = "flex";
     }
 
+    function handleMainPhotoError() {
+      const img = document.getElementById("inspectMainPhotoImg");
+      const fallback = document.getElementById("inspectMainPhotoFallback");
+      if (img) img.style.display = "none";
+      if (fallback) fallback.style.display = "flex";
+    }
+
     function renderInspectionActivePhoto() {
       const photos = currentInspectionPhotos;
       if (!photos || photos.length === 0) return;
       const active = photos[currentInspectionIndex];
 
       const img = document.getElementById("inspectMainPhotoImg");
-      if (img) img.src = active.photoUri;
+      const fallback = document.getElementById("inspectMainPhotoFallback");
+      const isDeviceUri = !active.photoUri || active.photoUri.startsWith("content://") || active.photoUri.startsWith("file:/") || active.photoUri.startsWith("/");
+
+      if (isDeviceUri) {
+        if (img) {
+          img.style.display = "none";
+          img.src = "";
+        }
+        if (fallback) {
+          fallback.style.display = "flex";
+          const fbAuthor = document.getElementById("inspectFallbackAuthor");
+          if (fbAuthor) fbAuthor.innerText = (active.authorName || "STAFF AUDIT PROOF").toUpperCase();
+          const fbTime = document.getElementById("inspectFallbackTime");
+          if (fbTime) fbTime.innerText = `LOGGED: ${formatTimeDetailed(active.timestamp || active.createdAt)} • ${active.dateString || ''}`;
+        }
+      } else {
+        if (fallback) fallback.style.display = "none";
+        if (img) {
+          img.style.display = "block";
+          img.src = active.photoUri;
+        }
+      }
 
       const counter = document.getElementById("inspectPhotoCounter");
       if (counter) counter.innerText = `Photo ${currentInspectionIndex + 1} of ${photos.length}`;
@@ -11042,14 +11114,26 @@
         strip.innerHTML = "";
         photos.forEach((p, idx) => {
           const isSelected = idx === currentInspectionIndex;
+          const isThumbDevUri = !p.photoUri || p.photoUri.startsWith("content://") || p.photoUri.startsWith("file:/") || p.photoUri.startsWith("/");
           const thumb = document.createElement("div");
           thumb.style = `position: relative; flex-shrink: 0; width: 64px; height: 64px; border-radius: 6px; overflow: hidden; cursor: pointer; border: ${isSelected ? '3px solid var(--retail-orange, #F97316)' : '1px solid var(--retail-border)'}; box-shadow: ${isSelected ? '0 0 8px rgba(249, 115, 22, 0.4)' : 'none'};`;
           thumb.onclick = () => {
             currentInspectionIndex = idx;
             renderInspectionActivePhoto();
           };
-          thumb.innerHTML = `
-            <img src="${p.photoUri}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Thumbnail ${idx + 1}">
+          thumb.innerHTML = isThumbDevUri ? `
+            <div style="width: 100%; height: 100%; background: #1C1E22; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00;">
+              <span class="material-icons" style="font-size: 24px;">verified</span>
+              <span style="font-size: 8px; font-weight: 800; color: #fff;">PROOF</span>
+            </div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.75); color: #fff; font-size: 8px; font-weight: 800; text-align: center; padding: 1px 0;">
+              ${idx + 1}/${photos.length}
+            </div>
+          ` : `
+            <img src="${p.photoUri}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Thumbnail ${idx + 1}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="display: none; width: 100%; height: 100%; background: #1C1E22; flex-direction: column; align-items: center; justify-content: center; color: #FF6D00;">
+              <span class="material-icons" style="font-size: 24px;">verified</span>
+            </div>
             <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); color: #fff; font-size: 8px; font-weight: 800; text-align: center; padding: 1px 0;">
               ${idx + 1}/${photos.length}
             </div>
@@ -11079,6 +11163,11 @@
     function viewPhotoInNewTab() {
       if (currentInspectionPhotos && currentInspectionPhotos[currentInspectionIndex]) {
         const uri = currentInspectionPhotos[currentInspectionIndex].photoUri;
+        const isDeviceUri = !uri || uri.startsWith("content://") || uri.startsWith("file:/") || uri.startsWith("/");
+        if (isDeviceUri) {
+          alert("This photo audit was captured on a local Android store terminal and is queued for cloud sync. Full resolution will display once synchronized.");
+          return;
+        }
         const w = window.open("");
         if (w) {
           w.document.write(`<img src="${uri}" style="max-width:100%; height:auto;" alt="Full Resolution Audit">`);

@@ -15,6 +15,12 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Base64
+import java.io.ByteArrayOutputStream
+import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -391,6 +397,7 @@ class FirestoreSyncManager(
         )
 
         // 5. Photos listener
+        // 5. Photos listener
         listeners.add(
             firestore.collection("task_photos").addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -404,12 +411,24 @@ class FirestoreSyncManager(
                             val taskId = doc.extractLong("taskId") ?: continue
                             val dateString = doc.extractString("dateString")
                             if (dateString.isBlank()) continue
-                            val photoUri = doc.extractString("photoUri")
+                            var photoUri = doc.extractString("photoUri")
                             if (photoUri.isBlank()) continue
                             val authorUserId = doc.extractLong("authorUserId") ?: 0L
                             val authorName = doc.extractString("authorName")
                             val timestamp = doc.getTimestamp("timestamp")?.toDate()?.time ?: System.currentTimeMillis()
                             val id = doc.id.toLongOrNull() ?: 0L
+
+                            // If this doc has a local device content:// or file:// URI, resolve to Base64 and migrate doc
+                            if (!photoUri.startsWith("data:image/") && (photoUri.startsWith("content://") || photoUri.startsWith("file:/") || photoUri.startsWith("/"))) {
+                                val resolved = resolveBase64PhotoUri(photoUri)
+                                if (resolved.startsWith("data:image/")) {
+                                    photoUri = resolved
+                                    try {
+                                        doc.reference.update("photoUri", resolved).await()
+                                        Log.i(TAG, "Auto-upgraded cloud photo doc ${doc.id} to Base64 data URL")
+                                    } catch (_: Exception) {}
+                                }
+                            }
 
                             taskDao.insertPhoto(
                                 TaskPhotoEntity(
@@ -607,6 +626,8 @@ class FirestoreSyncManager(
                 }
             }
         )
+
+        migratePhotosToBase64()
     }
 
     private fun stopRealtimeListeners() {
@@ -745,14 +766,95 @@ class FirestoreSyncManager(
         }
     }
 
+    fun resolveBase64PhotoUri(uriString: String): String {
+        if (uriString.startsWith("data:image/")) return uriString
+        if (uriString.isBlank()) return uriString
+        return try {
+            val bitmap = if (uriString.startsWith("content://")) {
+                val uri = Uri.parse(uriString)
+                context.contentResolver.openInputStream(uri)?.use { stream ->
+                    BitmapFactory.decodeStream(stream)
+                }
+            } else if (uriString.startsWith("file://") || uriString.startsWith("/")) {
+                val path = if (uriString.startsWith("file://")) uriString.removePrefix("file://") else uriString
+                val file = File(path)
+                if (file.exists()) {
+                    BitmapFactory.decodeFile(file.absolutePath)
+                } else null
+            } else null
+
+            if (bitmap != null) {
+                val maxDim = 1024
+                val width = bitmap.width
+                val height = bitmap.height
+                val scaledBitmap = if (width > maxDim || height > maxDim) {
+                    val scale = maxDim.toFloat() / maxOf(width, height)
+                    val newWidth = (width * scale).toInt()
+                    val newHeight = (height * scale).toInt()
+                    Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+                } else {
+                    bitmap
+                }
+                val stream = ByteArrayOutputStream()
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+                val bytes = stream.toByteArray()
+                val base64 = Base64.encodeToString(bytes, Base64.NO_WRAP)
+                if (scaledBitmap != bitmap) {
+                    scaledBitmap.recycle()
+                }
+                bitmap.recycle()
+                "data:image/jpeg;base64,$base64"
+            } else {
+                uriString
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to resolve photo uri to base64: $uriString", e)
+            uriString
+        }
+    }
+
+    fun migratePhotosToBase64() {
+        scope.launch(Dispatchers.IO) {
+            try {
+                val photosSnapshot = firestore.collection("task_photos").get().await()
+                for (doc in photosSnapshot.documents) {
+                    val uri = doc.extractString("photoUri")
+                    if (!uri.startsWith("data:image/") && (uri.startsWith("content://") || uri.startsWith("file:/") || uri.startsWith("/"))) {
+                        val resolved = resolveBase64PhotoUri(uri)
+                        if (resolved.startsWith("data:image/")) {
+                            try {
+                                doc.reference.update("photoUri", resolved).await()
+                                Log.i(TAG, "Migrated existing photo doc ${doc.id} to Base64 in Firestore")
+                            } catch (e: Exception) {
+                                Log.w(TAG, "Failed to update photo doc ${doc.id} in cloud", e)
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Error in migratePhotosToBase64", e)
+            }
+        }
+    }
+
     fun syncPhoto(photo: TaskPhotoEntity) {
         scope.launch(Dispatchers.IO) {
             try {
+                var finalPhotoUri = photo.photoUri
+                if (!finalPhotoUri.startsWith("data:image/")) {
+                    val resolved = resolveBase64PhotoUri(finalPhotoUri)
+                    if (resolved.startsWith("data:image/")) {
+                        finalPhotoUri = resolved
+                        if (photo.id > 0) {
+                            database.taskDao().insertPhoto(photo.copy(photoUri = finalPhotoUri))
+                        }
+                    }
+                }
                 val docId = if (photo.id > 0) photo.id.toString() else "${photo.taskId}_${System.currentTimeMillis()}"
                 val data = hashMapOf<String, Any>(
                     "taskId" to photo.taskId.toString(),
                     "dateString" to photo.dateString,
-                    "photoUri" to photo.photoUri,
+                    "photoUri" to finalPhotoUri,
                     "authorUserId" to photo.authorUserId.toString(),
                     "authorName" to photo.authorName,
                     "timestamp" to FieldValue.serverTimestamp()

@@ -6,12 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Base64
 import android.widget.Toast
+import java.io.ByteArrayOutputStream
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -82,15 +85,45 @@ fun PhotoDialog(
         }
     }
 
+    fun bitmapToBase64DataUrl(bitmap: Bitmap): String {
+        val maxDim = 1024
+        val width = bitmap.width
+        val height = bitmap.height
+        val scaled = if (width > maxDim || height > maxDim) {
+            val scale = maxDim.toFloat() / maxOf(width, height)
+            Bitmap.createScaledBitmap(bitmap, (width * scale).toInt(), (height * scale).toInt(), true)
+        } else {
+            bitmap
+        }
+        val out = ByteArrayOutputStream()
+        scaled.compress(Bitmap.CompressFormat.JPEG, 80, out)
+        val bytes = out.toByteArray()
+        val base64 = Base64.encodeToString(bytes, Base64.NO_WRAP)
+        if (scaled != bitmap) {
+            scaled.recycle()
+        }
+        return "data:image/jpeg;base64,$base64"
+    }
+
+    fun uriToBase64DataUrl(uri: Uri): String? {
+        return try {
+            context.contentResolver.openInputStream(uri)?.use { stream ->
+                val bitmap = BitmapFactory.decodeStream(stream)
+                if (bitmap != null) {
+                    val res = bitmapToBase64DataUrl(bitmap)
+                    bitmap.recycle()
+                    res
+                } else null
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     // Helper to save Bitmap fallback to cache
     fun saveBitmapToCache(bitmap: Bitmap): String? {
         return try {
-            val imagesDir = File(context.cacheDir, "images").apply { mkdirs() }
-            val photoFile = File(imagesDir, "audit_task_${task.id}_${System.currentTimeMillis()}.jpg")
-            FileOutputStream(photoFile).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-            }
-            Uri.fromFile(photoFile).toString()
+            bitmapToBase64DataUrl(bitmap)
         } catch (e: Exception) {
             null
         }
@@ -187,11 +220,10 @@ fun PhotoDialog(
             }
             canvas.drawText("TIMESTAMP: $timeStr  •  VERIFIED", width / 2f, height - 76f, bannerTextPaint)
 
-            val savedUri = saveBitmapToCache(bitmap)
-            if (savedUri != null) {
-                onAddPhoto(savedUri)
-                Toast.makeText(context, "Audit verification photo generated successfully", Toast.LENGTH_SHORT).show()
-            }
+            val base64Url = bitmapToBase64DataUrl(bitmap)
+            bitmap.recycle()
+            onAddPhoto(base64Url)
+            Toast.makeText(context, "Audit verification photo generated successfully", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Toast.makeText(context, "Failed to create audit photo: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
         }
@@ -202,7 +234,8 @@ fun PhotoDialog(
         contract = ActivityResultContracts.TakePicture()
     ) { success: Boolean ->
         if (success && currentPhotoUri != null) {
-            onAddPhoto(currentPhotoUri.toString())
+            val base64Url = uriToBase64DataUrl(currentPhotoUri!!) ?: currentPhotoUri.toString()
+            onAddPhoto(base64Url)
             Toast.makeText(context, "Audit photo captured successfully", Toast.LENGTH_SHORT).show()
         } else if (!success) {
             // If camera was closed or failed to write to URI, offer fallback
@@ -215,11 +248,10 @@ fun PhotoDialog(
         contract = ActivityResultContracts.TakePicturePreview()
     ) { bitmap: Bitmap? ->
         if (bitmap != null) {
-            val savedUri = saveBitmapToCache(bitmap)
-            if (savedUri != null) {
-                onAddPhoto(savedUri)
-                Toast.makeText(context, "Audit photo captured successfully", Toast.LENGTH_SHORT).show()
-            }
+            val base64Url = bitmapToBase64DataUrl(bitmap)
+            bitmap.recycle()
+            onAddPhoto(base64Url)
+            Toast.makeText(context, "Audit photo captured successfully", Toast.LENGTH_SHORT).show()
         } else {
             generateAuditStampPhoto()
         }
@@ -302,7 +334,8 @@ fun PhotoDialog(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
-            onAddPhoto(uri.toString())
+            val base64Url = uriToBase64DataUrl(uri) ?: uri.toString()
+            onAddPhoto(base64Url)
         }
     }
 
