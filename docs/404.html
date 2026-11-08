@@ -6792,20 +6792,72 @@
     updateClock();
 
     // -------------------------------------------------------------
-    // 5-Minute Inactivity Auto-Logout
+    // 5-Minute Inactivity Auto-Logout (iOS Mobile Web & Desktop Resilient)
     // -------------------------------------------------------------
+    let lastStaffInteractionTime = Date.now();
+    const STAFF_INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+
+    function recordStaffInteraction() {
+      lastStaffInteractionTime = Date.now();
+      try {
+        localStorage.setItem("onestop_last_staff_interaction", lastStaffInteractionTime.toString());
+      } catch (_) {}
+    }
+
     function resetInactivityTimer() {
-      if (inactivityTimer) clearTimeout(inactivityTimer);
+      recordStaffInteraction();
+      if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = null;
+      }
       if (activeStaffUser) {
         inactivityTimer = setTimeout(() => {
-          showToast("Session expired after 5 minutes of inactivity.");
-          signOutStaff();
-        }, 5 * 60 * 1000);
+          checkStaffSessionTimeout();
+        }, STAFF_INACTIVITY_TIMEOUT_MS);
       }
     }
-    ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt => {
-      window.addEventListener(evt, resetInactivityTimer, true);
+
+    function checkStaffSessionTimeout() {
+      if (!activeStaffUser) return;
+      const now = Date.now();
+      let lastActive = lastStaffInteractionTime;
+      try {
+        const stored = parseInt(localStorage.getItem("onestop_last_staff_interaction") || "0", 10);
+        if (stored > 0 && stored > lastActive) {
+          lastActive = stored;
+          lastStaffInteractionTime = stored;
+        }
+      } catch (_) {}
+
+      const idleMillis = now - lastActive;
+      if (idleMillis >= STAFF_INACTIVITY_TIMEOUT_MS) {
+        console.warn(`[AutoLogout] Staff session expired after ${(idleMillis / 1000).toFixed(0)}s of inactivity.`);
+        signOutStaff("Session expired after 5 minutes of inactivity.");
+      }
+    }
+
+    // High-precision periodic check every 1 second (resilient against backgrounded iOS browser tabs)
+    setInterval(() => {
+      if (activeStaffUser) {
+        checkStaffSessionTimeout();
+      }
+    }, 1000);
+
+    // Event listeners on window and document for all touch, pointer, mouse, keyboard, and scroll events
+    const interactionEvents = ['touchstart', 'touchend', 'touchmove', 'click', 'mousedown', 'keydown', 'scroll', 'pointerdown'];
+    interactionEvents.forEach(evt => {
+      window.addEventListener(evt, resetInactivityTimer, { passive: true, capture: true });
+      document.addEventListener(evt, resetInactivityTimer, { passive: true, capture: true });
     });
+
+    // Detect iOS app switches, phone locks, backgrounding, and tab focus restores
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === 'visible') {
+        checkStaffSessionTimeout();
+      }
+    });
+    window.addEventListener("pageshow", checkStaffSessionTimeout);
+    window.addEventListener("focus", checkStaffSessionTimeout);
 
     // -------------------------------------------------------------
     // Firebase Auth State Listener
@@ -7593,8 +7645,11 @@
       document.getElementById("sessionUserAvatar").innerText = activeStaffUser.initials;
       document.getElementById("sessionUserName").innerText = activeStaffUser.name;
       document.getElementById("sessionUserRole").innerText = activeStaffUser.role;
+      const bar = document.getElementById("userSessionBar");
+      if (bar) bar.style.display = "flex";
 
       closeFirstLoginModal();
+      resetInactivityTimer();
       showToast(`Welcome, ${activeStaffUser.name}! Your 4-digit PIN is set.`);
       navigateToScreen('TODAY');
       renderStaffRosterPhone();
@@ -7699,8 +7754,11 @@
         document.getElementById("sessionUserAvatar").innerText = activeStaffUser.initials;
         document.getElementById("sessionUserName").innerText = activeStaffUser.name;
         document.getElementById("sessionUserRole").innerText = activeStaffUser.role;
+        const bar = document.getElementById("userSessionBar");
+        if (bar) bar.style.display = "flex";
 
         closePinModal();
+        resetInactivityTimer();
         showToast(`Welcome, ${activeStaffUser.name}!`);
         navigateToScreen('TODAY');
       } else {
@@ -7710,15 +7768,22 @@
       }
     }
 
-    function signOutStaff() {
+    function signOutStaff(msg) {
       activeStaffUser = null;
       try {
         sessionStorage.removeItem("onestop_active_staff_user");
         localStorage.removeItem("onestop_active_staff_user");
+        localStorage.removeItem("onestop_last_staff_interaction");
       } catch (_) {}
-      if (inactivityTimer) clearTimeout(inactivityTimer);
+      if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = null;
+      }
+      const bar = document.getElementById("userSessionBar");
+      if (bar) bar.style.display = "none";
       navigateToScreen('SIGN_IN');
-      showToast("Signed out successfully.");
+      renderStaffRosterPhone();
+      showToast(msg || "Signed out successfully.");
     }
 
     // -------------------------------------------------------------
@@ -10555,9 +10620,10 @@
     }
     loadTaskAuditsFromLocalStorage();
 
-    // Ensure realistic seed photos exist for WhyWaste and calendar dots
+    // Ensure historical demo audit photos exist for Oct 2026 gallery testing without touching today's live tasks
     function ensureDefaultAuditPhotos() {
-      const targetDates = ["2026-10-26", todayDateStr];
+      // NOTE: Strictly target past demo dates only. Never seed or auto-complete any tasks for today!
+      const targetDates = ["2026-10-26"];
       targetDates.forEach(tDate => {
         const existingForDate = taskPhotos.filter(p => p.dateString === tDate && (p.taskId == "16" || p.taskTitle === "WhyWaste"));
         if (existingForDate.length === 0) {
@@ -10571,7 +10637,7 @@
             authorUserId: "1",
             authorName: "Daniel Shaw",
             authorInitials: "DS",
-            timestamp: tDate === "2026-10-26" ? 1793046362000 : (Date.now() - 3600000)
+            timestamp: 1793046362000
           });
           taskPhotos.push({
             id: `seed_whywaste_2_${tDate}`,
@@ -10583,20 +10649,22 @@
             authorUserId: "1",
             authorName: "Daniel Shaw",
             authorInitials: "DS",
-            timestamp: tDate === "2026-10-26" ? 1793046377000 : (Date.now() - 3585000)
+            timestamp: 1793046377000
           });
         }
-        if (!completionsMap[`16_${tDate}`]) {
-          completionsMap[`16_${tDate}`] = {
-            taskId: "16",
-            dateString: tDate,
-            completedByUserName: "DANIEL SHAW",
-            completedByUserInitials: "DS",
-            completedAt: tDate === "2026-10-26" ? 1793006218000 : (Date.now() - 3600000),
-            isCompleted: true
-          };
-        }
       });
+
+      // Cleanup: Purge any legacy auto-seeded photos or completions for today's WhyWaste
+      taskPhotos = taskPhotos.filter(p => !(p.id && String(p.id).startsWith("seed_whywaste_") && p.dateString === todayDateStr));
+      const todaySeedKey = `16_${todayDateStr}`;
+      const comp = completionsMap[todaySeedKey];
+      if (comp && comp.completedByUserName === "DANIEL SHAW" && !comp.completedSubTasksJson && !comp.notes) {
+        delete completionsMap[todaySeedKey];
+        allCompletions = allCompletions.filter(c => !(c.taskId.toString() === "16" && c.dateString === todayDateStr));
+        try {
+          db.collection("task_completions").doc(todaySeedKey).delete().catch(() => {});
+        } catch (_) {}
+      }
 
       // Seed dot indicators for 27, 28, 29 of October 2026 if empty
       const sampleDates = ["2026-10-27", "2026-10-28", "2026-10-29"];
@@ -12929,11 +12997,15 @@
       // 2. Initialize Unified Phone & Tablet Layout
       initLayoutMode();
 
-      // 2b. Restore active staff session if logged in
+      // 2b. Restore active staff session if logged in and within 5 minutes of inactivity
       let sessionRestored = false;
       try {
         const savedSession = localStorage.getItem("onestop_active_staff_user") || sessionStorage.getItem("onestop_active_staff_user");
-        if (savedSession) {
+        const storedLastActive = parseInt(localStorage.getItem("onestop_last_staff_interaction") || "0", 10);
+        const now = Date.now();
+        const isExpired = !storedLastActive || (now - storedLastActive >= STAFF_INACTIVITY_TIMEOUT_MS);
+
+        if (savedSession && !isExpired) {
           const parsed = JSON.parse(savedSession);
           if (parsed && parsed.name) {
             activeStaffUser = parsed;
@@ -12943,13 +13015,22 @@
             if (avatar) avatar.innerText = activeStaffUser.initials;
             if (name) name.innerText = activeStaffUser.name;
             if (role) role.innerText = activeStaffUser.role;
+            const bar = document.getElementById("userSessionBar");
+            if (bar) bar.style.display = "flex";
             navigateToScreen('TODAY');
             sessionRestored = true;
+            resetInactivityTimer();
           }
+        } else if (savedSession && isExpired) {
+          localStorage.removeItem("onestop_active_staff_user");
+          sessionStorage.removeItem("onestop_active_staff_user");
+          localStorage.removeItem("onestop_last_staff_interaction");
         }
       } catch (_) {}
 
       if (!sessionRestored) {
+        const bar = document.getElementById("userSessionBar");
+        if (bar) bar.style.display = "none";
         navigateToScreen('SIGN_IN');
       }
 
